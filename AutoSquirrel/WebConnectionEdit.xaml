@@ -1,0 +1,99 @@
+﻿<Window x:Class="AutoSquirrel.WebConnectionEdit"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AutoSquirrel"
+        xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+        WindowStartupLocation="CenterScreen"
+        mc:Ignorable="d"
+        Title="{Binding Path=ConnectionName}" Height="330" Width="640" MinHeight="330" MinWidth="500"
+        Topmost="True">
+    <Grid Margin="10">
+        <Grid.Resources>
+            <DataTemplate DataType="{x:Type local:AmazonS3Connection}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <!--<TextBlock Text="Connection Name : " Grid.Row="0" Grid.Column="0"/>
+            <TextBox Text="{Binding Path=ConnectionName,ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1" />-->
+
+                    <TextBlock Text="Bucket Name : " Grid.Row="1" Grid.Column="0"/>
+                    <TextBox Text="{Binding Path=BucketName,ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" 
+                             Controls:TextBoxHelper.Watermark="BUCKET NAME"/>
+                    <TextBlock Grid.Row="2" Grid.Column="1">  
+                <Hyperlink Click="Hyperlink_Click" >
+                    Bucket Name Validation Guide
+                </Hyperlink>
+                    </TextBlock >
+
+                    <TextBlock Text="Access Key : " Grid.Row="3" Grid.Column="0"/>
+                    <TextBox Text="{Binding Path=AccessKey,ValidatesOnDataErrors=True}" Controls:TextBoxHelper.Watermark="ACCESS KEY" Grid.Row="3" Grid.Column="1" />
+
+                    <TextBlock Text="Secret Key : " Grid.Row="4" Grid.Column="0"/>
+                    <TextBox Text="{Binding Path=SecretAccessKey,ValidatesOnDataErrors=True}" Controls:TextBoxHelper.Watermark="SECRET ACCESS KEY" Grid.Row="4" Grid.Column="1"/>
+
+                    <TextBlock Text="Region : " Grid.Row="5" />
+                    <ComboBox SelectedItem="{Binding Path=RegionName,ValidatesOnDataErrors=True}" ItemsSource="{Binding Path=AvailableRegionList}" Grid.Row="5" Grid.Column="1" />
+
+                    <TextBlock Text="Setup Link Url : " Grid.Row="6" Grid.Column="0" VerticalAlignment="Center" FontWeight="Bold" />
+                    <TextBox Text="{Binding Path=SetupDownloadUrl,Mode=OneWay}"  Grid.Row="6" Grid.Column="1" IsReadOnly="True" Background="Bisque" FontWeight="Bold"/>
+                    <TextBlock Grid.Row="7" Grid.Column="1" Text="Copy this link for Setup.Exe location" />
+
+                </Grid>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type local:FileSystemConnection}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Filesytem Path : " Grid.Row="0" Grid.Column="0"/>
+                    <TextBox Text="{Binding Path=FileSystemPath,ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1" />
+
+                    <TextBlock Text="Setup Link Url : " Grid.Row="6" Grid.Column="0" VerticalAlignment="Center" FontWeight="Bold" />
+                    <TextBox Text="{Binding Path=SetupDownloadUrl,Mode=OneWay}"  Grid.Row="6" Grid.Column="1" IsReadOnly="True" Background="Bisque" FontWeight="Bold"/>
+                    <TextBlock Grid.Row="7" Grid.Column="1" Text="Copy this link for Setup.Exe location" />
+
+                </Grid>
+            </DataTemplate>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+        <ContentControl Content="{Binding}"/>
+        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Red" Text="Credentials are stored in clear !" Grid.Row="1" FontSize="16"/>
+        <Button Grid.Row="2" Width="250" Margin="5" Click="Button_Click" >
+            <StackPanel Orientation="Horizontal">
+                <Image Source="Images/check_black_24.png" Margin="10,0"/>
+                <TextBlock Text="Save" FontSize="25" x:Name="Save"/>
+
+            </StackPanel>
+        </Button>
+
+    </Grid>
+</Window>
