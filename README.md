@@ -2,7 +2,7 @@
 
 ___
 
-#### This utility is useful to create **[Squirrel.Windows](https://github.com/Squirrel/Squirrel.Windows)** based installer.
+#### This utility is useful to create installer based on **[Squirrel.Windows](https://github.com/Squirrel/Squirrel.Windows)**.
 
 The main purpose is to fully automatize the application deploy , from build to upload  the updated files.
 
