@@ -11,7 +11,7 @@ ____
 
 1. **Update Application Version** the package version is extracted from exe file , you don't need to set this value manually
 
-2. **Create Squirrel Package** . In similar way you do with Nuget Package Manager, just drag the file you want into window.
+2. **Create Squirrel Package** . In similar way you do with Nuget Package Manager, just drag the file you want into window. No need to create lib/net45 folder.
 
 3. **Upload installer files** . Set connection details one time .
 
@@ -22,11 +22,11 @@ ____
  ## Read also :
 
 
-* **[Project Version Auto-Increment](docs/VersionAutoIncrement.html)**
+* **[Project Version Auto-Increment](docs/VersionAutoIncrement.md)**
 
-* **[Update Manager Integration](docs/SquirrelIntegration.html)**
+* **[Update Manager Integration](docs/SquirrelIntegration.md)**
 
-* **[Squirrel Package Creation](docs/PackageCreation.html)**
+* **[Squirrel Package Creation](docs/PackageCreation.md)**
 
 ## [DOWNLOAD](https://s3-eu-west-1.amazonaws.com/ecamfolder/Setup.exe)
 ___
