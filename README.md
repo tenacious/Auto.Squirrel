@@ -5,8 +5,9 @@ ___
 #### This utility is useful to create installer based on **[Squirrel.Windows](https://github.com/Squirrel/Squirrel.Windows)**.
 
 The main purpose is to fully automatize the application deploy , from build to upload  the updated files.
+____
 
-With a single mouse click you can :
+### With a single mouse click you can :
 
 1. **Update Application Version** the package version is extracted from exe file , you don't need to set this value manually
 
@@ -16,6 +17,7 @@ With a single mouse click you can :
 
 4. **Decide to upload only the updated files or do complete setup upload**
 
+____
 
  ## Read also :
 
