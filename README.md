@@ -8,13 +8,13 @@ The main purpose is to fully automatize the application deploy , from build to u
 
 With a single mouse click you can :
 
-1. Update Application Version
+1. **Update Application Version** the package version is extracted from exe file , you don't need to set this value manually
 
-2. Create Squirrel Package
+2. **Create Squirrel Package** . In similar way you do with Nuget Package Manager, just drag the file you want into window.
 
-3.  Upload installer files
+3. **Upload installer files** . Set connection details one time .
 
-4. Decide to upload only the updated files or do complete setup upload
+4. **Decide to upload only the updated files or do complete setup upload**
 
 
  ## Read also :
