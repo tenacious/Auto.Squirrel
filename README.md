@@ -12,15 +12,12 @@ With a single mouse click you can :
  - Upload installer files.
 
 
- ![](images/squirrel_upload.png)
+ ![](docs/images/squirrel_upload.png)
 
 ___
 
 It's permits to have an application update experience similar to a web application.
 
-- [Project Version Auto-Increment](VersionAutoIncrement.html)
-- [Update Manager Integration](SquirrelIntegration.html)
-- [Squirrel Package Creation](PackageCreation.html)
-
-
-# [Download](https://s3-eu-west-1.amazonaws.com/squirrelpackager/Setup.exe)
+- [Project Version Auto-Increment](docs/VersionAutoIncrement.html)
+- [Update Manager Integration](docs/SquirrelIntegration.html)
+- [Squirrel Package Creation](docs/PackageCreation.html)
