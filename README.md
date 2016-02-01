@@ -10,11 +10,12 @@ With a single mouse click you can :
 
 1. Update Application Version
 
-- Create Squirrel Package
+2. Create Squirrel Package
 
-- Upload installer files
+3.  Upload installer files
 
-- Decide to upload only the updated files or do complete setup upload
+4. Decide to upload only the updated files or do complete setup upload
+
 
  ## Read also :
 
