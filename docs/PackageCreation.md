@@ -8,7 +8,7 @@ This is the GUI for Package Creation :
 
 - **APP ID** - This field has to be the same once you started deploying the application
 
-- **VERSION** - You don't need to manually set this field. Is extracted from the AssemblyVersion attribute of EXE file. To auto-increment the application version read [here.](VersionAutoIncrement.html)
+- **VERSION** - You don't need to manually set this field. Is extracted from the AssemblyVersion attribute of EXE file. To auto-increment the application version read [here.](VersionAutoIncrement.md)
 
 - **UPLOAD LOCATION** - At now is possible to upload only to AMAZON S3. Once you selected the upload location, press **Edit Connection** to define access credentials.
 
