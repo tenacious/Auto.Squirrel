@@ -5,11 +5,11 @@ You can automatize the assembly version increment, after every build with these 
 
 ### 1 ) Add [AssemblyVersion.tt](AssemblyVersion.tt ) in base folder of your EXE project.
 
-![](Images/assemblyVersion_Project.png)
+![](images/assemblyVersion_Project.png)
 
 *Delete other [assembly:AssemblyVersion(...)] attribute present in project*
 
-![](Images/assembly_version_attribute.png)
+![](images/assembly_version_attribute.png)
 
 
 ### 2) Copy this code precompilation event
@@ -19,7 +19,7 @@ set textTemplatingPath="%CommonProgramFiles(x86)%\Microsoft Shared\TextTemplatin
 if %textTemplatingPath%=="\Microsoft Shared\TextTemplating\$(VisualStudioVersion)\texttransform.exe" set textTemplatingPath="%CommonProgramFiles%\Microsoft Shared\TextTemplating\$(VisualStudioVersion)\texttransform.exe"
 %textTemplatingPath% "$(ProjectDir)AssemblyVersion.tt"
 ```
-![](Images/pre_compilation_edit.png)
+![](images/pre_compilation_edit.png)
 
 
 ### Reference Documentation
