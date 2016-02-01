@@ -8,7 +8,7 @@ The main purpose is to fully automatize the application deploy , from build to u
 
 With a single mouse click you can :
 
-- Update Application Version
+1. Update Application Version
 
 - Create Squirrel Package
 
@@ -19,11 +19,11 @@ With a single mouse click you can :
  ## Read also :
 
 
-- **[Project Version Auto-Increment](docs/VersionAutoIncrement.html)**
+* **[Project Version Auto-Increment](docs/VersionAutoIncrement.html)**
 
-- **[Update Manager Integration](docs/SquirrelIntegration.html)**
+* **[Update Manager Integration](docs/SquirrelIntegration.html)**
 
-- **[Squirrel Package Creation](docs/PackageCreation.html)**
+* **[Squirrel Package Creation](docs/PackageCreation.html)**
 
 ## [DOWNLOAD](https://s3-eu-west-1.amazonaws.com/ecamfolder/Setup.exe)
 ___
