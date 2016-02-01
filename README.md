@@ -16,8 +16,11 @@ With a single mouse click you can :
 
 ___
 
-It's permits to have an application update experience similar to a web application.
+## Tutorial :
 
 - [Project Version Auto-Increment](docs/VersionAutoIncrement.html)
 - [Update Manager Integration](docs/SquirrelIntegration.html)
 - [Squirrel Package Creation](docs/PackageCreation.html)
+
+
+## [DOWNLOAD](https://s3-eu-west-1.amazonaws.com/ecamfolder/Setup.exe)
