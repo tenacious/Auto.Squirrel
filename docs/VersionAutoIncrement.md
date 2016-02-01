@@ -5,11 +5,11 @@ You can automatize the assembly version increment, after every build with these 
 
 ### 1 ) Add [AssemblyVersion.tt](AssemblyVersion.tt ) in base folder of your EXE project.
 
-![](images/assemblyVersion_Project.png)
+![AssemblyVersion in project folder](images/AssemblyVersion_Project.png)
 
 *Delete other [assembly:AssemblyVersion(...)] attribute present in project*
 
-![](images/assembly_version_attribute.png)
+![AssemblyVersion Attribute](images/assembly_version_attribute.png)
 
 
 ### 2) Copy this code precompilation event
