@@ -31,10 +31,7 @@ namespace AutoSquirrel
 
         private void ShellView_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.Key == Key.F7)
-            {
-                ShellBusyIndicator.IsBusy = !ShellBusyIndicator.IsBusy;
-            }
+
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -49,7 +46,7 @@ namespace AutoSquirrel
                     }
                     catch (Exception ex)
                     {
-
+                        MessageBox.Show("From Update Manager : " + Environment.NewLine + ex.InnerException.Message + Environment.NewLine + ex.Message);
                     }
                 }
             });
@@ -87,7 +84,7 @@ namespace AutoSquirrel
             return source as TreeViewItem;
         }
 
-       
+
     }
 
     public class BindingProxy : Freezable

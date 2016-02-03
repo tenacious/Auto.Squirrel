@@ -464,9 +464,9 @@ namespace AutoSquirrel
 
             var metadata = new ManifestMetadata()
             {
+                Id = model.AppId,
                 Authors = model.Authors,
                 Version = model.Version,
-                Id = model.AppId,
                 Description = model.Description,
                 Title = model.Title,
             };
