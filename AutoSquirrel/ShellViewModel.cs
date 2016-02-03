@@ -415,8 +415,10 @@ namespace AutoSquirrel
                 return;
             }
 
-            if (e.Error != null)
+            var ex = e.Result as Exception;
+            if (ex != null)
             {
+                MessageBox.Show(ex.Message, "Package creation error", MessageBoxButton.OK, MessageBoxImage.Error);
                 //todo : Manage generated error
                 return;
             }
@@ -440,23 +442,30 @@ namespace AutoSquirrel
 
         private void ActiveBackgroungWorker_DoWork(object sender, DoWorkEventArgs e)
         {
+            try
+            {
 
-            ActiveBackgroungWorker.ReportProgress(20, "NUGET PACKAGE CREATING");
+                ActiveBackgroungWorker.ReportProgress(20, "NUGET PACKAGE CREATING");
 
-            // Create Nuget Package from package treeview.
-            var nugetPackagePath = CreateNugetPackage(Model);
-            Trace.WriteLine("CREATED NUGET PACKAGE to : " + Model.NupkgOutputPath);
+                // Create Nuget Package from package treeview.
+                var nugetPackagePath = CreateNugetPackage(Model);
+                Trace.WriteLine("CREATED NUGET PACKAGE to : " + Model.NupkgOutputPath);
 
 
-            if (ActiveBackgroungWorker.CancellationPending)
-                return;
+                if (ActiveBackgroungWorker.CancellationPending)
+                    return;
 
-            ActiveBackgroungWorker.ReportProgress(40, "SQUIRREL PACKAGE CREATING");
+                ActiveBackgroungWorker.ReportProgress(40, "SQUIRREL PACKAGE CREATING");
 
-            // Releasify 
-            SquirrelReleasify(nugetPackagePath, Model.SquirrelOutputPath);
-            Trace.WriteLine("CREATED SQUIRREL PACKAGE to : " + Model.SquirrelOutputPath);
+                // Releasify 
+                SquirrelReleasify(nugetPackagePath, Model.SquirrelOutputPath);
+                Trace.WriteLine("CREATED SQUIRREL PACKAGE to : " + Model.SquirrelOutputPath);
 
+            }
+            catch (Exception ex)
+            {
+                e.Result = ex;
+            }
         }
 
         internal string CreateNugetPackage(AutoSquirrelModel model)
@@ -512,13 +521,16 @@ namespace AutoSquirrel
             }
             else
             {
-                var manifest = new ManifestFile();
+                //if (File.Exists(node.SourceFilepath))
+                {
+                    var manifest = new ManifestFile();
 
-                manifest.Source = node.SourceFilepath;
+                    manifest.Source = node.SourceFilepath;
 
-                manifest.Target = directoryBase + "/" + node.Filename;
+                    manifest.Target = directoryBase + "/" + node.Filename;
 
-                files.Add(manifest);
+                    files.Add(manifest);
+                }
             }
         }
 
