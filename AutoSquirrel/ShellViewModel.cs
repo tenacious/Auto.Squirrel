@@ -134,7 +134,7 @@ namespace AutoSquirrel
 
                 Model.PackageFiles = AutoSquirrelModel.OrderFileList(Model.PackageFiles);
 
-                Model.UpdateVersion();
+                Model.RefreshPackageVersion();
 
                 AddLastProject(filepath);
 
@@ -258,6 +258,23 @@ namespace AutoSquirrel
             }
         }
 
+        /// <summary>
+        /// Show/Hide Busy indicatory
+        /// </summary>
+        private bool _isBusy;
+        public bool IsBusy
+        {
+            get
+            {
+                return _isBusy;
+            }
+
+            set
+            {
+                _isBusy = value;
+                NotifyOfPropertyChange(() => IsBusy);
+            }
+        }
 
         /// <summary>
         /// 
@@ -272,19 +289,31 @@ namespace AutoSquirrel
         /// </summary>
         public void PublishPackageComplete()
         {
-            PublishPackage(0);
+            _publishMode = 0;
+            PublishPackage();
         }
         public void PublishPackageOnlyUpdate()
         {
-            PublishPackage(1);
+            _publishMode = 1;
+            PublishPackage();
         }
+        private int _publishMode;
 
-        public void PublishPackage(int mode)
+        internal BackgroundWorker ActiveBackgroungWorker;
+
+        public void PublishPackage()
         {
             try
             {
-                Trace.WriteLine("START PUBLISHING ! : " + Model.Title);
+                if (ActiveBackgroungWorker != null && ActiveBackgroungWorker.IsBusy)
+                {
+                    Trace.TraceError("You shouldn't be here !");
+                    return;
+                }
 
+                Model.RefreshPackageVersion();
+
+                Trace.WriteLine("START PUBLISHING ! : " + Model.Title);
 
                 // 1) Check validity  
                 //var validatingMessage = Model.Validate();
@@ -296,42 +325,96 @@ namespace AutoSquirrel
 
                 Trace.WriteLine("DATA VALIDATE - OK ! ");
 
-                // Save model
-                Model.UpdateVersion();
                 Save();
+
+                // I proceed only if i created the project .asproj file and directory
+                // I need existing directory to create the packages.
 
                 if (!_isSaved)
                     return;
 
+                IsBusy = true;
 
-                // 2) Create Nuget Package from package treeview.
-                var nugetPackagePath = Model.CreateNugetPackage();
-                Trace.WriteLine("CREATED NUGET PACKAGE to : " + Model.NupkgOutputPath);
+                ActiveBackgroungWorker = new BackgroundWorker() { WorkerReportsProgress = true };
 
-                // 3) Releasify 
-                SquirrelReleasify(nugetPackagePath);
-                Trace.WriteLine("CREATED SQUIRREL PACKAGE to : " + Model.SquirrelOutputPath);
+                ActiveBackgroungWorker.DoWork += ActiveBackgroungWorker_DoWork;
+                ActiveBackgroungWorker.RunWorkerCompleted += PackageCreationCompleted;
+                ActiveBackgroungWorker.ProgressChanged += ActiveBackgroungWorker_ProgressChanged;
 
-                // 4) Uploading
-                Model.BeginUpdatedFiles(mode);
+                ActiveBackgroungWorker.RunWorkerAsync(this);
+
 
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString(), "Error on publishing", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+
+            finally
+            {
+                IsBusy = false;
+            }
         }
 
+        /// <summary>
+        /// Called on package created.
+        /// Start the upload.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PackageCreationCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            IsBusy = false;
 
+            ActiveBackgroungWorker = null;
 
-        private void SquirrelReleasify(string nugetPackagePath)
+            if (e.Error != null)
+            {
+                //todo : Manage generated error
+                return;
+            }
+
+            if (e.Cancelled) return;
+
+            // Start uploading generated files.
+            Model.BeginUpdatedFiles(_publishMode);
+
+        }
+
+        private void ActiveBackgroungWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            //todo : Update busy indicator information.
+        }
+
+        private static void ActiveBackgroungWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            var shellVm = e.Argument as ShellViewModel;
+
+            if (shellVm == null) return;
+
+            var model = shellVm.Model;
+            var bgWorker = shellVm.ActiveBackgroungWorker;
+
+            if (model == null || bgWorker == null) return;
+
+            // Create Nuget Package from package treeview.
+            var nugetPackagePath = model.CreateNugetPackage();
+            Trace.WriteLine("CREATED NUGET PACKAGE to : " + model.NupkgOutputPath);
+
+            // Releasify 
+            SquirrelReleasify(nugetPackagePath, model.SquirrelOutputPath);
+            Trace.WriteLine("CREATED SQUIRREL PACKAGE to : " + model.SquirrelOutputPath);
+
+        }
+
+        private static void SquirrelReleasify(string nugetPackagePath, string squirrelOutputPath)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
 
             startInfo.FileName = @"tools\Squirrel.exe";
 
-            var cmd = @" -releasify " + nugetPackagePath + " -releaseDir " + Model.SquirrelOutputPath;
+            var cmd = @" -releasify " + nugetPackagePath + " -releaseDir " + squirrelOutputPath;
 
             //if (File.Exists(Model.IconFilepath))
             //    cmd += " -setupIcon " + Model.IconFilepath;
@@ -699,7 +782,7 @@ namespace AutoSquirrel
 
             set
             {
-                _uploadStatus= value;
+                _uploadStatus = value;
                 NotifyOfPropertyChange(() => UploadStatus);
                 NotifyOfPropertyChange(() => FormattedStatus);
             }
@@ -1135,224 +1218,6 @@ namespace AutoSquirrel
 
     }
 
-    public static class IconHelper
-    {
-        public static ImageSource ToImageSource(this Icon icon)
-        {
-            if (icon == null) return null;
-
-            ImageSource imageSource = Imaging.CreateBitmapSourceFromHIcon(
-                icon.Handle,
-                Int32Rect.Empty,
-                BitmapSizeOptions.FromEmptyOptions());
-
-            return imageSource;
-        }
-
-        [DllImport("shell32.dll", CharSet = CharSet.Auto)]
-        public static extern IntPtr SHGetFileInfo(string pszPath, uint dwFileAttributes, out SHFILEINFO psfi, uint cbFileInfo, uint uFlags);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool DestroyIcon(IntPtr hIcon);
-
-        public const uint SHGFI_ICON = 0x000000100;
-        public const uint SHGFI_USEFILEATTRIBUTES = 0x000000010;
-        public const uint SHGFI_OPENICON = 0x000000002;
-        public const uint SHGFI_SMALLICON = 0x000000001;
-        public const uint SHGFI_LARGEICON = 0x000000000;
-        public const uint FILE_ATTRIBUTE_DIRECTORY = 0x00000010;
-
-        public static Icon GetFolderIcon(IconSize size, FolderType folderType)
-        {
-            // Need to add size check, although errors generated at present!    
-            uint flags = SHGFI_ICON | SHGFI_USEFILEATTRIBUTES;
-
-            if (FolderType.Open == folderType)
-            {
-                flags += SHGFI_OPENICON;
-            }
-            if (IconSize.Small == size)
-            {
-                flags += SHGFI_SMALLICON;
-            }
-            else
-            {
-                flags += SHGFI_LARGEICON;
-            }
-            // Get the folder icon    
-            var shfi = new SHFILEINFO();
-
-            var res = SHGetFileInfo(Environment.GetFolderPath(Environment.SpecialFolder.Windows),
-                FILE_ATTRIBUTE_DIRECTORY,
-                out shfi,
-                (uint)Marshal.SizeOf(shfi),
-                flags);
-
-            if (res == IntPtr.Zero)
-                throw Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error());
-
-            // Load the icon from an HICON handle  
-            Icon.FromHandle(shfi.hIcon);
-
-            // Now clone the icon, so that it can be successfully stored in an ImageList
-            var icon = (Icon)Icon.FromHandle(shfi.hIcon).Clone();
-
-            DestroyIcon(shfi.hIcon);        // Cleanup    
-
-            return icon;
-        }
-        //}
-
-        //public static class IconManager
-        //{
-        private static readonly Dictionary<string, ImageSource> _smallIconCache = new Dictionary<string, ImageSource>();
-        private static readonly Dictionary<string, ImageSource> _largeIconCache = new Dictionary<string, ImageSource>();
-        /// <summary>
-        /// Get an icon for a given filename
-        /// </summary>
-        /// <param name="fileName">any filename</param>
-        /// <param name="large">16x16 or 32x32 icon</param>
-        /// <returns>null if path is null, otherwise - an icon</returns>
-        public static ImageSource FindIconForFilename(string fileName, bool large)
-        {
-            var extension = Path.GetExtension(fileName);
-            if (extension == null)
-                return null;
-            var cache = large ? _largeIconCache : _smallIconCache;
-            ImageSource icon;
-            if (cache.TryGetValue(extension, out icon))
-                return icon;
-            icon = IconReader.GetFileIcon(fileName, large ? IconReader.IconSize.Large : IconReader.IconSize.Small, false).ToImageSource();
-            cache.Add(extension, icon);
-            return icon;
-        }
-
-        /// <summary>
-        /// Provides static methods to read system icons for both folders and files.
-        /// </summary>
-        /// <example>
-        /// <code>IconReader.GetFileIcon("c:\\general.xls");</code>
-        /// </example>
-        static class IconReader
-        {
-            /// <summary>
-            /// Options to specify the size of icons to return.
-            /// </summary>
-            public enum IconSize
-            {
-                /// <summary>
-                /// Specify large icon - 32 pixels by 32 pixels.
-                /// </summary>
-                Large = 0,
-                /// <summary>
-                /// Specify small icon - 16 pixels by 16 pixels.
-                /// </summary>
-                Small = 1
-            }
-            /// <summary>
-            /// Returns an icon for a given file - indicated by the name parameter.
-            /// </summary>
-            /// <param name="name">Pathname for file.</param>
-            /// <param name="size">Large or small</param>
-            /// <param name="linkOverlay">Whether to include the link icon</param>
-            /// <returns>System.Drawing.Icon</returns>
-            public static Icon GetFileIcon(string name, IconSize size, bool linkOverlay)
-            {
-                var shfi = new Shell32.Shfileinfo();
-                var flags = Shell32.ShgfiIcon | Shell32.ShgfiUsefileattributes;
-                if (linkOverlay) flags += Shell32.ShgfiLinkoverlay;
-                /* Check the size specified for return. */
-                if (IconSize.Small == size)
-                    flags += Shell32.ShgfiSmallicon;
-                else
-                    flags += Shell32.ShgfiLargeicon;
-                Shell32.SHGetFileInfo(name,
-                    Shell32.FileAttributeNormal,
-                    ref shfi,
-                    (uint)Marshal.SizeOf(shfi),
-                    flags);
-                // Copy (clone) the returned icon to a new object, thus allowing us to clean-up properly
-                var icon = (Icon)Icon.FromHandle(shfi.hIcon).Clone();
-                User32.DestroyIcon(shfi.hIcon);     // Cleanup
-                return icon;
-            }
-        }
-        /// <summary>
-        /// Wraps necessary Shell32.dll structures and functions required to retrieve Icon Handles using SHGetFileInfo. Code
-        /// courtesy of MSDN Cold Rooster Consulting case study.
-        /// </summary>
-        static class Shell32
-        {
-            private const int MaxPath = 256;
-            [StructLayout(LayoutKind.Sequential)]
-            public struct Shfileinfo
-            {
-                private const int Namesize = 80;
-                public readonly IntPtr hIcon;
-                private readonly int iIcon;
-                private readonly uint dwAttributes;
-                [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MaxPath)]
-                private readonly string szDisplayName;
-                [MarshalAs(UnmanagedType.ByValTStr, SizeConst = Namesize)]
-                private readonly string szTypeName;
-            };
-            public const uint ShgfiIcon = 0x000000100;     // get icon
-            public const uint ShgfiLinkoverlay = 0x000008000;     // put a link overlay on icon
-            public const uint ShgfiLargeicon = 0x000000000;     // get large icon
-            public const uint ShgfiSmallicon = 0x000000001;     // get small icon
-            public const uint ShgfiUsefileattributes = 0x000000010;     // use passed dwFileAttribute
-            public const uint FileAttributeNormal = 0x00000080;
-            [DllImport("Shell32.dll")]
-            public static extern IntPtr SHGetFileInfo(
-                string pszPath,
-                uint dwFileAttributes,
-                ref Shfileinfo psfi,
-                uint cbFileInfo,
-                uint uFlags
-                );
-        }
-        /// <summary>
-        /// Wraps necessary functions imported from User32.dll. Code courtesy of MSDN Cold Rooster Consulting example.
-        /// </summary>
-        static class User32
-        {
-            /// <summary>
-            /// Provides access to function required to delete handle. This method is used internally
-            /// and is not required to be called separately.
-            /// </summary>
-            /// <param name="hIcon">Pointer to icon handle.</param>
-            /// <returns>N/A</returns>
-            [DllImport("User32.dll")]
-            public static extern int DestroyIcon(IntPtr hIcon);
-        }
-
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        public struct SHFILEINFO
-        {
-            public IntPtr hIcon;
-            public int iIcon;
-            public uint dwAttributes;
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
-            public string szDisplayName;
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
-            public string szTypeName;
-        };
-
-        public enum FolderType
-        {
-            Closed,
-            Open
-        }
-
-        public enum IconSize
-        {
-            Large,
-            Small
-        }
-
-    }
 
 
     [DataContract]
@@ -1361,126 +1226,6 @@ namespace AutoSquirrel
         [DataMember]
         public List<string> LastOpenedProject = new List<string>();
     }
-
-    public static class NistTime
-    {
-        public static DateTime GetNistDate(bool convertToLocalTime)
-        {
-            if (!CheckInternetConnection.IsConnectedToInternet()) return DateTime.Now;
-
-            try
-            {
-                var ran = new Random(DateTime.Now.Millisecond);
-
-                var date = DateTime.Today;
-
-                string serverResponse;
-
-                // Represents the list of NIST servers  
-
-                var servers = new[]
-                {
-
-                    "131.107.13.100",
-
-                    "129.6.15.30",
-
-                    //"64.90.182.55",  
-
-                    //"206.246.118.250",  
-
-                    //"207.200.81.113",  
-
-                    //"128.138.188.172",  
-
-                    //"64.113.32.5",  
-
-                    //"64.147.116.229",  
-
-                    //"64.125.78.85",  
-
-                    //"128.138.188.172" 
-
-                };
-
-
-
-                // Try each server in random order to avoid blocked requests due to too frequent request  
-
-                for (int i = 0; i < 5; i++)
-                {
-
-
-
-                    // Open a StreamReader to a random time server  
-
-                    var reader =
-                        new StreamReader(
-                            new System.Net.Sockets.TcpClient(servers[ran.Next(0, servers.Length)], 13).GetStream
-                                ());
-
-                    serverResponse = reader.ReadToEnd();
-
-                    reader.Close();
-
-                    // Check to see that the signiture is there  
-
-                    if (serverResponse.Length > 47 && serverResponse.Substring(38, 9).Equals("UTC(NIST)"))
-                    {
-
-                        // Parse the date  
-
-                        var jd = int.Parse(serverResponse.Substring(1, 5));
-
-                        var yr = int.Parse(serverResponse.Substring(7, 2));
-
-                        var mo = int.Parse(serverResponse.Substring(10, 2));
-
-                        var dy = int.Parse(serverResponse.Substring(13, 2));
-
-                        var hr = int.Parse(serverResponse.Substring(16, 2));
-
-                        var mm = int.Parse(serverResponse.Substring(19, 2));
-
-                        var sc = int.Parse(serverResponse.Substring(22, 2));
-
-                        if (jd > 51544)
-
-                            yr += 2000;
-
-                        else
-
-                            yr += 1999;
-
-                        date = new DateTime(yr, mo, dy, hr, mm, sc);
-
-                        // Convert it to the current timezone if desired  
-
-                        if (convertToLocalTime)
-
-                            date = date.ToLocalTime();
-
-                        // Exit the loop  
-
-                        break;
-
-                    }
-
-                }
-
-                return date;
-            }
-
-            catch (Exception ex)
-            {
-                return DateTime.Now;
-            }
-
-            return DateTime.Now;
-        }
-
-    }
-
 
     public static class CheckInternetConnection
     {
@@ -1505,11 +1250,4 @@ namespace AutoSquirrel
         }
     }
 
-    [DataContract]
-    public class ii
-    {
-        [DataMember]
-        public string lll { get; set; }
-
-    }
 }

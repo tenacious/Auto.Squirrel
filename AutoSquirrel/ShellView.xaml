@@ -13,155 +13,157 @@
         WindowStartupLocation="CenterScreen"
         GlowBrush="{DynamicResource AccentColorBrush}"
         x:Name="MainWindow"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         >
-    <Grid>
-        <Grid.Resources>
-            <Style x:Key="ListViewHideHeader" TargetType="{x:Type GridViewColumnHeader}">
-                <Setter Property="Visibility" Value="Collapsed" />
-            </Style>
+    <xctk:BusyIndicator x:Name="ShellBusyIndicator" IsBusy="{Binding IsBusy}"  DisplayAfter="0">
+        <Grid >
+            <Grid.Resources>
+                <Style x:Key="ListViewHideHeader" TargetType="{x:Type GridViewColumnHeader}">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </Style>
 
-            <Style x:Key="Label" TargetType="{x:Type TextBlock}">
-                <Setter Property="FontSize" Value="14"/>
-            </Style>
-        </Grid.Resources>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <Grid Grid.Row="2" x:Name="MainGrid" DataContext="{Binding Model}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" MinWidth="250"/>
-                <ColumnDefinition Width="7" />
-                <ColumnDefinition Width="*" MinWidth="300"/>
-            </Grid.ColumnDefinitions>
+                <Style x:Key="Label" TargetType="{x:Type TextBlock}">
+                    <Setter Property="FontSize" Value="14"/>
+                </Style>
+            </Grid.Resources>
             <Grid.RowDefinitions>
-                <RowDefinition Height=".75*"/>
-                <RowDefinition Height=".25*"/>
-                <RowDefinition Height="60"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <GroupBox Grid.RowSpan="2">
-                <GroupBox.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="Images/info_16_white.png" Width="16" Margin="5,0"/>
-                        <TextBlock Text="PACKAGE DETAILS" Foreground="White" FontSize="14" />
-                    </StackPanel>
-                </GroupBox.Header>
-                <Grid >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="24"/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="10"/>
-                        <RowDefinition Height="Auto"/>
+            <Grid Grid.Row="2" x:Name="MainGrid" DataContext="{Binding Model}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" MinWidth="250"/>
+                    <ColumnDefinition Width="7" />
+                    <ColumnDefinition Width="*" MinWidth="300"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height=".75*"/>
+                    <RowDefinition Height=".25*"/>
+                    <RowDefinition Height="60"/>
+                </Grid.RowDefinitions>
+                <GroupBox Grid.RowSpan="2">
+                    <GroupBox.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="Images/info_16_white.png" Width="16" Margin="5,0"/>
+                            <TextBlock Text="PACKAGE DETAILS" Foreground="White" FontSize="14" />
+                        </StackPanel>
+                    </GroupBox.Header>
+                    <Grid >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="24"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="10"/>
+                            <RowDefinition Height="Auto"/>
 
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="10"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="10"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
 
-                        <RowDefinition Height="10"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="10"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="10"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="10"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
 
-                        <RowDefinition Height="10"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Menu Grid.ColumnSpan="3" DataContext="{Binding ElementName=MainWindow,Path=DataContext}" Margin="0,0,0,20">
-                        <MenuItem Header="Project File" FontSize="16" >
-                            <MenuItem.Icon>
-                                <Image Source="Images/folder_24.png" Width="24" Height="24"/>
-                            </MenuItem.Icon>
-                            <MenuItem Header="Create New" x:Name="CreateNewProject"/>
-                            <MenuItem Header="Open" x:Name="OpenProject"/>
-                            <MenuItem Header="Save" x:Name="Save"/>
-                            <MenuItem Header="Save As" x:Name="SaveAs"/>
-                        </MenuItem>
+                            <RowDefinition Height="10"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Menu Grid.ColumnSpan="3" DataContext="{Binding ElementName=MainWindow,Path=DataContext}" Margin="0,0,0,20">
+                            <MenuItem Header="Project File" FontSize="16" >
+                                <MenuItem.Icon>
+                                    <Image Source="Images/folder_24.png" Width="24" Height="24"/>
+                                </MenuItem.Icon>
+                                <MenuItem Header="Create New" x:Name="CreateNewProject"/>
+                                <MenuItem Header="Open" x:Name="OpenProject"/>
+                                <MenuItem Header="Save" x:Name="Save"/>
+                                <MenuItem Header="Save As" x:Name="SaveAs"/>
+                            </MenuItem>
 
-                        <!--<MenuItem Header="PUBLISH !" x:Name="PublishPackage" FontSize="16" FontWeight="Bold"/>-->
-                    </Menu>
+                            <!--<MenuItem Header="PUBLISH !" x:Name="PublishPackage" FontSize="16" FontWeight="Bold"/>-->
+                        </Menu>
 
-                    <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0"  Text="APP ID" FontWeight="DemiBold" Style="{StaticResource ResourceKey=Label}" />
-                    <Image Grid.Row="2" Source="Images/info_16.png" Width="16" Grid.Column="0"/>
-                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Path=AppId,ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
+                        <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0"  Text="APP ID" FontWeight="DemiBold" Style="{StaticResource ResourceKey=Label}" />
+                        <Image Grid.Row="2" Source="Images/info_16.png" Width="16" Grid.Column="0"/>
+                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Path=AppId,ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
                              Controls:TextBoxHelper.Watermark="APP ID"/>
 
-                    <TextBlock Grid.Row="4" Grid.ColumnSpan="2" Grid.Column="0"  Text="VERSION" FontWeight="DemiBold" Style="{StaticResource ResourceKey=Label}" />
-                    <Image Grid.Row="5" Source="Images/info_16.png" Width="16" Grid.Column="0" ToolTip="The version is read from last EXE file added to the package."/>
-                    <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Path=Version,ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
+                        <TextBlock Grid.Row="4" Grid.ColumnSpan="2" Grid.Column="0"  Text="VERSION" FontWeight="DemiBold" Style="{StaticResource ResourceKey=Label}" />
+                        <Image Grid.Row="5" Source="Images/info_16.png" Width="16" Grid.Column="0" ToolTip="The version is read from last EXE file added to the package."/>
+                        <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Path=Version,ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
                              Controls:TextBoxHelper.Watermark="APP VERSION" IsEnabled="{Binding ElementName=cbManualVersion,Path=IsChecked}"/>
-                    <CheckBox x:Name="cbManualVersion" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="6" IsChecked="{Binding Path=SetVersionManually}" Content="Set Version Manually" VerticalContentAlignment="Center" FontStyle="Italic" Foreground="SteelBlue"/>
+                        <CheckBox x:Name="cbManualVersion" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="6" IsChecked="{Binding Path=SetVersionManually}" Content="Set Version Manually" VerticalContentAlignment="Center" FontStyle="Italic" Foreground="SteelBlue"/>
 
 
-                    <TextBlock Grid.Row="8" Grid.ColumnSpan="2" Grid.Column="0"  Text="TITLE" FontWeight="DemiBold" Style="{StaticResource ResourceKey=Label}" />
-                    <Image Grid.Row="9" Source="Images/info_16.png" Width="16" Grid.Column="0"/>
-                    <TextBox Grid.Row="9" Grid.Column="1" Text="{Binding Path=Title,ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
+                        <TextBlock Grid.Row="8" Grid.ColumnSpan="2" Grid.Column="0"  Text="TITLE" FontWeight="DemiBold" Style="{StaticResource ResourceKey=Label}" />
+                        <Image Grid.Row="9" Source="Images/info_16.png" Width="16" Grid.Column="0"/>
+                        <TextBox Grid.Row="9" Grid.Column="1" Text="{Binding Path=Title,ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
                              Controls:TextBoxHelper.Watermark="Title"/>
 
-                    <TextBlock Grid.Row="11" Grid.ColumnSpan="2" Grid.Column="0"  Text="DESCRIPTION" FontWeight="DemiBold" Style="{StaticResource ResourceKey=Label}" />
-                    <Image Grid.Row="12" Source="Images/info_16.png" Width="16" Grid.Column="0" VerticalAlignment="Top"/>
-                    <TextBox Grid.Row="12" Grid.Column="1" Text="{Binding Path=Description,ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
+                        <TextBlock Grid.Row="11" Grid.ColumnSpan="2" Grid.Column="0"  Text="DESCRIPTION" FontWeight="DemiBold" Style="{StaticResource ResourceKey=Label}" />
+                        <Image Grid.Row="12" Source="Images/info_16.png" Width="16" Grid.Column="0" VerticalAlignment="Top"/>
+                        <TextBox Grid.Row="12" Grid.Column="1" Text="{Binding Path=Description,ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
                              Controls:TextBoxHelper.Watermark="DESCRIPTION" AcceptsReturn="True" Height="50"/>
 
-                    <TextBlock Grid.Row="14" Grid.ColumnSpan="2" Grid.Column="0"  Text="AUTHORS" FontWeight="DemiBold" Style="{StaticResource ResourceKey=Label}" />
-                    <Image Grid.Row="15" Source="Images/info_16.png" Width="16" Grid.Column="0"/>
-                    <TextBox Grid.Row="15" Grid.Column="1" Text="{Binding Path=Authors,ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
+                        <TextBlock Grid.Row="14" Grid.ColumnSpan="2" Grid.Column="0"  Text="AUTHORS" FontWeight="DemiBold" Style="{StaticResource ResourceKey=Label}" />
+                        <Image Grid.Row="15" Source="Images/info_16.png" Width="16" Grid.Column="0"/>
+                        <TextBox Grid.Row="15" Grid.Column="1" Text="{Binding Path=Authors,ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
                              Controls:TextBoxHelper.Watermark="AUTHORS"/>
 
-                    <TextBlock Grid.Row="17" Grid.ColumnSpan="2" Grid.Column="0"  Text="UPLOAD LOCATION" FontWeight="DemiBold" Style="{StaticResource ResourceKey=Label}" />
-                    <Image Grid.Row="18" Source="Images/info_16.png" Width="16" Grid.Column="0">
-                        <Image.ToolTip>
-                            <StackPanel>
-                                <Image Source="images/help/upload_location.png"/>
-                            </StackPanel>
-                        </Image.ToolTip>
-                    </Image>
-                    <ComboBox Grid.Row="18" Grid.Column="1" ItemsSource="{Binding AvailableUploadLocation}" SelectedItem="{Binding SelectedConnectionString,ValidatesOnDataErrors=True}"  />
-                    <StackPanel Grid.Row="19" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Image Source="Images/edit_16.png" Width="16" Height="16" Margin="5,0"/>
-                        <Button  Style="{StaticResource ResourceKey=LinkButton}" Content="Edit Connection" FontSize="16" Command="{Binding EditConnectionCmd}"/>
-                    </StackPanel>
+                        <TextBlock Grid.Row="17" Grid.ColumnSpan="2" Grid.Column="0"  Text="UPLOAD LOCATION" FontWeight="DemiBold" Style="{StaticResource ResourceKey=Label}" />
+                        <Image Grid.Row="18" Source="Images/info_16.png" Width="16" Grid.Column="0">
+                            <Image.ToolTip>
+                                <StackPanel>
+                                    <Image Source="images/help/upload_location.png"/>
+                                </StackPanel>
+                            </Image.ToolTip>
+                        </Image>
+                        <ComboBox Grid.Row="18" Grid.Column="1" ItemsSource="{Binding AvailableUploadLocation}" SelectedItem="{Binding SelectedConnectionString,ValidatesOnDataErrors=True}"  />
+                        <StackPanel Grid.Row="19" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Image Source="Images/edit_16.png" Width="16" Height="16" Margin="5,0"/>
+                            <Button  Style="{StaticResource ResourceKey=LinkButton}" Content="Edit Connection" FontSize="16" Command="{Binding EditConnectionCmd}"/>
+                        </StackPanel>
 
 
-                    <!--<Button Grid.Row="20" Grid.ColumnSpan="2" Grid.Column="0" FontWeight="Bold"  FontSize="14" Content="SETUP ICON" Style="{StaticResource LinkButton}"
+                        <!--<Button Grid.Row="20" Grid.ColumnSpan="2" Grid.Column="0" FontWeight="Bold"  FontSize="14" Content="SETUP ICON" Style="{StaticResource LinkButton}"
                             Command="{Binding SelectIconCmd}"/>
                     <Border Grid.Row="21" Padding="3" Margin="2" BorderBrush="Gray" Background="White" BorderThickness="1" HorizontalAlignment="Left" Grid.Column="0" Grid.ColumnSpan="2">
                         <Image  Source="{Binding Path=IconSource}" Width="32" Height="32" Margin="3" />
                     </Border>-->
-                </Grid>
+                    </Grid>
 
-            </GroupBox>
-            <GridSplitter Grid.Column="1" Grid.RowSpan="2" Width="2" HorizontalAlignment="Center" Margin="1,40" BorderBrush="#FFFFFF" IsTabStop="False"/>
-            <GroupBox Grid.Column="2" >
-                <GroupBox.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="Images/info_16_white.png" Width="16" Margin="5,0"/>
-                        <TextBlock Text="INSTALLER PACKAGE CONTENT" Foreground="White" FontSize="14" />
-                    </StackPanel>
-                </GroupBox.Header>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Grid.Resources>
-                        <local:BindingProxy
+                </GroupBox>
+                <GridSplitter Grid.Column="1" Grid.RowSpan="2" Width="2" HorizontalAlignment="Center" Margin="1,40" BorderBrush="#FFFFFF" IsTabStop="False"/>
+                <GroupBox Grid.Column="2" >
+                    <GroupBox.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="Images/info_16_white.png" Width="16" Margin="5,0"/>
+                            <TextBlock Text="INSTALLER PACKAGE CONTENT" Foreground="White" FontSize="14" />
+                        </StackPanel>
+                    </GroupBox.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.Resources>
+                            <local:BindingProxy
                         x:Key="DataContextProxy"
                         Data="{Binding}" />
-                    </Grid.Resources>
-                    <TreeView x:Name="PackageTreeview"  AllowDrop="True" ItemsSource="{Binding PackageFiles}" 
+                        </Grid.Resources>
+                        <TreeView x:Name="PackageTreeview"  AllowDrop="True" ItemsSource="{Binding PackageFiles}" 
                           cal:Message.Attach="[Event SelectedItemChanged] = [Action SetSelectedItem($this.SelectedItem)]"
                           dd:DragDrop.DropHandler="{Binding Path=DataContext.Model, ElementName=MainWindow}"
                           Tag="{Binding DataContext, RelativeSource={RelativeSource Self}}" 
@@ -169,16 +171,16 @@
                           dd:DragDrop.IsDropTarget="True" 
                           dd:DragDrop.UseDefaultDragAdorner="True" 
                           >
-                        <TreeView.Template>
-                            <ControlTemplate TargetType="{x:Type TreeView}">
-                                <Border x:Name="Bd" SnapsToDevicePixels="true"
+                            <TreeView.Template>
+                                <ControlTemplate TargetType="{x:Type TreeView}">
+                                    <Border x:Name="Bd" SnapsToDevicePixels="true"
                                     Background="{TemplateBinding Background}"
                                     BorderBrush="{TemplateBinding BorderBrush}"
                                     BorderThickness="{TemplateBinding BorderThickness}"
                                     Padding="1">
-                                    <Grid>
-                                        <TextBlock Text="Drag File Here" FontSize="50" Opacity=".5" Foreground="#607D8B" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-                                        <Image Stretch="Uniform"
+                                        <Grid>
+                                            <TextBlock Text="Drag File Here" FontSize="50" Opacity=".5" Foreground="#607D8B" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                                            <Image Stretch="Uniform"
                                                VerticalAlignment="Center"
                                                MaxWidth="256"
                                                MaxHeight="256"
@@ -187,166 +189,167 @@
                                                Source="Images/package_256.png"
                                                Opacity=".4"
                                                />
-                                        <ScrollViewer Padding="{TemplateBinding Padding}"
+                                            <ScrollViewer Padding="{TemplateBinding Padding}"
                                   Focusable="false">
-                                            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                                        </ScrollViewer>
-                                    </Grid>
-                                </Border>
-                            </ControlTemplate>
-                        </TreeView.Template>
+                                                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                            </ScrollViewer>
+                                        </Grid>
+                                    </Border>
+                                </ControlTemplate>
+                            </TreeView.Template>
 
-                        <TreeView.ContextMenu>
-                            <ContextMenu >
-                                <MenuItem x:Name="AddDirectory" Header="Add Directory" cal:Message.Attach="[Event Click] = [Action AddDirectory]" />
-                            </ContextMenu>
-                        </TreeView.ContextMenu>
-                        <TreeView.ItemContainerStyle>
-                            <Style TargetType="{x:Type TreeViewItem}">
-                                <Setter Property="ContextMenu" >
-                                    <Setter.Value>
-                                        <ContextMenu  StaysOpen="True">
-                                            <MenuItem Header="Add Directory" Command="{Binding Path=Data.AddDirectoryCmd, Source={StaticResource DataContextProxy}}" />
-                                            <MenuItem Header="Remove Item"  Command="{Binding Path=Data.RemoveItemCmd, Source={StaticResource DataContextProxy}}" />
-                                        </ContextMenu>
-                                    </Setter.Value>
-                                </Setter>
-                                <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
-                                <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
-                                <Setter Property="FontWeight" Value="Normal" />
-                                <Setter Property="BorderThickness" Value="1"></Setter>
-                                <Style.Triggers>
-                                    <Trigger Property="IsSelected" Value="True">
-                                        <Setter Property="FontWeight" Value="Bold" />
-                                    </Trigger>
-                                </Style.Triggers>
+                            <TreeView.ContextMenu>
+                                <ContextMenu >
+                                    <MenuItem x:Name="AddDirectory" Header="Add Directory" cal:Message.Attach="[Event Click] = [Action AddDirectory]" />
+                                </ContextMenu>
+                            </TreeView.ContextMenu>
+                            <TreeView.ItemContainerStyle>
+                                <Style TargetType="{x:Type TreeViewItem}">
+                                    <Setter Property="ContextMenu" >
+                                        <Setter.Value>
+                                            <ContextMenu  StaysOpen="True">
+                                                <MenuItem Header="Add Directory" Command="{Binding Path=Data.AddDirectoryCmd, Source={StaticResource DataContextProxy}}" />
+                                                <MenuItem Header="Remove Item"  Command="{Binding Path=Data.RemoveItemCmd, Source={StaticResource DataContextProxy}}" />
+                                            </ContextMenu>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                                    <Setter Property="FontWeight" Value="Normal" />
+                                    <Setter Property="BorderThickness" Value="1"></Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="FontWeight" Value="Bold" />
+                                        </Trigger>
+                                    </Style.Triggers>
 
-                            </Style>
-                        </TreeView.ItemContainerStyle>
+                                </Style>
+                            </TreeView.ItemContainerStyle>
 
-                        <TreeView.Resources>
+                            <TreeView.Resources>
 
-                            <HierarchicalDataTemplate 
+                                <HierarchicalDataTemplate 
                               DataType="{x:Type local:ItemLink}" 
                               ItemsSource="{Binding Children}"
                               >
-                                <StackPanel Orientation="Horizontal">
-                                    <Image Width="24" Height="24" Margin="3,0" Source="{Binding Path=FileIcon}" />
-                                    <TextBlock Text="{Binding Filename}" />
-                                </StackPanel>
-                            </HierarchicalDataTemplate>
-                        </TreeView.Resources>
-                    </TreeView>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Width="24" Height="24" Margin="3,0" Source="{Binding Path=FileIcon}" />
+                                        <TextBlock Text="{Binding Filename}" />
+                                    </StackPanel>
+                                </HierarchicalDataTemplate>
+                            </TreeView.Resources>
+                        </TreeView>
 
-                    <Grid Grid.Row="1" x:Name="DetailGrid" DataContext="{Binding ElementName=PackageTreeview, Path= SelectedItem}" TextElement.Foreground="#607D8B" TextElement.FontSize="14" 
+                        <Grid Grid.Row="1" x:Name="DetailGrid" DataContext="{Binding ElementName=PackageTreeview, Path= SelectedItem}" TextElement.Foreground="#607D8B" TextElement.FontSize="14" 
                           Background="AliceBlue">
-                        <Grid.Style >
-                            <Style TargetType="Grid">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ElementName=PackageTreeview, Path= SelectedItem}"  Value="{x:Null}">
-                                        <Setter Property="Visibility" Value="Hidden"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Grid.Style>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
+                            <Grid.Style >
+                                <Style TargetType="Grid">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ElementName=PackageTreeview, Path= SelectedItem}"  Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Hidden"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
 
-                            <TextBlock Text="Source Filepath : " Grid.Row="0" Grid.Column="1" />
-                            <TextBlock Text="{Binding Path=SourceFilepath}" TextWrapping="Wrap" Grid.Row="0" Grid.Column="2" />
+                                <TextBlock Text="Source Filepath : " Grid.Row="0" Grid.Column="1" />
+                                <TextBlock Text="{Binding Path=SourceFilepath}" TextWrapping="Wrap" Grid.Row="0" Grid.Column="2" />
 
-                            <TextBlock Text="File Dimension : " Grid.Column="1"  Grid.Row="1"/>
-                            <TextBlock Text="{Binding Path=FileDimension}" TextWrapping="Wrap"  Grid.Row="1" Grid.Column="2"/>
+                                <TextBlock Text="File Dimension : " Grid.Column="1"  Grid.Row="1"/>
+                                <TextBlock Text="{Binding Path=FileDimension}" TextWrapping="Wrap"  Grid.Row="1" Grid.Column="2"/>
 
-                            <TextBlock Text="Last Edit : " Grid.Column="1"  Grid.Row="2"/>
-                            <TextBlock Text="{Binding Path=LastEdit}" TextWrapping="Wrap"  Grid.Row="2" Grid.Column="2"/>
+                                <TextBlock Text="Last Edit : " Grid.Column="1"  Grid.Row="2"/>
+                                <TextBlock Text="{Binding Path=LastEdit}" TextWrapping="Wrap"  Grid.Row="2" Grid.Column="2"/>
 
-                            <Image Source="{Binding FileIcon}" Grid.Row="0" Grid.Column="0" Grid.RowSpan="5" Margin="5" Width="24"/>
+                                <Image Source="{Binding FileIcon}" Grid.Row="0" Grid.Column="0" Grid.RowSpan="5" Margin="5" Width="24"/>
+                            </Grid>
                         </Grid>
                     </Grid>
+                </GroupBox>
+
+                <GroupBox Grid.Row="1" Grid.Column="2" >
+                    <GroupBox.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="Images/info_16_white.png" Width="16" Margin="5,0"/>
+                            <TextBlock Text="UPLOAD QUEUE" Foreground="White" FontSize="14" />
+                        </StackPanel>
+                    </GroupBox.Header>
+                    <ListView Grid.Row="1" ItemsSource="{Binding Path=UploadQueue}" SelectedItem="{Binding Path=SelectedUploadItem}">
+                        <ListView.View>
+                            <GridView>
+                                <GridView.Columns>
+                                    <GridViewColumn Header="Filename" DisplayMemberBinding="{Binding Path=Filename}" Width="170"/>
+                                    <GridViewColumn Header="Location" DisplayMemberBinding="{Binding Path=ConnectionName}" Width="170"/>
+                                    <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Path=FormattedStatus}" Width="150"/>
+                                    <GridViewColumn Header="Size" DisplayMemberBinding="{Binding Path=FileSize}" Width="100"/>
+                                    <GridViewColumn Header="Upload %" Width="150">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <ProgressBar Minimum="0" Maximum="100" Value="{Binding Path=ProgressPercentage}"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView.Columns>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </GroupBox>
+
+                <Grid Grid.Row="2" Grid.ColumnSpan="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button x:Name="PublishPackageOnlyUpdate"   HorizontalAlignment="Center" Width="320" Margin="5" Padding="0" Cursor="Hand" BorderBrush="DarkGray">
+                        <Button.Style >
+                            <Style TargetType="Button">
+                                <Style.Triggers>
+                                    <Trigger Property="Button.IsMouseOver" Value="True">
+                                        <Setter Property="Button.BorderBrush" Value="#8BC34A" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="Images/upload_32.png" Margin="5,0" Width="32" Height="32"/>
+                            <TextBlock Text="Publish Only Update Files" FontSize="20" Foreground="Green" FontWeight="Bold"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="PublishPackageComplete"  Grid.Column="1"  HorizontalAlignment="Center" Width="320" Margin="5" Padding="0" Cursor="Hand" BorderBrush="DarkGray">
+                        <Button.Style >
+                            <Style TargetType="Button">
+                                <Style.Triggers>
+                                    <Trigger Property="Button.IsMouseOver" Value="True">
+                                        <Setter Property="Button.BorderBrush" Value="#8BC34A" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="Images/upload_32.png" Margin="5,0" Width="32" Height="32"/>
+                            <TextBlock Text="Publish Complete Setup" FontSize="20" Foreground="Green" FontWeight="Bold"/>
+                        </StackPanel>
+                    </Button>
+
                 </Grid>
-            </GroupBox>
-            
-            <GroupBox Grid.Row="1" Grid.Column="2" >
-                <GroupBox.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="Images/info_16_white.png" Width="16" Margin="5,0"/>
-                        <TextBlock Text="UPLOAD QUEUE" Foreground="White" FontSize="14" />
-                    </StackPanel>
-                </GroupBox.Header>
-                <ListView Grid.Row="1" ItemsSource="{Binding Path=UploadQueue}" SelectedItem="{Binding Path=SelectedUploadItem}">
-                    <ListView.View>
-                        <GridView>
-                            <GridView.Columns>
-                                <GridViewColumn Header="Filename" DisplayMemberBinding="{Binding Path=Filename}" Width="170"/>
-                                <GridViewColumn Header="Location" DisplayMemberBinding="{Binding Path=ConnectionName}" Width="170"/>
-                                <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Path=FormattedStatus}" Width="150"/>
-                                <GridViewColumn Header="Size" DisplayMemberBinding="{Binding Path=FileSize}" Width="100"/>
-                                <GridViewColumn Header="Upload %" Width="150">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <ProgressBar Minimum="0" Maximum="100" Value="{Binding Path=ProgressPercentage}"/>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                            </GridView.Columns>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
-            </GroupBox>
-
-            <Grid Grid.Row="2" Grid.ColumnSpan="3">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-
-                <Button x:Name="PublishPackageOnlyUpdate"   HorizontalAlignment="Center" Width="320" Margin="5" Padding="0" Cursor="Hand" BorderBrush="DarkGray">
-                    <Button.Style >
-                        <Style TargetType="Button">
-                            <Style.Triggers>
-                                <Trigger Property="Button.IsMouseOver" Value="True">
-                                    <Setter Property="Button.BorderBrush" Value="#8BC34A" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="Images/upload_32.png" Margin="5,0" Width="32" Height="32"/>
-                        <TextBlock Text="Publish Only Update Files" FontSize="20" Foreground="Green" FontWeight="Bold"/>
-                    </StackPanel>
-                </Button>
-
-                <Button x:Name="PublishPackageComplete"  Grid.Column="1"  HorizontalAlignment="Center" Width="320" Margin="5" Padding="0" Cursor="Hand" BorderBrush="DarkGray">
-                    <Button.Style >
-                        <Style TargetType="Button">
-                            <Style.Triggers>
-                                <Trigger Property="Button.IsMouseOver" Value="True">
-                                    <Setter Property="Button.BorderBrush" Value="#8BC34A" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="Images/upload_32.png" Margin="5,0" Width="32" Height="32"/>
-                        <TextBlock Text="Publish Complete Setup" FontSize="20" Foreground="Green" FontWeight="Bold"/>
-                    </StackPanel>
-                </Button>
 
             </Grid>
-       
+
         </Grid>
-     
-    </Grid>
+    </xctk:BusyIndicator>
 </Controls:MetroWindow>

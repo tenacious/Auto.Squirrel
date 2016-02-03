@@ -213,18 +213,18 @@ namespace AutoSquirrel
         }
 
 
-        public void UpdateVersion()
+        /// <summary>
+        /// Read the main exe version and set it as package versione 
+        /// </summary>
+        public void RefreshPackageVersion()
         {
             if (!File.Exists(MainExePath)) return;
 
             if (SetVersionManually) return;
 
             var versInfo = FileVersionInfo.GetVersionInfo(MainExePath);
-            //String fileVersion = versInfo.FileVersion;
+
             Version = versInfo.ProductVersion;
-
-            
-
         }
 
         string newFolderName = "NEW FOLDER";
@@ -814,7 +814,7 @@ namespace AutoSquirrel
                 {
                     MainExePath = filePath;
 
-                    UpdateVersion();
+                    RefreshPackageVersion();
                 }
             }
 
@@ -864,7 +864,7 @@ namespace AutoSquirrel
             if (MainExePath != null && item.SourceFilepath != null && MainExePath.ToLower() == item.SourceFilepath.ToLower())
             {
                 MainExePath = string.Empty;
-                UpdateVersion();
+                RefreshPackageVersion();
             }
 
             //
@@ -911,6 +911,8 @@ namespace AutoSquirrel
         /// </summary>
         internal void BeginUpdatedFiles(int mode)
         {
+            // ? -> Set IsEnabled = false on GUI to prevent change during upload ? 
+
             var releasesPath = SquirrelOutputPath;
 
             if (!Directory.Exists(releasesPath))
@@ -935,7 +937,7 @@ namespace AutoSquirrel
             if (mode == 0)
             {
                 fileToUpdate.Add(string.Format("Setup.exe"));
-           //     fileToUpdate.Add(string.Format("{0}-{1}-full.nupkg", AppId, Version));
+                //     fileToUpdate.Add(string.Format("{0}-{1}-full.nupkg", AppId, Version));
             }
 
 
@@ -972,6 +974,9 @@ namespace AutoSquirrel
                 }
             }
 
+            if (!CheckInternetConnection.IsConnectedToInternet())
+                throw new Exception("Internet Connection not available");
+
             ProcessNextUploadFile();
         }
 
@@ -990,7 +995,7 @@ namespace AutoSquirrel
         {
             try
             {
-                var current = UploadQueue.FirstOrDefault(u=>u.UploadStatus == FileUploadStatus.Queued);
+                var current = UploadQueue.FirstOrDefault(u => u.UploadStatus == FileUploadStatus.Queued);
 
                 if (current == null)
                     return;
