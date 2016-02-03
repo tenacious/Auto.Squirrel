@@ -238,7 +238,7 @@
                         </TreeView.Resources>
                     </TreeView>
 
-                    <!--<Grid Grid.Row="1" x:Name="DetailGrid" DataContext="{Binding ElementName=PackageTreeview, Path= SelectedItem}" TextElement.Foreground="#607D8B" TextElement.FontSize="14" 
+                    <Grid Grid.Row="1" x:Name="DetailGrid" DataContext="{Binding ElementName=PackageTreeview, Path= SelectedItem}" TextElement.Foreground="#607D8B" TextElement.FontSize="14" 
                           Background="AliceBlue">
                         <Grid.Style >
                             <Style TargetType="Grid">
@@ -272,53 +272,10 @@
 
                             <Image Source="{Binding FileIcon}" Grid.Row="0" Grid.Column="0" Grid.RowSpan="5" Margin="5" Width="24"/>
                         </Grid>
-                    </Grid>-->
+                    </Grid>
                 </Grid>
             </GroupBox>
-            <!--<GroupBox Grid.Row="1" >
-                <GroupBox.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="Images/info_16_white.png" Width="16" Margin="5,0"/>
-                        <TextBlock Text="WEB CONNECTION" Foreground="White" FontSize="14" />
-                    </StackPanel>
-                </GroupBox.Header>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-                    <Menu>
-                        <MenuItem Header="Add" ToolTip="Add New Connection" x:Name="AddNewConnection" >
-                            <MenuItem.Icon>
-                                <Image Source="images/add_16.png" Width="16" Height="16" />
-                            </MenuItem.Icon>
-                            <MenuItem Header="Amazon S3" Command="{Binding AddAmazonConnectionCmd}"/>
-                            <MenuItem Header="GitHub" IsEnabled="False"/>
-                            <MenuItem Header="ISS" IsEnabled="False"/>
-                            <MenuItem Header="FTP" IsEnabled="False"/>
-                        </MenuItem>
-                        <MenuItem Header="Edit" ToolTip="Edit Current Connection"  Command="{Binding EditCurrentConnectionCmd}">
-                            <MenuItem.Icon>
-                                <Image Source="images/edit_16.png" Width="16" Height="16" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="Delete" ToolTip="Delete Current Connection"  Command="{Binding DeleteCurrentConnectionCmd}" >
-                            <MenuItem.Icon>
-                                <Image Source="images/minus_16.png" Width="16" Height="16" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                    </Menu>
-                    <ListView Grid.Row="1" ItemsSource="{Binding Path=WebConnections}" SelectedItem="{Binding Path=SelectedConnection}" >
-                        <ListView.View>
-                            <GridView ColumnHeaderContainerStyle="{StaticResource ListViewHideHeader}">
-                                <GridView.Columns>
-                                    <GridViewColumn Header="Connection" DisplayMemberBinding="{Binding Path=ConnectionName}" Width="170"/>
-                                </GridView.Columns>
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
-                </Grid>
-            </GroupBox>-->
+            
             <GroupBox Grid.Row="1" Grid.Column="2" >
                 <GroupBox.Header>
                     <StackPanel Orientation="Horizontal">
@@ -332,7 +289,7 @@
                             <GridView.Columns>
                                 <GridViewColumn Header="Filename" DisplayMemberBinding="{Binding Path=Filename}" Width="170"/>
                                 <GridViewColumn Header="Location" DisplayMemberBinding="{Binding Path=ConnectionName}" Width="170"/>
-                                <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Path=Status}" Width="60"/>
+                                <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Path=FormattedStatus}" Width="150"/>
                                 <GridViewColumn Header="Size" DisplayMemberBinding="{Binding Path=FileSize}" Width="100"/>
                                 <GridViewColumn Header="Upload %" Width="150">
                                     <GridViewColumn.CellTemplate>

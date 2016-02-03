@@ -990,7 +990,7 @@ namespace AutoSquirrel
         {
             try
             {
-                var current = UploadQueue.FirstOrDefault();
+                var current = UploadQueue.FirstOrDefault(u=>u.UploadStatus == FileUploadStatus.Queued);
 
                 if (current == null)
                     return;
@@ -1014,8 +1014,8 @@ namespace AutoSquirrel
 
             Trace.WriteLine("Upload Complete " + i.Filename);
 
-            if (i != null && UploadQueue.Contains(i))
-                UploadQueue.Remove(i);
+            //if (i != null && UploadQueue.Contains(i))
+            //    UploadQueue.Remove(i);
 
             ProcessNextUploadFile();
         }

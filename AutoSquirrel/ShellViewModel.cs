@@ -689,19 +689,27 @@ namespace AutoSquirrel
             }
         }
 
-        private string _status;
-        [DataMember]
-        public string Status
+        private FileUploadStatus _uploadStatus;
+        public FileUploadStatus UploadStatus
         {
             get
             {
-                return _status;
+                return _uploadStatus;
             }
 
             set
             {
-                _status = value;
-                NotifyOfPropertyChange(() => Status);
+                _uploadStatus= value;
+                NotifyOfPropertyChange(() => UploadStatus);
+                NotifyOfPropertyChange(() => FormattedStatus);
+            }
+        }
+
+        public string FormattedStatus
+        {
+            get
+            {
+                return UploadStatus.ToString();
             }
         }
 
@@ -726,11 +734,13 @@ namespace AutoSquirrel
 
         public event EventHandler<UploadCompleteEventArgs> OnUploadCompleted;
 
-        private void RequesteUploadComplete(UploadCompleteEventArgs snapPointEvent)
+        private void RequesteUploadComplete(UploadCompleteEventArgs uploadEvent)
         {
+            UploadStatus = FileUploadStatus.Completed;
+
             var handler = OnUploadCompleted;
             if (handler != null)
-                handler(null, snapPointEvent);
+                handler(null, uploadEvent);
         }
 
 
@@ -810,6 +820,13 @@ namespace AutoSquirrel
                 ProgressPercentage = e.PercentDone;
             }
         }
+    }
+
+    public enum FileUploadStatus
+    {
+        Queued,
+        InProgress,
+        Completed,
     }
 
     public class UploadCompleteEventArgs : EventArgs
