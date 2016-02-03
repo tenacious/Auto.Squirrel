@@ -1,14 +1,10 @@
-﻿using Amazon.Runtime;
-using Amazon.S3;
+﻿using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
 using Caliburn.Micro;
 using FluentValidation;
 using FluentValidation.Results;
-using GongSolutions.Wpf.DragDrop;
-using NuGet;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -19,19 +15,15 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
-using System.Windows.Interop;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using static AutoSquirrel.IconHelper;
 using Amazon;
 using System.Windows.Threading;
-using System.Threading;
 using Amazon.S3.Util;
-using System.Security.Cryptography;
-using System.Globalization;
+using NuGet;
+using System.Threading;
+using System.Windows.Input;
 
 namespace AutoSquirrel
 {
@@ -65,7 +57,6 @@ namespace AutoSquirrel
 
         }
 
-
         ///
         /// M E T H O D S 
         /// 
@@ -87,6 +78,7 @@ namespace AutoSquirrel
         {
             try
             {
+
                 var ofd = new System.Windows.Forms.OpenFileDialog
                 {
                     AddExtension = true,
@@ -158,6 +150,7 @@ namespace AutoSquirrel
                 NotifyOfPropertyChange(() => FilePath);
             }
         }
+
 
         public void SaveAs()
         {
@@ -257,6 +250,33 @@ namespace AutoSquirrel
                 return string.Format("{0} {1} - {2}", PathFolderHelper.ProgramName, PathFolderHelper.GetProgramVersion(), fp);
             }
         }
+        private ICommand _abortPackageCreationCmd;
+        public ICommand AbortPackageCreationCmd
+        {
+            get
+            {
+                return _abortPackageCreationCmd ??
+                       (_abortPackageCreationCmd = new DelegateCommand(AbortPackageCreation));
+            }
+        }
+
+        private bool _abortPackageFlag;
+        public void AbortPackageCreation()
+        {
+            if (ActiveBackgroungWorker != null)
+            {
+                ActiveBackgroungWorker.CancelAsync();
+
+
+                if (exeProcess != null)
+                    exeProcess.Kill();
+
+            }
+
+
+            _abortPackageFlag = true;
+
+        }
 
         /// <summary>
         /// Show/Hide Busy indicatory
@@ -275,6 +295,21 @@ namespace AutoSquirrel
                 NotifyOfPropertyChange(() => IsBusy);
             }
         }
+
+        private string _currentPackageCreationStage;
+        public string CurrentPackageCreationStage
+        {
+            get
+            {
+                return _currentPackageCreationStage;
+            }
+            set
+            {
+                _currentPackageCreationStage = value;
+                NotifyOfPropertyChange(() => CurrentPackageCreationStage);
+            }
+        }
+
 
         /// <summary>
         /// 
@@ -335,16 +370,15 @@ namespace AutoSquirrel
 
                 IsBusy = true;
 
-                ActiveBackgroungWorker = new BackgroundWorker() { WorkerReportsProgress = true };
+                ActiveBackgroungWorker = new BackgroundWorker() { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
 
                 ActiveBackgroungWorker.DoWork += ActiveBackgroungWorker_DoWork;
                 ActiveBackgroungWorker.RunWorkerCompleted += PackageCreationCompleted;
                 ActiveBackgroungWorker.ProgressChanged += ActiveBackgroungWorker_ProgressChanged;
 
                 ActiveBackgroungWorker.RunWorkerAsync(this);
-
-
             }
+
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString(), "Error on publishing", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -352,7 +386,6 @@ namespace AutoSquirrel
 
             finally
             {
-                IsBusy = false;
             }
         }
 
@@ -366,7 +399,21 @@ namespace AutoSquirrel
         {
             IsBusy = false;
 
+            CurrentPackageCreationStage = string.Empty;
+
+            ActiveBackgroungWorker.Dispose();
+
             ActiveBackgroungWorker = null;
+
+            if (_abortPackageFlag)
+            {
+                if (Model.UploadQueue != null)
+                    Model.UploadQueue.Clear();
+
+                _abortPackageFlag = false;
+
+                return;
+            }
 
             if (e.Error != null)
             {
@@ -384,30 +431,100 @@ namespace AutoSquirrel
         private void ActiveBackgroungWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             //todo : Update busy indicator information.
+            var message = e.UserState as string;
+            if (message == null) return;
+
+            CurrentPackageCreationStage = message;
+
         }
 
-        private static void ActiveBackgroungWorker_DoWork(object sender, DoWorkEventArgs e)
+        private void ActiveBackgroungWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            var shellVm = e.Argument as ShellViewModel;
 
-            if (shellVm == null) return;
-
-            var model = shellVm.Model;
-            var bgWorker = shellVm.ActiveBackgroungWorker;
-
-            if (model == null || bgWorker == null) return;
+            ActiveBackgroungWorker.ReportProgress(20, "NUGET PACKAGE CREATING");
 
             // Create Nuget Package from package treeview.
-            var nugetPackagePath = model.CreateNugetPackage();
-            Trace.WriteLine("CREATED NUGET PACKAGE to : " + model.NupkgOutputPath);
+            var nugetPackagePath = CreateNugetPackage(Model);
+            Trace.WriteLine("CREATED NUGET PACKAGE to : " + Model.NupkgOutputPath);
+
+
+            if (ActiveBackgroungWorker.CancellationPending)
+                return;
+
+            ActiveBackgroungWorker.ReportProgress(40, "SQUIRREL PACKAGE CREATING");
 
             // Releasify 
-            SquirrelReleasify(nugetPackagePath, model.SquirrelOutputPath);
-            Trace.WriteLine("CREATED SQUIRREL PACKAGE to : " + model.SquirrelOutputPath);
+            SquirrelReleasify(nugetPackagePath, Model.SquirrelOutputPath);
+            Trace.WriteLine("CREATED SQUIRREL PACKAGE to : " + Model.SquirrelOutputPath);
 
         }
 
-        private static void SquirrelReleasify(string nugetPackagePath, string squirrelOutputPath)
+        internal string CreateNugetPackage(AutoSquirrelModel model)
+        {
+
+            var metadata = new ManifestMetadata()
+            {
+                Authors = model.Authors,
+                Version = model.Version,
+                Id = model.AppId,
+                Description = model.Description,
+                Title = model.Title,
+            };
+
+            PackageBuilder builder = new PackageBuilder();
+            builder.Populate(metadata);
+
+            //As Squirrel convention i put everything in lib/net45 folder
+
+            var directoryBase = "/lib/net45";
+
+            var files = new List<ManifestFile>();
+
+            foreach (var node in model.PackageFiles)
+            {
+                AddFileToPackage(directoryBase, node, files);
+            }
+
+            builder.PopulateFiles("", files.ToArray());
+
+            var nugetPath = model.NupkgOutputPath + Path.DirectorySeparatorChar + model.AppId + "." + model.Version + ".nupkg";
+
+            using (FileStream stream = File.Open(nugetPath, FileMode.OpenOrCreate))
+            {
+                builder.Save(stream);
+            }
+
+            return nugetPath;
+        }
+
+        private static void AddFileToPackage(string directoryBase, ItemLink node, List<ManifestFile> files)
+        {
+            // Don't add manifest if is directory
+
+            if (node.IsDirectory)
+            {
+                directoryBase += "/" + node.Filename;
+
+                foreach (var subNode in node.Children)
+                {
+                    AddFileToPackage(directoryBase, subNode, files);
+                }
+            }
+            else
+            {
+                var manifest = new ManifestFile();
+
+                manifest.Source = node.SourceFilepath;
+
+                manifest.Target = directoryBase + "/" + node.Filename;
+
+                files.Add(manifest);
+            }
+        }
+
+
+        Process exeProcess;
+        private void SquirrelReleasify(string nugetPackagePath, string squirrelOutputPath)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
@@ -421,7 +538,7 @@ namespace AutoSquirrel
 
             startInfo.Arguments = cmd;
 
-            using (Process exeProcess = Process.Start(startInfo))
+            using (exeProcess = Process.Start(startInfo))
             {
                 exeProcess.WaitForExit();
             }

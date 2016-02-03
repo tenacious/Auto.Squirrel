@@ -22,9 +22,19 @@ namespace AutoSquirrel
 
             Loaded += MainWindow_Loaded;
 
+            KeyDown += ShellView_KeyDown;
+
             PackageTreeview.PreviewMouseRightButtonDown += OnPreviewMouseRightButtonDown;
 
             Closing += ShellView_Closing;
+        }
+
+        private void ShellView_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.F7)
+            {
+                ShellBusyIndicator.IsBusy = !ShellBusyIndicator.IsBusy;
+            }
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
