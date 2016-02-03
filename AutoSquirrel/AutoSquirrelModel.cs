@@ -935,7 +935,7 @@ namespace AutoSquirrel
             if (mode == 0)
             {
                 fileToUpdate.Add(string.Format("Setup.exe"));
-                fileToUpdate.Add(string.Format("{0}-{1}-full.nupkg", AppId, Version));
+           //     fileToUpdate.Add(string.Format("{0}-{1}-full.nupkg", AppId, Version));
             }
 
 

@@ -737,6 +737,7 @@ namespace AutoSquirrel
         private void RequesteUploadComplete(UploadCompleteEventArgs uploadEvent)
         {
             UploadStatus = FileUploadStatus.Completed;
+            ProgressPercentage = 100;
 
             var handler = OnUploadCompleted;
             if (handler != null)
@@ -774,6 +775,7 @@ namespace AutoSquirrel
 
                 fileTransferUtility.UploadAsync(uploadRequest);
 
+
                 Trace.WriteLine("Start Upload : " + FullPath);
             }
         }
@@ -798,10 +800,13 @@ namespace AutoSquirrel
         void uploadRequest_UploadPartProgressEvent(
           object sender, UploadProgressArgs e)
         {
+            ProgressPercentage = e.PercentDone;
+
             if (e.PercentDone == 100)
             {
                 if (Application.Current.Dispatcher.CheckAccess())
                 {
+
                     RequesteUploadComplete(new UploadCompleteEventArgs(this));
                 }
                 else
@@ -814,10 +819,6 @@ namespace AutoSquirrel
                           RequesteUploadComplete(new UploadCompleteEventArgs(this));
                       }));
                 }
-            }
-            else
-            {
-                ProgressPercentage = e.PercentDone;
             }
         }
     }
