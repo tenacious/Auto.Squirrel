@@ -551,7 +551,7 @@ namespace AutoSquirrel
             var cmd = @" -releasify " + nugetPackagePath + " -releaseDir " + squirrelOutputPath;
 
             //if (File.Exists(Model.IconFilepath))
-            //  cmd += " -setupIcon " + @"http://icons.iconarchive.com/icons/custom-icon-design/flatastic-3/128/filetype-ico-icon.png";
+            //  cmd += @" -setupIcon " + Model.IconFilepath ;
 
             /*
             https://github.com/Squirrel/Squirrel.Windows/blob/c86d3d0f19418d9f31d244f9c1d96d25a9c0dfb6/src/Update/Program.cs
