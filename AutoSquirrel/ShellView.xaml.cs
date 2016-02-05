@@ -84,7 +84,6 @@ namespace AutoSquirrel
             return source as TreeViewItem;
         }
 
-
     }
 
     public class BindingProxy : Freezable

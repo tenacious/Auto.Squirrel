@@ -103,6 +103,10 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="10"/>
+
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Menu Grid.ColumnSpan="3" DataContext="{Binding ElementName=MainWindow,Path=DataContext}" Margin="0,0,0,20">
                             <MenuItem Header="Project File" FontSize="16" >
@@ -159,12 +163,11 @@
                             <Button  Style="{StaticResource ResourceKey=LinkButton}" Content="Edit Connection" FontSize="16" Command="{Binding EditConnectionCmd}"/>
                         </StackPanel>
 
-
-                        <!--<Button Grid.Row="20" Grid.ColumnSpan="2" Grid.Column="0" FontWeight="Bold"  FontSize="14" Content="SETUP ICON" Style="{StaticResource LinkButton}"
+                        <Button Grid.Row="21" Grid.ColumnSpan="2" Grid.Column="0" FontWeight="Bold"  FontSize="14" Content="APP ICON" Style="{StaticResource LinkButton}"
                             Command="{Binding SelectIconCmd}"/>
-                    <Border Grid.Row="21" Padding="3" Margin="2" BorderBrush="Gray" Background="White" BorderThickness="1" HorizontalAlignment="Left" Grid.Column="0" Grid.ColumnSpan="2">
-                        <Image  Source="{Binding Path=IconSource}" Width="32" Height="32" Margin="3" />
-                    </Border>-->
+                        <Border Grid.Row="22" Padding="3" Margin="2" BorderBrush="Gray" Background="White" BorderThickness="1" HorizontalAlignment="Left" Grid.Column="0" Grid.ColumnSpan="2">
+                            <Image  Source="{Binding Path=IconSource}" Width="32" Height="32" Margin="3" />
+                        </Border>
                     </Grid>
 
                 </GroupBox>
@@ -253,11 +256,10 @@
 
                                 <HierarchicalDataTemplate 
                               DataType="{x:Type local:ItemLink}" 
-                              ItemsSource="{Binding Children}"
-                              >
+                              ItemsSource="{Binding Children}" >
                                     <StackPanel Orientation="Horizontal">
                                         <Image Width="24" Height="24" Margin="3,0" Source="{Binding Path=FileIcon}" />
-                                        <TextBlock Text="{Binding Filename}" />
+                                        <local:EditableTextBlock Text="{Binding Filename, Mode=TwoWay}"  />
                                     </StackPanel>
                                 </HierarchicalDataTemplate>
                             </TreeView.Resources>

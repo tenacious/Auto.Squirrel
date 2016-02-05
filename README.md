@@ -37,8 +37,7 @@ ___
 
 ## TODOS
 
-- [ ] Call package creation code in async way
-- [ ] Button to abort upload / package creation
-- [ ] Can rename package folder
+- [ ] Button to abort upload
+- [ ] Renaming of output file and  folder
 - [ ] Check if same filename is present in same directory
 - [ ] Possibility to select the main EXE file ( where i extract the version number) , if two or more exe files are present in package.
