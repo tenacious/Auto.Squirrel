@@ -193,6 +193,7 @@
     <Compile Include="AutoselectTextbox.cs" />
     <Compile Include="AutoSquirrelModel.cs" />
     <Compile Include="ConsoleProgram.cs" />
+    <Compile Include="EditableTextblock.cs" />
     <Compile Include="IconHelperClasses.cs" />
     <Compile Include="ShellViewModel.cs" />
     <Compile Include="WebConnectionEdit.xaml.cs">
@@ -214,6 +215,10 @@
       <DependentUpon>ShellView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="WebConnectionEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

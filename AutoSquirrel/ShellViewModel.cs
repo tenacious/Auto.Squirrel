@@ -526,8 +526,13 @@ namespace AutoSquirrel
                     var manifest = new ManifestFile();
 
                     manifest.Source = node.SourceFilepath;
+                    {
+                        var extension = Path.GetExtension(node.SourceFilepath);
+                        var filename = Path.GetFileNameWithoutExtension(node.Filename);
+                        manifest.Target = directoryBase + "/" + filename + "_ll_" + extension;
+                    }
 
-                    manifest.Target = directoryBase + "/" + node.Filename;
+                    // manifest.Target = directoryBase + "/" + node.Filename ;
 
                     files.Add(manifest);
                 }
@@ -546,8 +551,25 @@ namespace AutoSquirrel
             var cmd = @" -releasify " + nugetPackagePath + " -releaseDir " + squirrelOutputPath;
 
             //if (File.Exists(Model.IconFilepath))
-            //    cmd += " -setupIcon " + Model.IconFilepath;
+            //  cmd += " -setupIcon " + @"http://icons.iconarchive.com/icons/custom-icon-design/flatastic-3/128/filetype-ico-icon.png";
 
+            /*
+            https://github.com/Squirrel/Squirrel.Windows/blob/c86d3d0f19418d9f31d244f9c1d96d25a9c0dfb6/src/Update/Program.cs
+                    "Options:",
+                    { "h|?|help", "Display Help and exit", _ => {} },
+                    { "r=|releaseDir=", "Path to a release directory to use with releasify", v => releaseDir = v},
+                    { "p=|packagesDir=", "Path to the NuGet Packages directory for C# apps", v => packagesDir = v},
+                    { "bootstrapperExe=", "Path to the Setup.exe to use as a template", v => bootstrapperExe = v},
+                    { "g=|loadingGif=", "Path to an animated GIF to be displayed during installation", v => backgroundGif = v},
+                    { "i=|icon", "Path to an ICO file that will be used for icon shortcuts", v => icon = v},
+                    { "setupIcon=", "Path to an ICO file that will be used for the Setup executable's icon", v => setupIcon = v},
+                    { "n=|signWithParams=", "Sign the installer via SignTool.exe with the parameters given", v => signingParameters = v},
+                    { "s|silent", "Silent install", _ => silentInstall = true},
+                    { "b=|baseUrl=", "Provides a base URL to prefix the RELEASES file packages with", v => baseUrl = v, true},
+                    { "a=|process-start-args=", "Arguments that will be used when starting executable", v => processStartArgs = v, true},
+                    { "l=|shortcut-locations=", "Comma-separated string of shortcut locations, e.g. 'Desktop,StartMenu'", v => shortcutArgs = v},
+                    { "no-msi", "Don't generate an MSI package", v => noMsi = true},
+            */
             startInfo.Arguments = cmd;
 
             using (exeProcess = Process.Start(startInfo))
@@ -1110,7 +1132,7 @@ namespace AutoSquirrel
         [DataMember]
         public bool IsDirectory { get; set; }
 
-        private string _filename;
+        //private string _filename;
         [DataMember]
         public string Filename
         {
@@ -1122,11 +1144,12 @@ namespace AutoSquirrel
                 if (!string.IsNullOrWhiteSpace(SourceFilepath))
                     return Path.GetFileName(SourceFilepath);
 
-                return _filename;
+                return "no_namefile";
             }
             internal set
             {
-                _filename = value;
+                OutputFilename = value;
+                NotifyOfPropertyChange(() => Filename);
             }
         }
 
