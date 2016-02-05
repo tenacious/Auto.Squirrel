@@ -399,6 +399,7 @@ namespace AutoSquirrel
         {
             IsBusy = false;
 
+
             CurrentPackageCreationStage = string.Empty;
 
             ActiveBackgroungWorker.Dispose();
