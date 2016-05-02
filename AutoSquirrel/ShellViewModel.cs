@@ -529,11 +529,11 @@ namespace AutoSquirrel
                     manifest.Source = node.SourceFilepath;
                     {
                         var extension = Path.GetExtension(node.SourceFilepath);
-                        var filename = Path.GetFileNameWithoutExtension(node.Filename);
-                        manifest.Target = directoryBase + "/" + filename + "_ll_" + extension;
+                        //var filename = Path.GetFileNameWithoutExtension(node.Filename);
+                        //manifest.Target = directoryBase + "/" + filename + "_ll_" + extension;
+                     manifest.Target = directoryBase + "/" + node.Filename ;
                     }
 
-                    // manifest.Target = directoryBase + "/" + node.Filename ;
 
                     files.Add(manifest);
                 }
