@@ -28,7 +28,6 @@ ____
 
 * **[Squirrel Package Creation](docs/PackageCreation.md)**
 
-## [DOWNLOAD](https://s3-eu-west-1.amazonaws.com/squirrelpackager/Setup.exe)
 ___
 
  ![](docs/images/squirrel_upload.png)
