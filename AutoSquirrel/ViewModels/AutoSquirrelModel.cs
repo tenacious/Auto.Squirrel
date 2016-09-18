@@ -318,7 +318,7 @@
         /// Gets or sets the selected link.
         /// </summary>
         /// <value>The selected link.</value>
-        public ItemLink SelectedLink { get; set; }
+        public IList<ItemLink> SelectedLink { get; set; }
 
         /// <summary>
         /// Gets or sets the selected upload item.
@@ -444,11 +444,13 @@
         /// </summary>
         public void AddDirectory()
         {
-            if (SelectedLink != null)
+            if (SelectedLink.Count != 1) return;
+            var selectedLink = SelectedLink[0];
+            if (selectedLink != null)
             {
-                var validFolderName = GetValidName(newFolderName, SelectedLink.Children);
+                var validFolderName = GetValidName(newFolderName, selectedLink.Children);
 
-                SelectedLink.Children.Add(new ItemLink { OutputFilename = validFolderName, IsDirectory = true });
+                selectedLink.Children.Add(new ItemLink { OutputFilename = validFolderName, IsDirectory = true });
             }
             else
             {
@@ -551,9 +553,9 @@
         /// </summary>
         public void RemoveAllItems()
         {
-            if (SelectedLink == null) return;
+            if (SelectedLink?.Count == 0) return;
 
-            RemoveAllFromTreeview(SelectedLink);
+            RemoveAllFromTreeview(SelectedLink[0]);
         }
 
         /// <summary>
@@ -561,9 +563,11 @@
         /// </summary>
         public void RemoveItem()
         {
-            if (SelectedLink == null) return;
-
-            RemoveFromTreeview(SelectedLink);
+            if (SelectedLink?.Count == 0) return;
+            foreach (var link in SelectedLink)
+            {
+                RemoveFromTreeview(link);
+            }
         }
 
         /// <summary>
@@ -623,7 +627,7 @@
         /// Sets the selected item.
         /// </summary>
         /// <param name="item">The item.</param>
-        public void SetSelectedItem(ItemLink item)
+        public void SetSelectedItem(IList<ItemLink> item)
         {
             SelectedLink = item;
         }

@@ -8,6 +8,7 @@
     xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
     xmlns:local="clr-namespace:AutoSquirrel"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mstv="clr-namespace:System.Windows.Controls;assembly=DotNetProjects.TreeViewEx"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     x:Name="MainWindow"
     Title="{Binding Path=WindowTitle}"
@@ -351,25 +352,27 @@
                     <Grid.Resources>
                         <local:BindingProxy x:Key="DataContextProxy" Data="{Binding}" />
                     </Grid.Resources>
-                    <TreeView
+                    <!--  cal:Message.Attach="[Event OnSelecting] = [Action SetSelectedItem($this.SelectedItems)]"  -->
+                    <mstv:TreeViewEx
                         x:Name="PackageTreeview"
-                        cal:Message.Attach="[Event SelectedItemChanged] = [Action SetSelectedItem($this.SelectedItem)]"
                         dd:DragDrop.DropHandler="{Binding Path=DataContext.Model, ElementName=MainWindow}"
                         dd:DragDrop.IsDragSource="True"
                         dd:DragDrop.IsDropTarget="True"
                         dd:DragDrop.UseDefaultDragAdorner="True"
                         AllowDrop="True"
                         ItemsSource="{Binding PackageFiles}"
+                        OnSelecting="PackageTreeview_OnSelecting"
+                        SelectionMode="Multiple"
                         Tag="{Binding DataContext, RelativeSource={RelativeSource Self}}">
-                        <TreeView.Template>
-                            <ControlTemplate TargetType="{x:Type TreeView}">
+                        <mstv:TreeViewEx.Template>
+                            <ControlTemplate TargetType="{x:Type mstv:TreeViewEx}">
                                 <Border
                                     x:Name="Bd"
                                     Padding="1"
                                     Background="{TemplateBinding Background}"
                                     BorderBrush="{TemplateBinding BorderBrush}"
                                     BorderThickness="{TemplateBinding BorderThickness}"
-                                    SnapsToDevicePixels="true">
+                                    SnapsToDevicePixels="True">
                                     <Grid>
                                         <TextBlock
                                             HorizontalAlignment="Center"
@@ -387,29 +390,38 @@
                                             Opacity=".4"
                                             Source="/AutoSquirrel;component/Images/package_256.png"
                                             Stretch="Uniform" />
-                                        <ScrollViewer Padding="{TemplateBinding Padding}" Focusable="false">
-                                            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                        <ScrollViewer
+                                            x:Name="scroller"
+                                            Padding="{TemplateBinding Padding}"
+                                            Focusable="false"
+                                            SnapsToDevicePixels="True">
+
+                                            <ItemsPresenter x:Name="content" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                                         </ScrollViewer>
                                     </Grid>
                                 </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsEnabled" Value="False">
+                                        <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
                             </ControlTemplate>
-                        </TreeView.Template>
-
-                        <TreeView.ContextMenu>
+                        </mstv:TreeViewEx.Template>
+                        <mstv:TreeViewEx.ContextMenu>
                             <ContextMenu>
                                 <MenuItem
                                     x:Name="AddDirectory"
                                     cal:Message.Attach="[Event Click] = [Action AddDirectory]"
                                     Header="Add Directory" />
                             </ContextMenu>
-                        </TreeView.ContextMenu>
-                        <TreeView.ItemContainerStyle>
-                            <Style TargetType="{x:Type TreeViewItem}">
+                        </mstv:TreeViewEx.ContextMenu>
+                        <mstv:TreeViewEx.ItemContainerStyle>
+                            <Style TargetType="{x:Type mstv:TreeViewExItem}">
                                 <Setter Property="ContextMenu">
                                     <Setter.Value>
                                         <ContextMenu StaysOpen="True">
                                             <MenuItem Command="{Binding Path=Data.AddDirectoryCmd, Source={StaticResource DataContextProxy}}" Header="Add Directory" />
-                                            <MenuItem Command="{Binding Path=Data.RemoveItemCmd, Source={StaticResource DataContextProxy}}" Header="Remove Item" />
+                                            <MenuItem Command="{Binding Path=Data.RemoveItemCmd, Source={StaticResource DataContextProxy}}" Header="Remove Selected Items" />
                                             <MenuItem Command="{Binding Path=Data.RemoveAllItemsCmd, Source={StaticResource DataContextProxy}}" Header="Remove All Items" />
                                         </ContextMenu>
                                     </Setter.Value>
@@ -424,9 +436,9 @@
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
-                        </TreeView.ItemContainerStyle>
+                        </mstv:TreeViewEx.ItemContainerStyle>
 
-                        <TreeView.Resources>
+                        <mstv:TreeViewEx.Resources>
 
                             <HierarchicalDataTemplate DataType="{x:Type local:ItemLink}" ItemsSource="{Binding Children}">
                                 <StackPanel Orientation="Horizontal">
@@ -438,8 +450,8 @@
                                     <local:EditableTextBlock Text="{Binding Filename, Mode=TwoWay}" />
                                 </StackPanel>
                             </HierarchicalDataTemplate>
-                        </TreeView.Resources>
-                    </TreeView>
+                        </mstv:TreeViewEx.Resources>
+                    </mstv:TreeViewEx>
 
                     <Grid
                         x:Name="DetailGrid"

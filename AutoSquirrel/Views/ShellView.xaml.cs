@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -53,12 +54,12 @@ namespace AutoSquirrel
             Closing += ShellView_Closing;
         }
 
-        private static TreeViewItem VisualUpwardSearch(DependencyObject source)
+        private static TreeViewExItem VisualUpwardSearch(DependencyObject source)
         {
-            while (source != null && !(source is TreeViewItem))
+            while (source != null && !(source is TreeViewExItem))
                 source = VisualTreeHelper.GetParent(source);
 
-            return source as TreeViewItem;
+            return source as TreeViewExItem;
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -81,13 +82,24 @@ namespace AutoSquirrel
 
         private void OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            TreeViewItem treeViewItem = VisualUpwardSearch(e.OriginalSource as DependencyObject);
+            TreeViewExItem treeViewItem = VisualUpwardSearch(e.OriginalSource as DependencyObject);
 
             if (treeViewItem == null) return;
 
             treeViewItem.Focus();
 
             //e.Handled = true;
+        }
+
+        private void PackageTreeview_OnSelecting(object sender, SelectionChangedCancelEventArgs e)
+        {
+            IList<ItemLink> items = new List<ItemLink>();
+            foreach (var item in (sender as TreeViewEx).SelectedItems)
+            {
+                items.Add(item as ItemLink);
+            }
+
+            ((ShellViewModel)DataContext)._model.SetSelectedItem(items as IList<ItemLink>);
         }
 
         private void ShellView_Closing(object sender, System.ComponentModel.CancelEventArgs e)
