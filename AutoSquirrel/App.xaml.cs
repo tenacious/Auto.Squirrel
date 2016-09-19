@@ -1,16 +1,9 @@
-﻿using Caliburn.Micro;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
+﻿using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using Caliburn.Micro;
 
 namespace AutoSquirrel
 {
@@ -21,6 +14,12 @@ namespace AutoSquirrel
     {
         private const string traceFilename = "Log.txt";
 
+        /// <summary>
+        /// Raises the <see cref="E:System.Windows.Application.Startup"/> event.
+        /// </summary>
+        /// <param name="e">
+        /// A <see cref="T:System.Windows.StartupEventArgs"/> that contains the event data.
+        /// </param>
         protected override void OnStartup(StartupEventArgs e)
         {
             Trace.AutoFlush = true;
@@ -35,9 +34,8 @@ namespace AutoSquirrel
 
                 Trace.Listeners.Add(log);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-
             }
 
             this.DispatcherUnhandledException += App_DispatcherUnhandledException;
@@ -72,21 +70,30 @@ namespace AutoSquirrel
             //    MessageBoxResult.Yes)
             {
                 {
-
                     Application.Current.Shutdown();
                 }
             }
         }
-
     }
 
+    /// <summary>
+    /// </summary>
+    /// <seealso cref="Caliburn.Micro.BootstrapperBase"/>
     public class AppBootstrapper : BootstrapperBase
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AppBootstrapper"/> class.
+        /// </summary>
         public AppBootstrapper()
         {
             Initialize();
         }
 
+        /// <summary>
+        /// Override this to add custom behavior to execute after the application starts.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The args.</param>
         protected override void OnStartup(object sender, StartupEventArgs e)
         {
             DisplayRootViewFor<ShellViewModel>();

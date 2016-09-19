@@ -5,6 +5,7 @@ namespace AutoSquirrel
     using System.Runtime.InteropServices;
 
     /// <summary>
+    /// Check Internet Connection
     /// </summary>
     public static class CheckInternetConnection
     {

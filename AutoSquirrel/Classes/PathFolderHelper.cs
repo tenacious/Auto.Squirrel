@@ -12,10 +12,26 @@ namespace AutoSquirrel
     /// </summary>
     public static class PathFolderHelper
     {
+        /// <summary>
+        /// The program name
+        /// </summary>
         public const string ProgramName = "Auto.Squirrel";
+
+        /// <summary>
+        /// The project file extension
+        /// </summary>
         public const string ProjectFileExtension = ".asproj";
+
+        /// <summary>
+        /// The file dialog name
+        /// </summary>
         public static string FileDialogName = ProgramName + " | *" + ProjectFileExtension;
+
+        /// <summary>
+        /// The program base directory
+        /// </summary>
         public static string ProgramBaseDirectory = "\\" + ProgramName;
+
         internal const string PackageDirectory = "\\Packages\\";
         internal const string ReleasesDirectory = "\\Releases\\";
         private const string ProjectDirectory = "\\Projects\\";

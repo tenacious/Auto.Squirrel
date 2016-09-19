@@ -24,6 +24,9 @@
     [DataContract]
     public class AutoSquirrelModel : PropertyChangedBaseValidable, GongSolutions.Wpf.DragDrop.IDropTarget
     {
+        /// <summary>
+        /// The squirrel output path
+        /// </summary>
         public string _squirrelOutputPath;
 
         [DataMember]
@@ -845,7 +848,7 @@
         {
             var isDir = false;
             FileAttributes fa = File.GetAttributes(filePath);
-            if (fa != null && fa.HasFlag(FileAttributes.Directory))
+            if (fa.HasFlag(FileAttributes.Directory))
                 isDir = true;
 
             RemoveItemBySourceFilepath(filePath);

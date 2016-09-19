@@ -42,3 +42,5 @@
  using System.Reflection;
   
  [assembly: AssemblyVersion("1.0.<#= revision #>.0")]
+ [assembly: AssemblyMetadata("SquirrelAwareVersion", "1.0.<#= revision #>.0")]
+ [assembly: AssemblyFileVersion("1.0.<#= revision #>.0")]

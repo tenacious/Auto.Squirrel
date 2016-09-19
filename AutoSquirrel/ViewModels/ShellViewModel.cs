@@ -11,9 +11,20 @@
     using Caliburn.Micro;
     using NuGet;
 
+    /// <summary>
+    /// Shell View Model
+    /// </summary>
+    /// <seealso cref="Caliburn.Micro.ViewAware"/>
     public class ShellViewModel : ViewAware
     {
+        /// <summary>
+        /// The model
+        /// </summary>
         public AutoSquirrelModel _model;
+
+        /// <summary>
+        /// The user preference
+        /// </summary>
         public Preference UserPreference;
 
         internal BackgroundWorker ActiveBackgroungWorker;
@@ -50,6 +61,10 @@
                 OpenProject(last);
         }
 
+        /// <summary>
+        /// Gets the abort package creation command.
+        /// </summary>
+        /// <value>The abort package creation command.</value>
         public ICommand AbortPackageCreationCmd
         {
             get
@@ -59,6 +74,10 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets the current package creation stage.
+        /// </summary>
+        /// <value>The current package creation stage.</value>
         public string CurrentPackageCreationStage
         {
             get
@@ -73,6 +92,10 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets the file path.
+        /// </summary>
+        /// <value>The file path.</value>
         public string FilePath
         {
             get
@@ -87,6 +110,10 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is busy.
+        /// </summary>
+        /// <value><c>true</c> if this instance is busy; otherwise, <c>false</c>.</value>
         public bool IsBusy
         {
             get
@@ -101,6 +128,10 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets the model.
+        /// </summary>
+        /// <value>The model.</value>
         public AutoSquirrelModel Model
         {
             get
@@ -115,7 +146,12 @@
             }
         }
 
-        /// M E T H O D S
+        //// M E T H O D S
+
+        /// <summary>
+        /// Gets the window title.
+        /// </summary>
+        /// <value>The window title.</value>
 
         public string WindowTitle
         {
@@ -129,6 +165,9 @@
             }
         }
 
+        /// <summary>
+        /// Aborts the package creation.
+        /// </summary>
         public void AbortPackageCreation()
         {
             if (ActiveBackgroungWorker != null)
@@ -142,6 +181,9 @@
             _abortPackageFlag = true;
         }
 
+        /// <summary>
+        /// Creates the new project.
+        /// </summary>
         public void CreateNewProject()
         {
             var rslt = MessageBox.Show("Save current project ?", "New Project", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
@@ -154,6 +196,9 @@
             Model = new AutoSquirrelModel();
         }
 
+        /// <summary>
+        /// Opens the project.
+        /// </summary>
         public void OpenProject()
         {
             try
@@ -177,13 +222,17 @@
 
                 //Save last folder path
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 MessageBox.Show("Loading File Error, file no more supported", "Error", MessageBoxButton.OK,
                     MessageBoxImage.Error, MessageBoxResult.None);
             }
         }
 
+        /// <summary>
+        /// Opens the project.
+        /// </summary>
+        /// <param name="filepath">The filepath.</param>
         public void OpenProject(string filepath)
         {
             try
@@ -209,13 +258,19 @@
 
                 AddLastProject(filepath);
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 MessageBox.Show("Loading File Error, file no more supported", "Error", MessageBoxButton.OK,
                     MessageBoxImage.Error, MessageBoxResult.None);
             }
         }
 
+        /// <summary>
+        /// Publishes the package.
+        /// </summary>
+        /// <exception cref="Exception">
+        /// Package Details are invalid or incomplete ! or Selected connection details are not valid !
+        /// </exception>
         public void PublishPackage()
         {
             try
@@ -284,12 +339,18 @@
             PublishPackage();
         }
 
+        /// <summary>
+        /// Publishes the package only update.
+        /// </summary>
         public void PublishPackageOnlyUpdate()
         {
             _publishMode = 1;
             PublishPackage();
         }
 
+        /// <summary>
+        /// Saves this instance.
+        /// </summary>
         public void Save()
         {
             if (string.IsNullOrWhiteSpace(FilePath))
@@ -322,6 +383,9 @@
             NotifyOfPropertyChange(() => WindowTitle);
         }
 
+        /// <summary>
+        /// Saves as.
+        /// </summary>
         public void SaveAs()
         {
             var previousFilePath = FilePath;

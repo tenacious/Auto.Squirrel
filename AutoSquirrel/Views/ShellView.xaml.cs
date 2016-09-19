@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
-using Squirrel;
-
-namespace AutoSquirrel
+﻿namespace AutoSquirrel
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Input;
+    using System.Windows.Media;
+    using Squirrel;
+
     /// <summary>
     /// Binding Proxy
     /// </summary>
@@ -31,6 +31,11 @@ namespace AutoSquirrel
             set { SetValue(DataProperty, value); }
         }
 
+        /// <summary>
+        /// When implemented in a derived class, creates a new instance of the <see
+        /// cref="T:System.Windows.Freezable"/> derived class.
+        /// </summary>
+        /// <returns>The new instance.</returns>
         protected override Freezable CreateInstanceCore() => new BindingProxy();
     }
 
@@ -41,6 +46,9 @@ namespace AutoSquirrel
     /// <seealso cref="System.Windows.Markup.IComponentConnector"/>
     public partial class ShellView
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ShellView"/> class.
+        /// </summary>
         public ShellView()
         {
             InitializeComponent();
@@ -66,7 +74,7 @@ namespace AutoSquirrel
         {
             Task.Run(async () =>
             {
-                using (var mgr = new UpdateManager(@"https://s3-eu-west-1.amazonaws.com/squirrelpackager"))
+                using (var mgr = new UpdateManager(@"https://s3-eu-west-1.amazonaws.com/autosquirrel"))
                 {
                     try
                     {

@@ -27,10 +27,21 @@ namespace AutoSquirrel
 
         private TransferUtility fileTransferUtility;
 
+        /// <summary>
+        /// Occurs when [on upload completed].
+        /// </summary>
         public event EventHandler<UploadCompleteEventArgs> OnUploadCompleted;
 
+        /// <summary>
+        /// Gets the connection.
+        /// </summary>
+        /// <value>The connection.</value>
         public WebConnectionBase Connection { get; internal set; }
 
+        /// <summary>
+        /// Gets or sets the name of the connection.
+        /// </summary>
+        /// <value>The name of the connection.</value>
         [DataMember]
         public string ConnectionName
         {
@@ -46,6 +57,10 @@ namespace AutoSquirrel
             }
         }
 
+        /// <summary>
+        /// Gets or sets the filename.
+        /// </summary>
+        /// <value>The filename.</value>
         [DataMember]
         public string Filename
         {
@@ -61,6 +76,10 @@ namespace AutoSquirrel
             }
         }
 
+        /// <summary>
+        /// Gets or sets the size of the file.
+        /// </summary>
+        /// <value>The size of the file.</value>
         [DataMember]
         public string FileSize
         {
@@ -76,6 +95,10 @@ namespace AutoSquirrel
             }
         }
 
+        /// <summary>
+        /// Gets the formatted status.
+        /// </summary>
+        /// <value>The formatted status.</value>
         public string FormattedStatus
         {
             get
@@ -84,8 +107,16 @@ namespace AutoSquirrel
             }
         }
 
+        /// <summary>
+        /// Gets the full path.
+        /// </summary>
+        /// <value>The full path.</value>
         public string FullPath { get; internal set; }
 
+        /// <summary>
+        /// Gets or sets the progress percentage.
+        /// </summary>
+        /// <value>The progress percentage.</value>
         [DataMember]
         public double ProgressPercentage
         {
@@ -101,6 +132,10 @@ namespace AutoSquirrel
             }
         }
 
+        /// <summary>
+        /// Gets or sets the upload status.
+        /// </summary>
+        /// <value>The upload status.</value>
         public FileUploadStatus UploadStatus
         {
             get

@@ -14,11 +14,18 @@ namespace AutoSquirrel
     {
         private string _fileSystemPath;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileSystemConnection"/> class.
+        /// </summary>
         public FileSystemConnection()
         {
             ConnectionName = "File System";
         }
 
+        /// <summary>
+        /// Gets or sets the file system path.
+        /// </summary>
+        /// <value>The file system path.</value>
         [DataMember]
         public string FileSystemPath
         {
@@ -68,6 +75,10 @@ namespace AutoSquirrel
         //    }
         //}
 
+        /// <summary>
+        /// Gets the setup download URL.
+        /// </summary>
+        /// <value>The setup download URL.</value>
         public string SetupDownloadUrl
         {
             get

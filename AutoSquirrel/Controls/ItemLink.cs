@@ -11,6 +11,10 @@ namespace AutoSquirrel
     using Caliburn.Micro;
     using static IconHelper;
 
+    /// <summary>
+    /// Item Link
+    /// </summary>
+    /// <seealso cref="Caliburn.Micro.PropertyChangedBase"/>
     [DataContract]
     public class ItemLink : PropertyChangedBase
     {
@@ -22,7 +26,9 @@ namespace AutoSquirrel
         //bool _isExpanded;
         private bool _isSelected;
 
-        // This is used to create the DummyChild instance.
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ItemLink"/> class.
+        /// </summary>
         public ItemLink()
         {
         }
@@ -44,6 +50,10 @@ namespace AutoSquirrel
             }
         }
 
+        /// <summary>
+        /// Gets the file icon.
+        /// </summary>
+        /// <value>The file icon.</value>
         public ImageSource FileIcon
         {
             get
@@ -76,6 +86,10 @@ namespace AutoSquirrel
         }
 
         //private string _filename;
+        /// <summary>
+        /// Gets or sets the filename.
+        /// </summary>
+        /// <value>The filename.</value>
         [DataMember]
         public string Filename
         {
@@ -105,6 +119,10 @@ namespace AutoSquirrel
             get { return this.Children.Count == 1 && this.Children[0] == DummyChild; }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is directory.
+        /// </summary>
+        /// <value><c>true</c> if this instance is directory; otherwise, <c>false</c>.</value>
         [DataMember]
         public bool IsDirectory { get; set; }
 
@@ -168,6 +186,10 @@ namespace AutoSquirrel
             }
         }
 
+        /// <summary>
+        /// Gets the output filename.
+        /// </summary>
+        /// <value>The output filename.</value>
         [DataMember]
         public string OutputFilename { get; internal set; }
 
@@ -179,6 +201,11 @@ namespace AutoSquirrel
 
         private bool _isExpanded { get; set; }
 
+        /// <summary>
+        /// Gets the parent.
+        /// </summary>
+        /// <param name="root">The root.</param>
+        /// <returns></returns>
         public ItemLink GetParent(ObservableCollection<ItemLink> root)
         {
             foreach (var node in root)

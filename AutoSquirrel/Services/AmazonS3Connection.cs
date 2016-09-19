@@ -26,6 +26,9 @@ namespace AutoSquirrel
 
         private string _secretAccessKey;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AmazonS3Connection"/> class.
+        /// </summary>
         public AmazonS3Connection()
         {
             ConnectionName = "Amazon S3";
@@ -148,7 +151,7 @@ namespace AutoSquirrel
         }
 
         /// <summary>
-        /// Prima controllo correttezza del pattern poi controllo questo.
+        /// Validates this instance.
         /// </summary>
         /// <returns></returns>
         public override ValidationResult Validate()

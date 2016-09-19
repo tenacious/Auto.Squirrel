@@ -1,10 +1,15 @@
 # **Squirrel Package Manager**
 
+This is a fork of the original **[Auto.Squirrel](https://github.com/tenacious/Auto.Squirrel)**
+
+
+
+####You can install the improved version from **[Setup](https://s3-eu-west-1.amazonaws.com/autosquirrel/Setup.exe)**
 ___
 
 #### This utility is useful to create installer based on **[Squirrel.Windows](https://github.com/Squirrel/Squirrel.Windows)**.
 
-The main purpose is to fully automatize the application deploy , from build to upload  the updated files.
+The main purpose is to fully automatize the application deploy, from build to upload the updated files.
 ____
 
 ### With a single mouse click you can :
@@ -13,7 +18,7 @@ ____
 
 2. **Create Squirrel Package** . In similar way you do with Nuget Package Manager, just drag the file you want into window. No need to create lib/net45 folder.
 
-3. **Upload installer files** . Set connection details one time .
+3. **Upload installer files** . Set connection details one time - Supports local file system and Amazon Web Services S3 Buckets **[Create Account](https://console.aws.amazon.com/s3/home?region=us-west-2)**.
 
 4. **Decide to upload only the updated files or do complete setup upload**
 
@@ -37,6 +42,6 @@ ___
 ## TODOS
 
 - [ ] Button to abort upload
-- [ ] Renaming of output file and  folder
+- [ ] Renaming of output file and folder
 - [ ] Check if same filename is present in same directory
 - [ ] Possibility to select the main EXE file ( where i extract the version number) , if two or more exe files are present in package.
