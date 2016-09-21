@@ -43,38 +43,6 @@ namespace AutoSquirrel
             }
         }
 
-        //private string _accessKey;
-        //[DataMember]
-        //public string AccessKey
-        //{
-        //    get
-        //    {
-        //        return _accessKey;
-        //    }
-
-        //    set
-        //    {
-        //        _accessKey = value;
-        //        NotifyOfPropertyChange(() => AccessKey);
-        //    }
-        //}
-
-        //private string _secretAccessKey;
-        //[DataMember]
-        //public string SecretAccessKey
-        //{
-        //    get
-        //    {
-        //        return _secretAccessKey;
-        //    }
-
-        //    set
-        //    {
-        //        _secretAccessKey = value;
-        //        NotifyOfPropertyChange(() => SecretAccessKey);
-        //    }
-        //}
-
         /// <summary>
         /// Gets the setup download URL.
         /// </summary>

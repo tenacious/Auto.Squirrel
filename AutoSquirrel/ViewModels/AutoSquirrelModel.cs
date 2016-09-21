@@ -24,11 +24,6 @@
     [DataContract]
     public class AutoSquirrelModel : PropertyChangedBaseValidable, GongSolutions.Wpf.DragDrop.IDropTarget
     {
-        /// <summary>
-        /// The squirrel output path
-        /// </summary>
-        public string _squirrelOutputPath;
-
         [DataMember]
         internal List<WebConnectionBase> CachedConnection = new List<WebConnectionBase>();
 
@@ -42,6 +37,7 @@
         private string _mainExePath;
         private string _nupkgOutputPath;
         private ObservableCollection<ItemLink> _packageFiles = new ObservableCollection<ItemLink>();
+        private ICommand _refreshVersionNumber;
         private ICommand _removeAllItemsCmd;
         private ICommand _removeItemCmd;
         private WebConnectionBase _selectedConnection;
@@ -49,6 +45,7 @@
         private SingleFileUpload _selectedUploadItem;
         private ICommand _selectIconCmd;
         private bool _setVersionManually;
+        private string _squirrelOutputPath;
         private string _title;
         private ObservableCollection<SingleFileUpload> _uploadQueue = new ObservableCollection<SingleFileUpload>();
         private string _version;
@@ -60,11 +57,6 @@
         public AutoSquirrelModel()
         {
             PackageFiles = new ObservableCollection<ItemLink>();
-
-            //AppId = "MyPackageId";
-            //Title = "My Package";
-            //Authors = "authors_name";
-            //Description = "Package Description";
         }
 
         /// <summary>
@@ -200,7 +192,7 @@
                 }
                 catch
                 {
-                    //Todo - icona default
+                    //TODO -  default icon
                     return null;
                 }
             }
@@ -262,6 +254,13 @@
                 NotifyOfPropertyChange(() => PackageFiles);
             }
         }
+
+        /// <summary>
+        /// Gets the refresh version number.
+        /// </summary>
+        /// <value>The refresh version number.</value>
+        public ICommand RefreshVersionNumber => _refreshVersionNumber ??
+               (_refreshVersionNumber = new DelegateCommand(RefreshPackageVersion));
 
         /// <summary>
         /// Gets the remove all items command.
@@ -538,7 +537,7 @@
         }
 
         /// <summary>
-        /// Read the main exe version and set it as package versione
+        /// Read the main exe version and set it as package version
         /// </summary>
         public void RefreshPackageVersion()
         {
@@ -636,7 +635,7 @@
         }
 
         /// <summary>
-        /// Prima controllo correttezza del pattern poi controllo questo.
+        /// Validates this instance.
         /// </summary>
         /// <returns></returns>
         public override ValidationResult Validate()
@@ -694,7 +693,7 @@
             var releasesPath = SquirrelOutputPath;
 
             if (!Directory.Exists(releasesPath))
-                throw new Exception("Releases directory " + releasesPath + "not finded !");
+                throw new Exception("Releases directory " + releasesPath + "not found !");
 
             if (SelectedConnection == null)
                 throw new Exception("No selected upload location !");
@@ -708,14 +707,12 @@
             var fileToUpdate = new List<string>()
             {
                 "RELEASES",
-                string.Format("{0}-{1}-delta.nupkg",AppId,Version),
+                $"{AppId}-{Version}-delta.nupkg",
             };
 
             if (mode == 0)
             {
-                fileToUpdate.Add(string.Format("Setup.exe"));
-
-                // fileToUpdate.Add(string.Format("{0}-{1}-full.nupkg", AppId, Version));
+                fileToUpdate.Add("Setup.exe");
             }
 
             var updatedFiles = new List<FileInfo>();
@@ -782,56 +779,6 @@
 
             return folderName;
         }
-
-        // 30/01/2016 Changed from multiple connection list, to a single connection
-
-        //private ICommand _addAmazonConnectionCmd;
-        //public ICommand AddAmazonConnectionCmd
-        //{
-        //    get
-        //    {
-        //        return _addAmazonConnectionCmd ??
-        //               (_addAmazonConnectionCmd = new DelegateCommand(() => AddNewConnection("amazon")));
-        //    }
-        //}
-
-        //public void AddNewConnection(string s)
-        //{
-        //    WebConnectionBase vm = null;
-        //    switch (s)
-        //    {
-        //        case "amazon":
-        //            vm = new AmazonS3Connection();
-        //            break;
-        //    }
-
-        // if (vm == null) return; var vw = new WebConnectionEdit() { WindowStartupLocation =
-        // WindowStartupLocation.CenterScreen }; vw.DataContext = vm;
-
-        // var rslt = vw.ShowDialog();
-
-        // if (rslt != true) return;
-
-        //    WebConnections.Add(vm);
-        //}
-
-        //private ICommand _editCurrentConnection;
-        //public ICommand EditCurrentConnectionCmd
-        //{
-        //    get
-        //    {
-        //        return _editCurrentConnection ??
-        //               (_editCurrentConnection = new DelegateCommand(EditCurrentConnection));
-        //    }
-        //}
-
-        //public void EditCurrentConnection()
-        //{
-        //    if (SelectedConnection == null) return;
-
-        // var vw = new WebConnectionEdit();
-
-        // vw.DataContext = SelectedConnection;
 
         private static void SearchNodeByFilepath(string filepath, ObservableCollection<ItemLink> root, List<ItemLink> rslt)
         {
@@ -1022,10 +969,8 @@
                 RemoveFromTreeview(node);
         }
 
-        //    var rslt = vw.ShowDialog();
-        //}
         /// <summary>
-        /// I keep in memory created WebConnectionBase, so if the user switch accidentaly the
+        /// I keep in memory created WebConnectionBase, so if the user switch accidentally the
         /// connection string , he don't lose inserted parameter
         /// </summary>
         private void UpdateSelectedConnection(string connectionType)

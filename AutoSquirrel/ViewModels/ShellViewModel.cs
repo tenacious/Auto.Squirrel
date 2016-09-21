@@ -17,37 +17,18 @@
     /// <seealso cref="Caliburn.Micro.ViewAware"/>
     public class ShellViewModel : ViewAware
     {
-        /// <summary>
-        /// The model
-        /// </summary>
-        public AutoSquirrelModel _model;
-
-        /// <summary>
-        /// The user preference
-        /// </summary>
-        public Preference UserPreference;
-
         internal BackgroundWorker ActiveBackgroungWorker;
-
         private ICommand _abortPackageCreationCmd;
-
         private bool _abortPackageFlag;
-
         private string _currentPackageCreationStage;
-
-        /// <summary>
-        /// Show/Hide Busy indicatory
-        /// </summary>
         private bool _isBusy;
-
         private bool _isSaved;
-
+        private AutoSquirrelModel _model;
         private int _publishMode;
-
         private Process exeProcess;
 
         /// <summary>
-        /// Ctor
+        /// Initializes a new instance of the <see cref="ShellViewModel"/> class.
         /// </summary>
         public ShellViewModel()
         {
@@ -65,14 +46,8 @@
         /// Gets the abort package creation command.
         /// </summary>
         /// <value>The abort package creation command.</value>
-        public ICommand AbortPackageCreationCmd
-        {
-            get
-            {
-                return _abortPackageCreationCmd ??
-                       (_abortPackageCreationCmd = new DelegateCommand(AbortPackageCreation));
-            }
-        }
+        public ICommand AbortPackageCreationCmd => _abortPackageCreationCmd ??
+       (_abortPackageCreationCmd = new DelegateCommand(AbortPackageCreation));
 
         /// <summary>
         /// Gets or sets the current package creation stage.
@@ -145,6 +120,11 @@
                 NotifyOfPropertyChange(() => Model);
             }
         }
+
+        /// <summary>
+        /// The user preference
+        /// </summary>
+        public Preference UserPreference { get; }
 
         //// M E T H O D S
 
@@ -257,6 +237,8 @@
                 Model.RefreshPackageVersion();
 
                 AddLastProject(filepath);
+
+                NotifyOfPropertyChange(() => WindowTitle);
             }
             catch (Exception)
             {
@@ -590,7 +572,7 @@
 
             startInfo.FileName = @"tools\Squirrel.exe";
 
-            var cmd = @" -releasify " + nugetPackagePath + " -releaseDir " + squirrelOutputPath;
+            var cmd = $@" -releasify {nugetPackagePath} -releaseDir {squirrelOutputPath}";
 
             //if (File.Exists(Model.IconFilepath))
             //  cmd += @" -setupIcon " + Model.IconFilepath ;

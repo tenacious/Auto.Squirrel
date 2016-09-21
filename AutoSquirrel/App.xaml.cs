@@ -4,11 +4,12 @@ using System.IO;
 using System.Windows;
 using System.Windows.Threading;
 using Caliburn.Micro;
+using Squirrel;
 
 namespace AutoSquirrel
 {
     /// <summary>
-    /// Logica di interazione per App.xaml
+    /// Application Entry
     /// </summary>
     public partial class App : Application
     {
@@ -86,6 +87,21 @@ namespace AutoSquirrel
         /// </summary>
         public AppBootstrapper()
         {
+            using (var mgr = new UpdateManager(@"https://s3-eu-west-1.amazonaws.com/autosquirrel", "AutoSquirrel"))
+            {
+                // We have to re-implement the things Squirrel does for normal applications, because
+                // we're marked as Squirrel-aware
+                SquirrelAwareApp.HandleEvents(
+                    onInitialInstall: v => mgr.CreateShortcutForThisExe(),
+                    onAppUpdate: v =>
+                    {
+                        mgr.CreateShortcutForThisExe();
+
+                        // Update the shortcuts
+                        mgr.CreateShortcutsForExecutable("AutoSquirrel.exe", ShortcutLocation.AppRoot, false);
+                    },
+                    onAppUninstall: v => mgr.RemoveShortcutForThisExe());
+            }
             Initialize();
         }
 

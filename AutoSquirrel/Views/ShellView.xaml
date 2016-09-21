@@ -420,6 +420,7 @@
                                 <Setter Property="ContextMenu">
                                     <Setter.Value>
                                         <ContextMenu StaysOpen="True">
+                                            <MenuItem Command="{Binding Path=Data.RefreshVersionNumber, Source={StaticResource DataContextProxy}}" Header="Refresh Version" />
                                             <MenuItem Command="{Binding Path=Data.AddDirectoryCmd, Source={StaticResource DataContextProxy}}" Header="Add Directory" />
                                             <MenuItem Command="{Binding Path=Data.RemoveItemCmd, Source={StaticResource DataContextProxy}}" Header="Remove Selected Items" />
                                             <MenuItem Command="{Binding Path=Data.RemoveAllItemsCmd, Source={StaticResource DataContextProxy}}" Header="Remove All Items" />

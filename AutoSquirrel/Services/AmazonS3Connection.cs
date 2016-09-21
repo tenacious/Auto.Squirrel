@@ -16,14 +16,12 @@ namespace AutoSquirrel
     public class AmazonS3Connection : WebConnectionBase
     {
         private string _accessKey;
-
         private List<string> _availableRegionList;
 
         //http://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-s3-bucket-naming-requirements.html
         private string _bucketName;
 
         private string _regionName;
-
         private string _secretAccessKey;
 
         /// <summary>

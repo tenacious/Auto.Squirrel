@@ -114,10 +114,7 @@ namespace AutoSquirrel
         /// <summary>
         /// Returns true if this object's Children have not yet been populated.
         /// </summary>
-        public bool HasDummyChild
-        {
-            get { return this.Children.Count == 1 && this.Children[0] == DummyChild; }
-        }
+        public bool HasDummyChild => this.Children.Count == 1 && this.Children[0] == DummyChild;
 
         /// <summary>
         /// Gets or sets a value indicating whether this instance is directory.
@@ -250,18 +247,5 @@ namespace AutoSquirrel
 
             return directories.LastOrDefault();
         }
-
-        //Qui perdo il riferimento su deserilizzazione/serializzazione.
-        //private ItemLink _parent;
-        //[DataMember]
-        //public ItemLink Parent
-        //{
-        //    get { return _parent; }
-        //    set
-        //    {
-        //        _parent = value;
-        //        NotifyOfPropertyChange(() => Parent);
-        //    }
-        //}
     }
 }

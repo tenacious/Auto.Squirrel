@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Controls;
@@ -55,8 +56,6 @@
 
             Loaded += MainWindow_Loaded;
 
-            KeyDown += ShellView_KeyDown;
-
             PackageTreeview.PreviewMouseRightButtonDown += OnPreviewMouseRightButtonDown;
 
             Closing += ShellView_Closing;
@@ -74,11 +73,26 @@
         {
             Task.Run(async () =>
             {
-                using (var mgr = new UpdateManager(@"https://s3-eu-west-1.amazonaws.com/autosquirrel"))
+                using (var mgr = new UpdateManager(@"https://s3-eu-west-1.amazonaws.com/autosquirrel", "AutoSquirrel"))
                 {
                     try
                     {
-                        await mgr.UpdateApp();
+                        if (mgr.IsInstalledApp)
+                        {
+                            var updates = await mgr.CheckForUpdate();
+                            if (updates.ReleasesToApply.Any())
+                            {
+                                var lastVersion = updates.ReleasesToApply.OrderBy(x => x.Version).Last();
+                                await mgr.DownloadReleases(new[] { lastVersion });
+                                await mgr.ApplyReleases(updates);
+                                await mgr.UpdateApp();
+
+                                if (MessageBox.Show("The application has been updated - please restart.", "Restart?", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                                {
+                                    var ignore = Task.Run(() => UpdateManager.RestartApp());
+                                }
+                            }
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -107,12 +121,12 @@
                 items.Add(item as ItemLink);
             }
 
-            ((ShellViewModel)DataContext)._model.SetSelectedItem(items as IList<ItemLink>);
+            ((ShellViewModel)DataContext).Model.SetSelectedItem(items);
         }
 
         private void ShellView_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            var askSave = MessageBox.Show("Do you want save ?", "Exit Application", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+            var askSave = MessageBox.Show("Do you want save?", "Exit Application", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
 
             if (askSave == MessageBoxResult.Cancel)
             {
@@ -122,10 +136,6 @@
 
             if (askSave == MessageBoxResult.Yes)
                 ((ShellViewModel)DataContext).Save();
-        }
-
-        private void ShellView_KeyDown(object sender, KeyEventArgs e)
-        {
         }
     }
 }

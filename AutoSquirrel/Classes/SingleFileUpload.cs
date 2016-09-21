@@ -20,11 +20,8 @@ namespace AutoSquirrel
         private string _connection;
         private string _filename;
         private string _fileSize;
-
         private double _progressPercentage;
-
         private FileUploadStatus _uploadStatus;
-
         private TransferUtility fileTransferUtility;
 
         /// <summary>
@@ -99,13 +96,7 @@ namespace AutoSquirrel
         /// Gets the formatted status.
         /// </summary>
         /// <value>The formatted status.</value>
-        public string FormattedStatus
-        {
-            get
-            {
-                return UploadStatus.ToString();
-            }
-        }
+        public string FormattedStatus => UploadStatus.ToString();
 
         /// <summary>
         /// Gets the full path.

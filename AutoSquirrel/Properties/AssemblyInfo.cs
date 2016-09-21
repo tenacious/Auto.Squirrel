@@ -7,7 +7,6 @@ using System.Windows;
 [assembly: AssemblyConfiguration(".Net 4.6.1")]
 [assembly: AssemblyCompany("https://github.com/ChrisPulman")]
 [assembly: AssemblyProduct("AutoSquirrel")]
-[assembly: AssemblyCopyright("Copyright © ChrisPulman 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
