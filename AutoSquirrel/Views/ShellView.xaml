@@ -8,7 +8,7 @@
     xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
     xmlns:local="clr-namespace:AutoSquirrel"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:mstv="clr-namespace:System.Windows.Controls;assembly=MultiSelectTreeView"
+    xmlns:mstv="clr-namespace:System.Windows.Controls;assembly=DotNetProjects.TreeViewEx"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     x:Name="MainWindow"
     Title="{Binding Path=WindowTitle}"
@@ -353,7 +353,7 @@
                         <local:BindingProxy x:Key="DataContextProxy" Data="{Binding}" />
                     </Grid.Resources>
                     <!--  cal:Message.Attach="[Event OnSelecting] = [Action SetSelectedItem($this.SelectedItems)]"  -->
-                    <mstv:MultiSelectTreeView
+                    <mstv:TreeViewEx
                         x:Name="PackageTreeview"
                         dd:DragDrop.DropHandler="{Binding Path=DataContext.Model, ElementName=MainWindow}"
                         dd:DragDrop.IsDragSource="True"
@@ -361,10 +361,11 @@
                         dd:DragDrop.UseDefaultDragAdorner="True"
                         AllowDrop="True"
                         ItemsSource="{Binding PackageFiles}"
-                        SelectionChanged="PackageTreeview_OnSelecting"
+                        OnSelecting="PackageTreeview_OnSelecting"
+                        SelectionMode="Multiple"
                         Tag="{Binding DataContext, RelativeSource={RelativeSource Self}}">
-                        <mstv:MultiSelectTreeView.Template>
-                            <ControlTemplate TargetType="{x:Type mstv:MultiSelectTreeView}">
+                        <mstv:TreeViewEx.Template>
+                            <ControlTemplate TargetType="{x:Type mstv:TreeViewEx}">
                                 <Border
                                     x:Name="Bd"
                                     Padding="1"
@@ -373,14 +374,6 @@
                                     BorderThickness="{TemplateBinding BorderThickness}"
                                     SnapsToDevicePixels="True">
                                     <Grid>
-                                        <Border
-                                            x:Name="selectionBorder"
-                                            HorizontalAlignment="Left"
-                                            VerticalAlignment="Top"
-                                            Background="{Binding BackgroundSelectionRectangle, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type mstv:MultiSelectTreeView}}}"
-                                            BorderBrush="{Binding BorderBrushSelectionRectangle, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type mstv:MultiSelectTreeView}}}"
-                                            BorderThickness="1"
-                                            Visibility="Collapsed" />
                                         <TextBlock
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Top"
@@ -398,17 +391,11 @@
                                             Source="/AutoSquirrel;component/Images/package_256.png"
                                             Stretch="Uniform" />
                                         <ScrollViewer
-                                            x:Name="scrollViewer"
+                                            x:Name="scroller"
                                             Padding="{TemplateBinding Padding}"
                                             Focusable="false"
-                                            HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                            VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}">
-                                            <ScrollViewer.Resources>
-                                                <Style x:Key="{x:Type ScrollBar}" TargetType="{x:Type ScrollBar}">
-                                                    <Setter Property="UseLayoutRounding" Value="True" />
-                                                </Style>
-                                            </ScrollViewer.Resources>
+                                            SnapsToDevicePixels="True">
+
                                             <ItemsPresenter x:Name="content" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                                         </ScrollViewer>
                                     </Grid>
@@ -419,17 +406,17 @@
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
-                        </mstv:MultiSelectTreeView.Template>
-                        <mstv:MultiSelectTreeView.ContextMenu>
+                        </mstv:TreeViewEx.Template>
+                        <mstv:TreeViewEx.ContextMenu>
                             <ContextMenu>
                                 <MenuItem
                                     x:Name="AddDirectory"
                                     cal:Message.Attach="[Event Click] = [Action AddDirectory]"
                                     Header="Add Directory" />
                             </ContextMenu>
-                        </mstv:MultiSelectTreeView.ContextMenu>
-                        <mstv:MultiSelectTreeView.ItemContainerStyle>
-                            <Style TargetType="{x:Type mstv:MultiSelectTreeViewItem}">
+                        </mstv:TreeViewEx.ContextMenu>
+                        <mstv:TreeViewEx.ItemContainerStyle>
+                            <Style TargetType="{x:Type mstv:TreeViewExItem}">
                                 <Setter Property="ContextMenu">
                                     <Setter.Value>
                                         <ContextMenu StaysOpen="True">
@@ -450,9 +437,9 @@
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
-                        </mstv:MultiSelectTreeView.ItemContainerStyle>
+                        </mstv:TreeViewEx.ItemContainerStyle>
 
-                        <mstv:MultiSelectTreeView.Resources>
+                        <mstv:TreeViewEx.Resources>
 
                             <HierarchicalDataTemplate DataType="{x:Type local:ItemLink}" ItemsSource="{Binding Children}">
                                 <StackPanel Orientation="Horizontal">
@@ -464,8 +451,8 @@
                                     <local:EditableTextBlock Text="{Binding Filename, Mode=TwoWay}" />
                                 </StackPanel>
                             </HierarchicalDataTemplate>
-                        </mstv:MultiSelectTreeView.Resources>
-                    </mstv:MultiSelectTreeView>
+                        </mstv:TreeViewEx.Resources>
+                    </mstv:TreeViewEx>
 
                     <Grid
                         x:Name="DetailGrid"

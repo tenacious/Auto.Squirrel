@@ -61,12 +61,12 @@
             Closing += ShellView_Closing;
         }
 
-        private static MultiSelectTreeView VisualUpwardSearch(DependencyObject source)
+        private static TreeViewExItem VisualUpwardSearch(DependencyObject source)
         {
-            while (source != null && !(source is MultiSelectTreeView))
+            while (source != null && !(source is TreeViewExItem))
                 source = VisualTreeHelper.GetParent(source);
 
-            return source as MultiSelectTreeView;
+            return source as TreeViewExItem;
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -104,7 +104,7 @@
 
         private void OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            MultiSelectTreeView treeViewItem = VisualUpwardSearch(e.OriginalSource as DependencyObject);
+            TreeViewExItem treeViewItem = VisualUpwardSearch(e.OriginalSource as DependencyObject);
 
             if (treeViewItem == null) return;
 
@@ -113,10 +113,10 @@
             //e.Handled = true;
         }
 
-        private void PackageTreeview_OnSelecting(object sender, EventArgs e)
+        private void PackageTreeview_OnSelecting(object sender, SelectionChangedCancelEventArgs e)
         {
             IList<ItemLink> items = new List<ItemLink>();
-            foreach (var item in (sender as MultiSelectTreeView).SelectedItems)
+            foreach (var item in (sender as TreeViewEx).SelectedItems)
             {
                 items.Add(item as ItemLink);
             }
