@@ -551,8 +551,11 @@ namespace AutoSquirrel
 
             var cmd = @" -releasify " + nugetPackagePath + " -releaseDir " + squirrelOutputPath;
 
-            //if (File.Exists(Model.IconFilepath))
-            //  cmd += @" -setupIcon " + Model.IconFilepath ;
+            if (File.Exists(Model.IconFilepath))
+                cmd += @" -i=" + Path.GetFullPath(Model.IconFilepath);
+
+            if (File.Exists(Model.SplashFilepath))
+                cmd += @" -g " + Path.GetFullPath(Model.SplashFilepath);
 
             /*
             https://github.com/Squirrel/Squirrel.Windows/blob/c86d3d0f19418d9f31d244f9c1d96d25a9c0dfb6/src/Update/Program.cs

@@ -380,6 +380,67 @@ namespace AutoSquirrel
         }
         #endregion
 
+        #region SPLASH
+
+        private ICommand _selectSplashCmd;
+        public ICommand SelectSplashCmd
+        {
+            get
+            {
+                return _selectSplashCmd ??
+                       (_selectSplashCmd = new DelegateCommand(SelectSplash));
+            }
+        }
+
+        public void SelectSplash()
+        {
+            var ofd = new System.Windows.Forms.OpenFileDialog
+            {
+                AddExtension = true,
+                DefaultExt = ".gif",
+                Filter = "GIF | *.gif"
+            };
+
+            var o = ofd.ShowDialog();
+
+            if (o != System.Windows.Forms.DialogResult.OK || !File.Exists(ofd.FileName)) return;
+
+            SplashFilepath = ofd.FileName;
+        }
+
+        private string _splashFilepath;
+        [DataMember]
+        public string SplashFilepath
+        {
+            get { return _splashFilepath; }
+
+            set
+            {
+                _splashFilepath = value;
+                NotifyOfPropertyChange(() => SplashFilepath);
+                NotifyOfPropertyChange(() => SplashSource);
+            }
+        }
+
+        public ImageSource SplashSource
+        {
+            get
+            {
+                try
+                {
+                    return GetImageFromFilepath(SplashFilepath);
+                }
+                catch
+                {
+                    //Todo - splasha default
+                    return null;
+                }
+
+            }
+        }
+
+        #endregion
+
         #region Connection 
         //
         // 30/01/2016

@@ -107,6 +107,8 @@
 
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Menu Grid.ColumnSpan="3" DataContext="{Binding ElementName=MainWindow,Path=DataContext}" Margin="0,0,0,20">
                             <MenuItem Header="Project File" FontSize="16" >
@@ -167,6 +169,11 @@
                             Command="{Binding SelectIconCmd}"/>
                         <Border Grid.Row="22" Padding="3" Margin="2" BorderBrush="Gray" Background="White" BorderThickness="1" HorizontalAlignment="Left" Grid.Column="0" Grid.ColumnSpan="2">
                             <Image  Source="{Binding Path=IconSource}" Width="32" Height="32" Margin="3" />
+                        </Border>
+                        <Button Grid.Row="23" Grid.ColumnSpan="2" Grid.Column="0" FontWeight="Bold"  FontSize="14" Content="SPLASH" Style="{StaticResource LinkButton}"
+                            Command="{Binding SelectSplashCmd}"/>
+                        <Border Grid.Row="24" Padding="3" Margin="2" BorderBrush="Gray" Background="White" BorderThickness="1" HorizontalAlignment="Left" Grid.Column="0" Grid.ColumnSpan="2">
+                            <Image  Source="{Binding Path=SplashSource}" Width="32" Height="32" Margin="3" />
                         </Border>
                     </Grid>
 
