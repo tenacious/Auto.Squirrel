@@ -1,5 +1,7 @@
 ﻿namespace AutoSquirrel
 {
+    using Caliburn.Micro;
+    using NuGet;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -8,8 +10,6 @@
     using System.Linq;
     using System.Windows;
     using System.Windows.Input;
-    using Caliburn.Micro;
-    using NuGet;
 
     /// <summary>
     /// Shell View Model
@@ -570,12 +570,12 @@
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
 
-            startInfo.FileName = @"tools\Squirrel.exe";
+            startInfo.FileName = @"tools\Squirrel.Windows.exe";
 
             var cmd = $@" -releasify {nugetPackagePath} -releaseDir {squirrelOutputPath}";
 
-            //if (File.Exists(Model.IconFilepath))
-            //  cmd += @" -setupIcon " + Model.IconFilepath ;
+            if (File.Exists(Model.IconFilepath))
+                cmd += @" -setupIcon " + Model.IconFilepath;
 
             /*
             https://github.com/Squirrel/Squirrel.Windows/blob/c86d3d0f19418d9f31d244f9c1d96d25a9c0dfb6/src/Update/Program.cs

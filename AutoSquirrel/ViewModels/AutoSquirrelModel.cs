@@ -1,5 +1,8 @@
 ﻿namespace AutoSquirrel
 {
+    using FluentValidation;
+    using FluentValidation.Results;
+    using GongSolutions.Wpf.DragDrop;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -12,9 +15,6 @@
     using System.Windows.Input;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
-    using FluentValidation;
-    using FluentValidation.Results;
-    using GongSolutions.Wpf.DragDrop;
 
     /// <summary>
     /// Auto Squirrel Model
@@ -712,6 +712,7 @@
 
             if (mode == 0)
             {
+                fileToUpdate.Add($"{AppId}-{Version}-full.nupkg");
                 fileToUpdate.Add("Setup.exe");
             }
 

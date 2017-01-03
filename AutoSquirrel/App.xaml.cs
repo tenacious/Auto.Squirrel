@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Caliburn.Micro;
+using Squirrel;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Threading;
-using Caliburn.Micro;
-using Squirrel;
 
 namespace AutoSquirrel
 {
@@ -35,7 +35,7 @@ namespace AutoSquirrel
 
                 Trace.Listeners.Add(log);
             }
-            catch (Exception)
+            catch
             {
             }
 
@@ -98,7 +98,7 @@ namespace AutoSquirrel
                         mgr.CreateShortcutForThisExe();
 
                         // Update the shortcuts
-                        mgr.CreateShortcutsForExecutable("AutoSquirrel.exe", ShortcutLocation.AppRoot, false);
+                        mgr.CreateShortcutsForExecutable("AutoSquirrel.exe", ShortcutLocation.Desktop, false);
                     },
                     onAppUninstall: v => mgr.RemoveShortcutForThisExe());
             }
