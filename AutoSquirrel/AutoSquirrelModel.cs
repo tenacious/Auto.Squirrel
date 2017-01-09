@@ -249,6 +249,16 @@ namespace AutoSquirrel
             }
         }
 
+        private ICommand _removeAllItemsCmd;
+        public ICommand RemoveAllItemsCmd
+        {
+            get
+            {
+                return _removeItemCmd ??
+                       (_removeItemCmd = new DelegateCommand(RemoveAllItems));
+            }
+        }
+
         public void AddDirectory()
         {
             if (SelectedLink != null)
@@ -282,6 +292,7 @@ namespace AutoSquirrel
 
             return folderName;
         }
+
 
         public void RemoveItem()
         {
@@ -886,6 +897,13 @@ namespace AutoSquirrel
 
             foreach (var node in list)
                 RemoveFromTreeview(node);
+        }
+
+        public void RemoveAllItems()
+        {
+            _packageFiles.Clear();
+
+            NotifyOfPropertyChange(() => PackageFiles);
         }
 
         private static void SearchNodeByFilepath(string filepath, ObservableCollection<ItemLink> root, List<ItemLink> rslt)

@@ -184,6 +184,7 @@
                         <StackPanel Orientation="Horizontal">
                             <Image Source="Images/info_16_white.png" Width="16" Margin="5,0"/>
                             <TextBlock Text="INSTALLER PACKAGE CONTENT" Foreground="White" FontSize="14" />
+                            <Button Content="Remove All" Command="{Binding RemoveAllItemsCmd}" Foreground="White" FontSize="14" />
                         </StackPanel>
                     </GroupBox.Header>
                     <Grid>
