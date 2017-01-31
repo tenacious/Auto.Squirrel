@@ -32,22 +32,24 @@
         /// </summary>
         public ShellViewModel()
         {
-            Model = new AutoSquirrelModel();
+            this.Model = new AutoSquirrelModel();
 
-            UserPreference = PathFolderHelper.LoadUserPreference();
+            this.UserPreference = PathFolderHelper.LoadUserPreference();
 
-            var last = UserPreference.LastOpenedProject.LastOrDefault();
+            var last = this.UserPreference.LastOpenedProject.LastOrDefault();
 
             if (!string.IsNullOrEmpty(last) && File.Exists(last))
+            {
                 OpenProject(last);
+            }
         }
 
         /// <summary>
         /// Gets the abort package creation command.
         /// </summary>
         /// <value>The abort package creation command.</value>
-        public ICommand AbortPackageCreationCmd => _abortPackageCreationCmd ??
-       (_abortPackageCreationCmd = new DelegateCommand(AbortPackageCreation));
+        public ICommand AbortPackageCreationCmd => this._abortPackageCreationCmd ??
+       (this._abortPackageCreationCmd = new DelegateCommand(this.AbortPackageCreation));
 
         /// <summary>
         /// Gets or sets the current package creation stage.
@@ -57,13 +59,13 @@
         {
             get
             {
-                return _currentPackageCreationStage;
+                return this._currentPackageCreationStage;
             }
 
             set
             {
-                _currentPackageCreationStage = value;
-                NotifyOfPropertyChange(() => CurrentPackageCreationStage);
+                this._currentPackageCreationStage = value;
+                NotifyOfPropertyChange(() => this.CurrentPackageCreationStage);
             }
         }
 
@@ -75,13 +77,13 @@
         {
             get
             {
-                return Model.CurrentFilePath;
+                return this.Model.CurrentFilePath;
             }
 
             set
             {
-                Model.CurrentFilePath = value;
-                NotifyOfPropertyChange(() => FilePath);
+                this.Model.CurrentFilePath = value;
+                NotifyOfPropertyChange(() => this.FilePath);
             }
         }
 
@@ -93,13 +95,13 @@
         {
             get
             {
-                return _isBusy;
+                return this._isBusy;
             }
 
             set
             {
-                _isBusy = value;
-                NotifyOfPropertyChange(() => IsBusy);
+                this._isBusy = value;
+                NotifyOfPropertyChange(() => this.IsBusy);
             }
         }
 
@@ -111,13 +113,13 @@
         {
             get
             {
-                return _model;
+                return this._model;
             }
 
             set
             {
-                _model = value;
-                NotifyOfPropertyChange(() => Model);
+                this._model = value;
+                NotifyOfPropertyChange(() => this.Model);
             }
         }
 
@@ -138,8 +140,10 @@
             get
             {
                 var fp = "New Project" + "*";
-                if (!string.IsNullOrWhiteSpace(FilePath))
-                    fp = Path.GetFileNameWithoutExtension(FilePath);
+                if (!string.IsNullOrWhiteSpace(this.FilePath))
+                {
+                    fp = Path.GetFileNameWithoutExtension(this.FilePath);
+                }
 
                 return string.Format("{0} {1} - {2}", PathFolderHelper.ProgramName, PathFolderHelper.GetProgramVersion(), fp);
             }
@@ -150,15 +154,17 @@
         /// </summary>
         public void AbortPackageCreation()
         {
-            if (ActiveBackgroungWorker != null)
+            if (this.ActiveBackgroungWorker != null)
             {
-                ActiveBackgroungWorker.CancelAsync();
+                this.ActiveBackgroungWorker.CancelAsync();
 
-                if (exeProcess != null)
-                    exeProcess.Kill();
+                if (this.exeProcess != null)
+                {
+                    this.exeProcess.Kill();
+                }
             }
 
-            _abortPackageFlag = true;
+            this._abortPackageFlag = true;
         }
 
         /// <summary>
@@ -168,12 +174,17 @@
         {
             var rslt = MessageBox.Show("Save current project ?", "New Project", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
 
-            if (rslt == MessageBoxResult.Cancel) return;
+            if (rslt == MessageBoxResult.Cancel)
+            {
+                return;
+            }
 
             if (rslt == MessageBoxResult.Yes)
+            {
                 Save();
+            }
 
-            Model = new AutoSquirrelModel();
+            this.Model = new AutoSquirrelModel();
         }
 
         /// <summary>
@@ -192,11 +203,16 @@
 
                 var iniDir = PathFolderHelper.GetMyDirectory(MyDirectory.Project);
                 if (!string.IsNullOrWhiteSpace(iniDir))
+                {
                     ofd.InitialDirectory = iniDir;
+                }
 
                 var o = ofd.ShowDialog();
 
-                if (o != System.Windows.Forms.DialogResult.OK || !File.Exists(ofd.FileName)) return;
+                if (o != System.Windows.Forms.DialogResult.OK || !File.Exists(ofd.FileName))
+                {
+                    return;
+                }
 
                 OpenProject(ofd.FileName);
 
@@ -224,21 +240,24 @@
                     return;
                 }
 
-                FilePath = filepath;
+                this.FilePath = filepath;
 
                 var m = FileUtility.Deserialize<AutoSquirrelModel>(filepath);
 
-                if (m == null) return;
+                if (m == null)
+                {
+                    return;
+                }
 
-                Model = m;
+                this.Model = m;
 
-                Model.PackageFiles = AutoSquirrelModel.OrderFileList(Model.PackageFiles);
+                this.Model.PackageFiles = AutoSquirrelModel.OrderFileList(this.Model.PackageFiles);
 
-                Model.RefreshPackageVersion();
+                this.Model.RefreshPackageVersion();
 
                 AddLastProject(filepath);
 
-                NotifyOfPropertyChange(() => WindowTitle);
+                NotifyOfPropertyChange(() => this.WindowTitle);
             }
             catch (Exception)
             {
@@ -257,23 +276,27 @@
         {
             try
             {
-                if (ActiveBackgroungWorker != null && ActiveBackgroungWorker.IsBusy)
+                if (this.ActiveBackgroungWorker != null && this.ActiveBackgroungWorker.IsBusy)
                 {
                     Trace.TraceError("You shouldn't be here !");
                     return;
                 }
 
-                Model.RefreshPackageVersion();
+                this.Model.UploadQueue.Clear();
+                this.Model.RefreshPackageVersion();
 
-                Trace.WriteLine("START PUBLISHING ! : " + Model.Title);
+                Trace.WriteLine("START PUBLISHING ! : " + this.Model.Title);
 
                 // 1) Check validity
-                //var validatingMessage = Model.Validate();
-                if (!Model.IsValid)
+                if (!this.Model.IsValid)
+                {
                     throw new Exception("Package Details are invalid or incomplete !");
+                }
 
-                if (Model.SelectedConnection == null || !Model.SelectedConnection.IsValid)
+                if (this.Model.SelectedConnection == null || !this.Model.SelectedConnection.IsValid)
+                {
                     throw new Exception("Selected connection details are not valid !");
+                }
 
                 Trace.WriteLine("DATA VALIDATE - OK ! ");
 
@@ -282,18 +305,20 @@
                 // I proceed only if i created the project .asproj file and directory I need existing
                 // directory to create the packages.
 
-                if (!_isSaved)
+                if (!this._isSaved)
+                {
                     return;
+                }
 
-                IsBusy = true;
+                this.IsBusy = true;
 
-                ActiveBackgroungWorker = new BackgroundWorker() { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
+                this.ActiveBackgroungWorker = new BackgroundWorker() { WorkerReportsProgress = true, WorkerSupportsCancellation = true };
 
-                ActiveBackgroungWorker.DoWork += ActiveBackgroungWorker_DoWork;
-                ActiveBackgroungWorker.RunWorkerCompleted += PackageCreationCompleted;
-                ActiveBackgroungWorker.ProgressChanged += ActiveBackgroungWorker_ProgressChanged;
+                this.ActiveBackgroungWorker.DoWork += this.ActiveBackgroungWorker_DoWork;
+                this.ActiveBackgroungWorker.RunWorkerCompleted += this.PackageCreationCompleted;
+                this.ActiveBackgroungWorker.ProgressChanged += this.ActiveBackgroungWorker_ProgressChanged;
 
-                ActiveBackgroungWorker.RunWorkerAsync(this);
+                this.ActiveBackgroungWorker.RunWorkerAsync(this);
             }
             catch (Exception ex)
             {
@@ -309,15 +334,13 @@
         /// 2) Create Nuget package
         /// 3) Squirrel relasify
         /// 4) Publish to amazon the updated file ( to get the update file , search the timedate &gt;
-        ///    of building time )
-        ///
-        /// - Possibly in async way..
+        ///    of building time ) /// - Possibly in async way..
         /// - Must be callable from command line, so i can optionally start this process from at the
         ///   end of visual studio release build
         /// </summary>
         public void PublishPackageComplete()
         {
-            _publishMode = 0;
+            this._publishMode = 0;
             PublishPackage();
         }
 
@@ -326,7 +349,7 @@
         /// </summary>
         public void PublishPackageOnlyUpdate()
         {
-            _publishMode = 1;
+            this._publishMode = 1;
             PublishPackage();
         }
 
@@ -335,34 +358,38 @@
         /// </summary>
         public void Save()
         {
-            if (string.IsNullOrWhiteSpace(FilePath))
+            if (string.IsNullOrWhiteSpace(this.FilePath))
             {
                 SaveAs();
                 return;
             }
 
-            var filename = Path.GetFileNameWithoutExtension(FilePath);
+            var filename = Path.GetFileNameWithoutExtension(this.FilePath);
 
-            var baseDir = Path.GetDirectoryName(FilePath);
+            var baseDir = Path.GetDirectoryName(this.FilePath);
 
-            Model.NupkgOutputPath = baseDir + Path.DirectorySeparatorChar + filename + "_files" + PathFolderHelper.PackageDirectory;
-            Model.SquirrelOutputPath = baseDir + Path.DirectorySeparatorChar + filename + "_files" + PathFolderHelper.ReleasesDirectory;
+            this.Model.NupkgOutputPath = baseDir + Path.DirectorySeparatorChar + filename + "_files" + PathFolderHelper.PackageDirectory;
+            this.Model.SquirrelOutputPath = baseDir + Path.DirectorySeparatorChar + filename + "_files" + PathFolderHelper.ReleasesDirectory;
 
-            if (!Directory.Exists(Model.NupkgOutputPath))
-                Directory.CreateDirectory(Model.NupkgOutputPath);
+            if (!Directory.Exists(this.Model.NupkgOutputPath))
+            {
+                Directory.CreateDirectory(this.Model.NupkgOutputPath);
+            }
 
-            if (!Directory.Exists(Model.SquirrelOutputPath))
-                Directory.CreateDirectory(Model.SquirrelOutputPath);
+            if (!Directory.Exists(this.Model.SquirrelOutputPath))
+            {
+                Directory.CreateDirectory(this.Model.SquirrelOutputPath);
+            }
 
-            FileUtility.SerializeToFile(FilePath, Model);
+            FileUtility.SerializeToFile(this.FilePath, this.Model);
 
-            Trace.WriteLine("FILE SAVED ! : " + FilePath);
+            Trace.WriteLine("FILE SAVED ! : " + this.FilePath);
 
-            _isSaved = true;
+            this._isSaved = true;
 
-            AddLastProject(FilePath);
+            AddLastProject(this.FilePath);
 
-            NotifyOfPropertyChange(() => WindowTitle);
+            NotifyOfPropertyChange(() => this.WindowTitle);
         }
 
         /// <summary>
@@ -370,7 +397,7 @@
         /// </summary>
         public void SaveAs()
         {
-            var previousFilePath = FilePath;
+            var previousFilePath = this.FilePath;
 
             try
             {
@@ -385,27 +412,24 @@
                 var iniDir = PathFolderHelper.GetMyDirectory(MyDirectory.Project);
 
                 if (!string.IsNullOrWhiteSpace(iniDir))
+                {
                     saveFileDialog.InitialDirectory = iniDir;
+                }
 
-                if (saveFileDialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+                if (saveFileDialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                {
+                    return;
+                }
 
-                //Singleton.Preference.DefaultProjectDir = Path.GetDirectoryName(saveFileDialog.FileName);
-
-                //Singleton.SavePreference();
-
-                FilePath = saveFileDialog.FileName;
+                this.FilePath = saveFileDialog.FileName;
 
                 Save();
-
-                //return true;
             }
             catch (Exception)
             {
                 MessageBox.Show("Error on saving");
 
-                FilePath = previousFilePath;
-
-                //return false;
+                this.FilePath = previousFilePath;
             }
         }
 
@@ -420,7 +444,7 @@
                 Title = model.Title,
             };
 
-            PackageBuilder builder = new PackageBuilder();
+            var builder = new PackageBuilder();
             builder.Populate(metadata);
 
             //As Squirrel convention i put everything in lib/net45 folder
@@ -436,7 +460,7 @@
 
             builder.PopulateFiles("", files.ToArray());
 
-            var nugetPath = model.NupkgOutputPath + Path.DirectorySeparatorChar + model.AppId + "." + model.Version + ".nupkg";
+            var nugetPath = model.NupkgOutputPath + model.AppId + "." + model.Version + ".nupkg";
 
             using (FileStream stream = File.Open(nugetPath, FileMode.OpenOrCreate))
             {
@@ -461,21 +485,14 @@
             }
             else
             {
-                //if (File.Exists(node.SourceFilepath))
+                var manifest = new ManifestFile()
                 {
-                    var manifest = new ManifestFile();
+                    Source = node.SourceFilepath
+                };
 
-                    manifest.Source = node.SourceFilepath;
-                    {
-                        var extension = Path.GetExtension(node.SourceFilepath);
+                manifest.Target = directoryBase + "/" + node.Filename;
 
-                        //var filename = Path.GetFileNameWithoutExtension(node.Filename);
-                        //manifest.Target = directoryBase + "/" + filename + "_ll_" + extension;
-                        manifest.Target = directoryBase + "/" + node.Filename;
-                    }
-
-                    files.Add(manifest);
-                }
+                files.Add(manifest);
             }
         }
 
@@ -483,20 +500,22 @@
         {
             try
             {
-                ActiveBackgroungWorker.ReportProgress(20, "NUGET PACKAGE CREATING");
+                this.ActiveBackgroungWorker.ReportProgress(20, "NUGET PACKAGE CREATING");
 
                 // Create Nuget Package from package treeview.
-                var nugetPackagePath = CreateNugetPackage(Model);
-                Trace.WriteLine("CREATED NUGET PACKAGE to : " + Model.NupkgOutputPath);
+                var nugetPackagePath = CreateNugetPackage(this.Model);
+                Trace.WriteLine("CREATED NUGET PACKAGE to : " + this.Model.NupkgOutputPath);
 
-                if (ActiveBackgroungWorker.CancellationPending)
+                if (this.ActiveBackgroungWorker.CancellationPending)
+                {
                     return;
+                }
 
-                ActiveBackgroungWorker.ReportProgress(40, "SQUIRREL PACKAGE CREATING");
+                this.ActiveBackgroungWorker.ReportProgress(40, "SQUIRREL PACKAGE CREATING");
 
                 // Releasify
-                SquirrelReleasify(nugetPackagePath, Model.SquirrelOutputPath);
-                Trace.WriteLine("CREATED SQUIRREL PACKAGE to : " + Model.SquirrelOutputPath);
+                SquirrelReleasify(nugetPackagePath, this.Model.SquirrelOutputPath);
+                Trace.WriteLine("CREATED SQUIRREL PACKAGE to : " + this.Model.SquirrelOutputPath);
             }
             catch (Exception ex)
             {
@@ -508,21 +527,26 @@
         {
             //todo : Update busy indicator information.
             var message = e.UserState as string;
-            if (message == null) return;
+            if (message == null)
+            {
+                return;
+            }
 
-            CurrentPackageCreationStage = message;
+            this.CurrentPackageCreationStage = message;
         }
 
         private void AddLastProject(string filePath)
         {
-            var existing = UserPreference.LastOpenedProject.Where(p => p.ToLower() == filePath.ToLower()).ToList();
+            var existing = this.UserPreference.LastOpenedProject.Where(p => p.ToLower() == filePath.ToLower()).ToList();
 
             foreach (var fp in existing)
-                UserPreference.LastOpenedProject.Remove(fp);
+            {
+                this.UserPreference.LastOpenedProject.Remove(fp);
+            }
 
-            UserPreference.LastOpenedProject.Add(filePath);
+            this.UserPreference.LastOpenedProject.Add(filePath);
 
-            PathFolderHelper.SavePreference(UserPreference);
+            PathFolderHelper.SavePreference(this.UserPreference);
         }
 
         /// <summary>
@@ -532,26 +556,27 @@
         /// <param name="e"></param>
         private void PackageCreationCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            IsBusy = false;
+            this.IsBusy = false;
 
-            CurrentPackageCreationStage = string.Empty;
+            this.CurrentPackageCreationStage = string.Empty;
 
-            ActiveBackgroungWorker.Dispose();
+            this.ActiveBackgroungWorker.Dispose();
 
-            ActiveBackgroungWorker = null;
+            this.ActiveBackgroungWorker = null;
 
-            if (_abortPackageFlag)
+            if (this._abortPackageFlag)
             {
-                if (Model.UploadQueue != null)
-                    Model.UploadQueue.Clear();
+                if (this.Model.UploadQueue != null)
+                {
+                    this.Model.UploadQueue.Clear();
+                }
 
-                _abortPackageFlag = false;
+                this._abortPackageFlag = false;
 
                 return;
             }
 
-            var ex = e.Result as Exception;
-            if (ex != null)
+            if (e.Result is Exception ex)
             {
                 MessageBox.Show(ex.Message, "Package creation error", MessageBoxButton.OK, MessageBoxImage.Error);
 
@@ -559,24 +584,17 @@
                 return;
             }
 
-            if (e.Cancelled) return;
+            if (e.Cancelled)
+            {
+                return;
+            }
 
             // Start uploading generated files.
-            Model.BeginUpdatedFiles(_publishMode);
+            this.Model.BeginUpdatedFiles(this._publishMode);
         }
 
         private void SquirrelReleasify(string nugetPackagePath, string squirrelOutputPath)
         {
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-
-            startInfo.FileName = @"tools\Squirrel.exe";
-
-            var cmd = $@" -releasify {nugetPackagePath} -releaseDir {squirrelOutputPath}";
-
-            //if (File.Exists(Model.IconFilepath))
-            //  cmd += @" -setupIcon " + Model.IconFilepath ;
-
             /*
             https://github.com/Squirrel/Squirrel.Windows/blob/c86d3d0f19418d9f31d244f9c1d96d25a9c0dfb6/src/Update/Program.cs
                     "Options:",
@@ -594,11 +612,21 @@
                     { "l=|shortcut-locations=", "Comma-separated string of shortcut locations, e.g. 'Desktop,StartMenu'", v => shortcutArgs = v},
                     { "no-msi", "Don't generate an MSI package", v => noMsi = true},
             */
-            startInfo.Arguments = cmd;
+            var cmd = $@" -releasify {nugetPackagePath} -releaseDir {squirrelOutputPath}";
 
-            using (exeProcess = Process.Start(startInfo))
+            //if (File.Exists(Model.IconFilepath))
+            //  cmd += @" -setupIcon " + Model.IconFilepath ;
+
+            var startInfo = new ProcessStartInfo()
             {
-                exeProcess.WaitForExit();
+                WindowStyle = ProcessWindowStyle.Hidden,
+                FileName = @"tools\Squirrel-Windows.exe",
+                Arguments = cmd
+            };
+
+            using (this.exeProcess = Process.Start(startInfo))
+            {
+                this.exeProcess.WaitForExit();
             }
         }
     }

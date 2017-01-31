@@ -19,7 +19,7 @@ namespace AutoSquirrel
         /// </summary>
         public FileSystemConnection()
         {
-            ConnectionName = "File System";
+            this.ConnectionName = "File System";
         }
 
         /// <summary>
@@ -31,15 +31,15 @@ namespace AutoSquirrel
         {
             get
             {
-                return _fileSystemPath;
+                return this._fileSystemPath;
             }
 
             set
             {
-                _fileSystemPath = value;
+                this._fileSystemPath = value;
 
-                NotifyOfPropertyChange(() => FileSystemPath);
-                NotifyOfPropertyChange(() => SetupDownloadUrl);
+                NotifyOfPropertyChange(() => this.FileSystemPath);
+                NotifyOfPropertyChange(() => this.SetupDownloadUrl);
             }
         }
 
@@ -51,10 +51,12 @@ namespace AutoSquirrel
         {
             get
             {
-                if (string.IsNullOrWhiteSpace(FileSystemPath))
+                if (string.IsNullOrWhiteSpace(this.FileSystemPath))
+                {
                     return "Missing Parameter";
+                }
 
-                return FileSystemPath + "/Setup.exe";
+                return this.FileSystemPath + "/Setup.exe";
             }
         }
 
@@ -66,7 +68,9 @@ namespace AutoSquirrel
         {
             var commonValid = new Validator().Validate(this);
             if (!commonValid.IsValid)
+            {
                 return commonValid;
+            }
 
             return base.Validate();
         }

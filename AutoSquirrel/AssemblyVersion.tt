@@ -41,6 +41,6 @@
   
  using System.Reflection;
  [assembly: AssemblyCopyright("Copyright © ChrisPulman <#= year #>")]
- [assembly: AssemblyVersion("1.0.<#= revision #>.0")]
+ [assembly: AssemblyVersion("1.1.<#= revision #>")]
  [assembly: AssemblyMetadata("SquirrelAwareVersion", "1")]
- [assembly: AssemblyFileVersion("1.0.<#= revision #>.0")]
+ [assembly: AssemblyFileVersion("1.1.<#= revision #>")]

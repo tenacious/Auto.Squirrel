@@ -28,8 +28,12 @@ namespace AutoSquirrel
         /// <exception cref="ArgumentNullException"></exception>
         public DelegateCommand(System.Action execute, Predicate<object> canExecute)
         {
-            if (execute == null) throw new ArgumentNullException(nameof(execute));
-            _execute = execute; _canExecute = canExecute;
+            if (execute == null)
+            {
+                throw new ArgumentNullException(nameof(execute));
+            }
+
+            this._execute = execute; this._canExecute = canExecute;
         }
 
         /// <summary>
@@ -46,7 +50,7 @@ namespace AutoSquirrel
         /// </param>
         /// <returns>true if this command can be executed; otherwise, false.</returns>
         [DebuggerStepThrough]
-        public bool CanExecute(object parameter) => _canExecute == null ? true : _canExecute(parameter);
+        public bool CanExecute(object parameter) => this._canExecute == null ? true : this._canExecute(parameter);
 
         /// <summary>
         /// Defines the method to be called when the command is invoked.
@@ -57,7 +61,7 @@ namespace AutoSquirrel
         /// </param>
         public void Execute(object parameter)
         {
-            _execute();
+            this._execute();
         }
     }
 }

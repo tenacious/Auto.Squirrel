@@ -39,7 +39,7 @@ namespace AutoSquirrel
             {
             }
 
-            this.DispatcherUnhandledException += App_DispatcherUnhandledException;
+            this.DispatcherUnhandledException += this.App_DispatcherUnhandledException;
             base.OnStartup(e);
         }
 

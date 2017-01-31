@@ -19,13 +19,13 @@ namespace AutoSquirrel
         {
             get
             {
-                return _connectionName;
+                return this._connectionName;
             }
 
             set
             {
-                _connectionName = value;
-                NotifyOfPropertyChange(() => ConnectionName);
+                this._connectionName = value;
+                NotifyOfPropertyChange(() => this.ConnectionName);
             }
         }
     }

@@ -19,7 +19,7 @@ namespace AutoSquirrel
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            DialogResult = true;
+            this.DialogResult = true;
             Close();
         }
 

@@ -34,7 +34,11 @@ namespace AutoSquirrel
             get
             {
                 var __ValidationResults = Validate();
-                if (__ValidationResults == null) return string.Empty;
+                if (__ValidationResults == null)
+                {
+                    return string.Empty;
+                }
+
                 var __ColumnResults = __ValidationResults.Errors.FirstOrDefault(x => string.Compare(x.PropertyName, columnName, true) == 0);
                 return __ColumnResults != null ? __ColumnResults.ErrorMessage : string.Empty;
             }

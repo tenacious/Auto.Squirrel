@@ -8,7 +8,7 @@
     xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
     xmlns:local="clr-namespace:AutoSquirrel"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:mstv="clr-namespace:System.Windows.Controls;assembly=DotNetProjects.TreeViewEx"
+    xmlns:mstv="clr-namespace:System.Windows.Controls;assembly=MultiSelectTreeView"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     x:Name="MainWindow"
     Title="{Binding Path=WindowTitle}"
@@ -16,10 +16,12 @@
     Height="768"
     MinWidth="525"
     MinHeight="400"
+    d:DataContext="{d:DesignInstance local:ShellViewModel,
+                                     IsDesignTimeCreatable=False}"
     GlowBrush="{DynamicResource AccentColorBrush}"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
-    <!--<xctk:BusyIndicator
+    <xctk:BusyIndicator
         x:Name="ShellBusyIndicator"
         DisplayAfter="0"
         IsBusy="{Binding Path=IsBusy}">
@@ -32,7 +34,7 @@
                         FontWeight="Bold"
                         Text="PACKAGE CREATION" />
                     <StackPanel Margin="4" HorizontalAlignment="Stretch">
-                        <TextBlock FontSize="12" Text="{Binding Path=DataContext.CurrentPackageCreationStage, RelativeSource={RelativeSource x:Type xctk:BusyIndicator}}" />
+                        <TextBlock FontSize="12" Text="{Binding CurrentPackageCreationStage}" />
                         <ProgressBar
                             Height="25"
                             Margin="5"
@@ -42,7 +44,7 @@
                         Grid.Column="1"
                         Margin="2,0,0,0"
                         HorizontalAlignment="Center"
-                        Command="{Binding Path=DataContext.AbortPackageCreationCmd, RelativeSource={RelativeSource x:Type xctk:BusyIndicator}}"
+                        Command="{Binding AbortPackageCreationCmd}"
                         Content="Cancel" />
                 </StackPanel>
             </DataTemplate>
@@ -51,603 +53,612 @@
             <Style TargetType="ProgressBar">
                 <Setter Property="Visibility" Value="Collapsed" />
             </Style>
-        </xctk:BusyIndicator.ProgressBarStyle>-->
+        </xctk:BusyIndicator.ProgressBarStyle>
 
-    <Grid>
-        <Grid.Resources>
-            <Style x:Key="ListViewHideHeader" TargetType="{x:Type GridViewColumnHeader}">
-                <Setter Property="Visibility" Value="Collapsed" />
-            </Style>
+        <Grid>
+            <Grid.Resources>
+                <Style x:Key="ListViewHideHeader" TargetType="{x:Type GridViewColumnHeader}">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </Style>
 
-            <Style x:Key="Label" TargetType="{x:Type TextBlock}">
-                <Setter Property="FontSize" Value="14" />
-            </Style>
-        </Grid.Resources>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <Grid
-            x:Name="MainGrid"
-            Grid.Row="2"
-            DataContext="{Binding Model}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" MinWidth="250" />
-                <ColumnDefinition Width="7" />
-                <ColumnDefinition Width="*" MinWidth="300" />
-            </Grid.ColumnDefinitions>
+                <Style x:Key="Label" TargetType="{x:Type TextBlock}">
+                    <Setter Property="FontSize" Value="14" />
+                </Style>
+            </Grid.Resources>
             <Grid.RowDefinitions>
-                <RowDefinition Height=".75*" />
-                <RowDefinition Height=".25*" />
-                <RowDefinition Height="60" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <GroupBox Grid.RowSpan="2">
-                <GroupBox.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <Image
-                            Width="16"
-                            Margin="5,0"
-                            Source="/AutoSquirrel;component/Images/info_16_white.png" />
-                        <TextBlock
-                            Foreground="White"
-                            FontSize="14"
-                            Text="PACKAGE DETAILS" />
-                    </StackPanel>
-                </GroupBox.Header>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="24" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="10" />
-                        <RowDefinition Height="Auto" />
+            <Grid
+                x:Name="MainGrid"
+                Grid.Row="2"
+                DataContext="{Binding Model}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" MinWidth="250" />
+                    <ColumnDefinition Width="7" />
+                    <ColumnDefinition Width="*" MinWidth="300" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height=".75*" />
+                    <RowDefinition Height=".25*" />
+                    <RowDefinition Height="60" />
+                </Grid.RowDefinitions>
+                <GroupBox Grid.RowSpan="2">
+                    <GroupBox.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <Image
+                                Width="16"
+                                Margin="5,0"
+                                Source="/AutoSquirrel;component/Images/info_16_white.png" />
+                            <TextBlock
+                                FontSize="14"
+                                Foreground="White"
+                                Text="PACKAGE DETAILS" />
+                        </StackPanel>
+                    </GroupBox.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="24" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="10" />
+                            <RowDefinition Height="Auto" />
 
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="10" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="10" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
 
-                        <RowDefinition Height="10" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="10" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
+                            <RowDefinition Height="10" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="10" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
 
-                        <RowDefinition Height="10" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="10" />
+                            <RowDefinition Height="10" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="10" />
 
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Menu
-                        Grid.ColumnSpan="3"
-                        Margin="0,0,0,20"
-                        DataContext="{Binding ElementName=MainWindow, Path=DataContext}">
-                        <MenuItem FontSize="16" Header="Project File">
-                            <MenuItem.Icon>
-                                <Image
-                                    Width="24"
-                                    Height="24"
-                                    Source="/AutoSquirrel;component/Images/folder_24.png" />
-                            </MenuItem.Icon>
-                            <MenuItem x:Name="CreateNewProject" Header="Create New" />
-                            <MenuItem x:Name="OpenProject" Header="Open" />
-                            <MenuItem x:Name="Save" Header="Save" />
-                            <MenuItem x:Name="SaveAs" Header="Save As" />
-                        </MenuItem>
-
-                        <!--<MenuItem Header="PUBLISH !" x:Name="PublishPackage" FontSize="16" FontWeight="Bold" />-->
-                    </Menu>
-
-                    <TextBlock
-                        Grid.Row="1"
-                        Grid.Column="0"
-                        Grid.ColumnSpan="2"
-                        Style="{StaticResource ResourceKey=Label}"
-                        FontWeight="DemiBold"
-                        Text="APP ID" />
-                    <Image
-                        Grid.Row="2"
-                        Grid.Column="0"
-                        Width="16"
-                        Source="/AutoSquirrel;component/Images/info_16.png" />
-                    <TextBox
-                        Grid.Row="2"
-                        Grid.Column="1"
-                        Controls:TextBoxHelper.Watermark="APP ID"
-                        Text="{Binding Path=AppId, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
-
-                    <TextBlock
-                        Grid.Row="4"
-                        Grid.Column="0"
-                        Grid.ColumnSpan="2"
-                        Style="{StaticResource ResourceKey=Label}"
-                        FontWeight="DemiBold"
-                        Text="VERSION" />
-                    <Image
-                        Grid.Row="5"
-                        Grid.Column="0"
-                        Width="16"
-                        Source="/AutoSquirrel;component/Images/info_16.png"
-                        ToolTip="The version is read from last EXE file added to the package." />
-                    <TextBox
-                        Grid.Row="5"
-                        Grid.Column="1"
-                        Controls:TextBoxHelper.Watermark="APP VERSION"
-                        IsEnabled="{Binding ElementName=cbManualVersion, Path=IsChecked}"
-                        Text="{Binding Path=Version, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
-                    <CheckBox
-                        x:Name="cbManualVersion"
-                        Grid.Row="6"
-                        Grid.Column="1"
-                        Grid.ColumnSpan="2"
-                        VerticalContentAlignment="Center"
-                        Foreground="SteelBlue"
-                        FontStyle="Italic"
-                        Content="Set Version Manually"
-                        IsChecked="{Binding Path=SetVersionManually}" />
-
-                    <TextBlock
-                        Grid.Row="8"
-                        Grid.Column="0"
-                        Grid.ColumnSpan="2"
-                        Style="{StaticResource ResourceKey=Label}"
-                        FontWeight="DemiBold"
-                        Text="TITLE" />
-                    <Image
-                        Grid.Row="9"
-                        Grid.Column="0"
-                        Width="16"
-                        Source="/AutoSquirrel;component/Images/info_16.png" />
-                    <TextBox
-                        Grid.Row="9"
-                        Grid.Column="1"
-                        Controls:TextBoxHelper.Watermark="Title"
-                        Text="{Binding Path=Title, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
-
-                    <TextBlock
-                        Grid.Row="11"
-                        Grid.Column="0"
-                        Grid.ColumnSpan="2"
-                        Style="{StaticResource ResourceKey=Label}"
-                        FontWeight="DemiBold"
-                        Text="DESCRIPTION" />
-                    <Image
-                        Grid.Row="12"
-                        Grid.Column="0"
-                        Width="16"
-                        VerticalAlignment="Top"
-                        Source="/AutoSquirrel;component/Images/info_16.png" />
-                    <TextBox
-                        Grid.Row="12"
-                        Grid.Column="1"
-                        Height="50"
-                        Controls:TextBoxHelper.Watermark="DESCRIPTION"
-                        AcceptsReturn="True"
-                        Text="{Binding Path=Description, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
-
-                    <TextBlock
-                        Grid.Row="14"
-                        Grid.Column="0"
-                        Grid.ColumnSpan="2"
-                        Style="{StaticResource ResourceKey=Label}"
-                        FontWeight="DemiBold"
-                        Text="AUTHORS" />
-                    <Image
-                        Grid.Row="15"
-                        Grid.Column="0"
-                        Width="16"
-                        Source="/AutoSquirrel;component/Images/info_16.png" />
-                    <TextBox
-                        Grid.Row="15"
-                        Grid.Column="1"
-                        Controls:TextBoxHelper.Watermark="AUTHORS"
-                        Text="{Binding Path=Authors, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
-
-                    <TextBlock
-                        Grid.Row="17"
-                        Grid.Column="0"
-                        Grid.ColumnSpan="2"
-                        Style="{StaticResource ResourceKey=Label}"
-                        FontWeight="DemiBold"
-                        Text="UPLOAD LOCATION" />
-                    <Image
-                        Grid.Row="18"
-                        Grid.Column="0"
-                        Width="16"
-                        Source="/AutoSquirrel;component/Images/info_16.png">
-                        <Image.ToolTip>
-                            <StackPanel>
-                                <Image Source="/AutoSquirrel;component/Images/help/upload_location.png" />
-                            </StackPanel>
-                        </Image.ToolTip>
-                    </Image>
-                    <ComboBox
-                        Grid.Row="18"
-                        Grid.Column="1"
-                        ItemsSource="{Binding AvailableUploadLocation}"
-                        SelectedItem="{Binding SelectedConnectionString, ValidatesOnDataErrors=True}" />
-                    <StackPanel
-                        Grid.Row="19"
-                        Grid.Column="1"
-                        HorizontalAlignment="Right"
-                        Orientation="Horizontal">
-                        <Image
-                            Width="16"
-                            Height="16"
-                            Margin="5,0"
-                            Source="/AutoSquirrel;component/Images/edit_16.png" />
-                        <Button
-                            Style="{StaticResource ResourceKey=LinkButton}"
-                            FontSize="16"
-                            Command="{Binding EditConnectionCmd}"
-                            Content="Edit Connection" />
-                    </StackPanel>
-
-                    <Button
-                        Grid.Row="21"
-                        Grid.Column="0"
-                        Grid.ColumnSpan="2"
-                        Style="{StaticResource LinkButton}"
-                        FontSize="14"
-                        FontWeight="Bold"
-                        Command="{Binding SelectIconCmd}"
-                        Content="APP ICON" />
-                    <Border
-                        Grid.Row="22"
-                        Grid.Column="0"
-                        Grid.ColumnSpan="2"
-                        Margin="2"
-                        Padding="3"
-                        HorizontalAlignment="Left"
-                        Background="White"
-                        BorderBrush="Gray"
-                        BorderThickness="1">
-                        <Image
-                            Width="32"
-                            Height="32"
-                            Margin="3"
-                            Source="{Binding Path=IconSource}" />
-                    </Border>
-                </Grid>
-            </GroupBox>
-            <GridSplitter
-                Grid.RowSpan="2"
-                Grid.Column="1"
-                Width="2"
-                Margin="1,40"
-                HorizontalAlignment="Center"
-                BorderBrush="#FFFFFF"
-                IsTabStop="False" />
-            <GroupBox Grid.Column="2">
-                <GroupBox.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <Image
-                            Width="16"
-                            Margin="5,0"
-                            Source="/AutoSquirrel;component/Images/info_16_white.png" />
-                        <TextBlock
-                            Foreground="White"
-                            FontSize="14"
-                            Text="INSTALLER PACKAGE CONTENT" />
-                    </StackPanel>
-                </GroupBox.Header>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Grid.Resources>
-                        <local:BindingProxy x:Key="DataContextProxy" Data="{Binding}" />
-                    </Grid.Resources>
-                    <!--  cal:Message.Attach="[Event OnSelecting] = [Action SetSelectedItem($this.SelectedItems)]"  -->
-                    <mstv:TreeViewEx
-                        x:Name="PackageTreeview"
-                        dd:DragDrop.DropHandler="{Binding Path=DataContext.Model, ElementName=MainWindow}"
-                        dd:DragDrop.IsDragSource="True"
-                        dd:DragDrop.IsDropTarget="True"
-                        dd:DragDrop.UseDefaultDragAdorner="True"
-                        AllowDrop="True"
-                        ItemsSource="{Binding PackageFiles}"
-                        OnSelecting="PackageTreeview_OnSelecting"
-                        SelectionMode="Multiple"
-                        Tag="{Binding DataContext, RelativeSource={RelativeSource Self}}">
-                        <mstv:TreeViewEx.Template>
-                            <ControlTemplate TargetType="{x:Type mstv:TreeViewEx}">
-                                <Border
-                                    x:Name="Bd"
-                                    Padding="1"
-                                    Background="{TemplateBinding Background}"
-                                    BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="{TemplateBinding BorderThickness}"
-                                    SnapsToDevicePixels="True">
-                                    <Grid>
-                                        <TextBlock
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Top"
-                                            Foreground="#607D8B"
-                                            Opacity=".5"
-                                            FontSize="50"
-                                            Text="Drag File Here" />
-                                        <Image
-                                            MaxWidth="256"
-                                            MaxHeight="256"
-                                            Margin="0,60,0,0"
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            Opacity=".4"
-                                            Source="/AutoSquirrel;component/Images/package_256.png"
-                                            Stretch="Uniform" />
-                                        <ScrollViewer
-                                            x:Name="scroller"
-                                            Padding="{TemplateBinding Padding}"
-                                            Focusable="false"
-                                            SnapsToDevicePixels="True">
-
-                                            <ItemsPresenter x:Name="content" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                                        </ScrollViewer>
-                                    </Grid>
-                                </Border>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsEnabled" Value="False">
-                                        <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </mstv:TreeViewEx.Template>
-                        <mstv:TreeViewEx.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem
-                                    x:Name="AddDirectory"
-                                    cal:Message.Attach="[Event Click] = [Action AddDirectory]"
-                                    Header="Add Directory" />
-                            </ContextMenu>
-                        </mstv:TreeViewEx.ContextMenu>
-                        <mstv:TreeViewEx.ItemContainerStyle>
-                            <Style TargetType="{x:Type mstv:TreeViewExItem}">
-                                <Setter Property="ContextMenu">
-                                    <Setter.Value>
-                                        <ContextMenu StaysOpen="True">
-                                            <MenuItem Command="{Binding Path=Data.RefreshVersionNumber, Source={StaticResource DataContextProxy}}" Header="Refresh Version" />
-                                            <MenuItem Command="{Binding Path=Data.AddDirectoryCmd, Source={StaticResource DataContextProxy}}" Header="Add Directory" />
-                                            <MenuItem Command="{Binding Path=Data.RemoveItemCmd, Source={StaticResource DataContextProxy}}" Header="Remove Selected Items" />
-                                            <MenuItem Command="{Binding Path=Data.RemoveAllItemsCmd, Source={StaticResource DataContextProxy}}" Header="Remove All Items" />
-                                        </ContextMenu>
-                                    </Setter.Value>
-                                </Setter>
-                                <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
-                                <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
-                                <Setter Property="FontWeight" Value="Normal" />
-                                <Setter Property="BorderThickness" Value="1" />
-                                <Style.Triggers>
-                                    <Trigger Property="IsSelected" Value="True">
-                                        <Setter Property="FontWeight" Value="Bold" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </mstv:TreeViewEx.ItemContainerStyle>
-
-                        <mstv:TreeViewEx.Resources>
-
-                            <HierarchicalDataTemplate DataType="{x:Type local:ItemLink}" ItemsSource="{Binding Children}">
-                                <StackPanel Orientation="Horizontal">
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Menu
+                            Grid.ColumnSpan="3"
+                            Margin="0,0,0,20"
+                            DataContext="{Binding ElementName=MainWindow, Path=DataContext}">
+                            <MenuItem FontSize="16" Header="Project File">
+                                <MenuItem.Icon>
                                     <Image
                                         Width="24"
                                         Height="24"
-                                        Margin="3,0"
-                                        Source="{Binding Path=FileIcon}" />
-                                    <local:EditableTextBlock Text="{Binding Filename, Mode=TwoWay}" />
+                                        Source="/AutoSquirrel;component/Images/folder_24.png" />
+                                </MenuItem.Icon>
+                                <MenuItem x:Name="CreateNewProject" Header="Create New" />
+                                <MenuItem x:Name="OpenProject" Header="Open" />
+                                <MenuItem x:Name="Save" Header="Save" />
+                                <MenuItem x:Name="SaveAs" Header="Save As" />
+                            </MenuItem>
+                        </Menu>
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            FontWeight="DemiBold"
+                            Style="{StaticResource ResourceKey=Label}"
+                            Text="APP ID" />
+                        <Image
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Width="16"
+                            Source="/AutoSquirrel;component/Images/info_16.png" />
+                        <TextBox
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Controls:TextBoxHelper.Watermark="APP ID"
+                            Text="{Binding AppId, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <TextBlock
+                            Grid.Row="4"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            FontWeight="DemiBold"
+                            Style="{StaticResource ResourceKey=Label}"
+                            Text="VERSION" />
+                        <Image
+                            Grid.Row="5"
+                            Grid.Column="0"
+                            Width="16"
+                            Source="/AutoSquirrel;component/Images/info_16.png"
+                            ToolTip="The version is read from last EXE file added to the package." />
+                        <TextBox
+                            Grid.Row="5"
+                            Grid.Column="1"
+                            Controls:TextBoxHelper.Watermark="APP VERSION"
+                            IsEnabled="{Binding ElementName=cbManualVersion, Path=IsChecked}"
+                            Text="{Binding Version, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+                        <CheckBox
+                            x:Name="cbManualVersion"
+                            Grid.Row="6"
+                            Grid.Column="1"
+                            Grid.ColumnSpan="2"
+                            VerticalContentAlignment="Center"
+                            Content="Set Version Manually"
+                            FontStyle="Italic"
+                            Foreground="SteelBlue"
+                            IsChecked="{Binding SetVersionManually}" />
+
+                        <TextBlock
+                            Grid.Row="8"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            FontWeight="DemiBold"
+                            Style="{StaticResource ResourceKey=Label}"
+                            Text="TITLE" />
+                        <Image
+                            Grid.Row="9"
+                            Grid.Column="0"
+                            Width="16"
+                            Source="/AutoSquirrel;component/Images/info_16.png" />
+                        <TextBox
+                            Grid.Row="9"
+                            Grid.Column="1"
+                            Controls:TextBoxHelper.Watermark="Title"
+                            Text="{Binding Title, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <TextBlock
+                            Grid.Row="11"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            FontWeight="DemiBold"
+                            Style="{StaticResource ResourceKey=Label}"
+                            Text="DESCRIPTION" />
+                        <Image
+                            Grid.Row="12"
+                            Grid.Column="0"
+                            Width="16"
+                            VerticalAlignment="Top"
+                            Source="/AutoSquirrel;component/Images/info_16.png" />
+                        <TextBox
+                            Grid.Row="12"
+                            Grid.Column="1"
+                            Height="50"
+                            Controls:TextBoxHelper.Watermark="DESCRIPTION"
+                            AcceptsReturn="True"
+                            Text="{Binding Description, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <TextBlock
+                            Grid.Row="14"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            FontWeight="DemiBold"
+                            Style="{StaticResource ResourceKey=Label}"
+                            Text="AUTHORS" />
+                        <Image
+                            Grid.Row="15"
+                            Grid.Column="0"
+                            Width="16"
+                            Source="/AutoSquirrel;component/Images/info_16.png" />
+                        <TextBox
+                            Grid.Row="15"
+                            Grid.Column="1"
+                            Controls:TextBoxHelper.Watermark="AUTHORS"
+                            Text="{Binding Authors, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <TextBlock
+                            Grid.Row="17"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            FontWeight="DemiBold"
+                            Style="{StaticResource ResourceKey=Label}"
+                            Text="UPLOAD LOCATION" />
+                        <Image
+                            Grid.Row="18"
+                            Grid.Column="0"
+                            Width="16"
+                            Source="/AutoSquirrel;component/Images/info_16.png">
+                            <Image.ToolTip>
+                                <StackPanel>
+                                    <Image Source="/AutoSquirrel;component/Images/help/upload_location.png" />
                                 </StackPanel>
-                            </HierarchicalDataTemplate>
-                        </mstv:TreeViewEx.Resources>
-                    </mstv:TreeViewEx>
-
-                    <Grid
-                        x:Name="DetailGrid"
-                        Grid.Row="1"
-                        Background="AliceBlue"
-                        DataContext="{Binding ElementName=PackageTreeview, Path=SelectedItem}"
-                        TextElement.FontSize="14"
-                        TextElement.Foreground="#607D8B">
-                        <Grid.Style>
-                            <Style TargetType="Grid">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ElementName=PackageTreeview, Path=SelectedItem}" Value="{x:Null}">
-                                        <Setter Property="Visibility" Value="Hidden" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Grid.Style>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-
-                            <TextBlock
-                                Grid.Row="0"
-                                Grid.Column="1"
-                                Text="Source Filepath : " />
-                            <TextBlock
-                                Grid.Row="0"
-                                Grid.Column="2"
-                                Text="{Binding Path=SourceFilepath}"
-                                TextWrapping="Wrap" />
-
-                            <TextBlock
-                                Grid.Row="1"
-                                Grid.Column="1"
-                                Text="File Dimension : " />
-                            <TextBlock
-                                Grid.Row="1"
-                                Grid.Column="2"
-                                Text="{Binding Path=FileDimension}"
-                                TextWrapping="Wrap" />
-
-                            <TextBlock
-                                Grid.Row="2"
-                                Grid.Column="1"
-                                Text="Last Edit : " />
-                            <TextBlock
-                                Grid.Row="2"
-                                Grid.Column="2"
-                                Text="{Binding Path=LastEdit}"
-                                TextWrapping="Wrap" />
-
+                            </Image.ToolTip>
+                        </Image>
+                        <ComboBox
+                            Grid.Row="18"
+                            Grid.Column="1"
+                            ItemsSource="{Binding AvailableUploadLocation}"
+                            SelectedItem="{Binding SelectedConnectionString, ValidatesOnDataErrors=True}" />
+                        <StackPanel
+                            Grid.Row="19"
+                            Grid.Column="1"
+                            HorizontalAlignment="Right"
+                            Orientation="Horizontal">
                             <Image
-                                Grid.Row="0"
-                                Grid.RowSpan="5"
-                                Grid.Column="0"
-                                Width="24"
-                                Margin="5"
-                                Source="{Binding FileIcon}" />
+                                Width="16"
+                                Height="16"
+                                Margin="5,0"
+                                Source="/AutoSquirrel;component/Images/edit_16.png" />
+                            <Button
+                                Command="{Binding EditConnectionCmd}"
+                                Content="Edit Connection"
+                                FontSize="16"
+                                Style="{StaticResource ResourceKey=LinkButton}" />
+                        </StackPanel>
+
+                        <Button
+                            Grid.Row="21"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Command="{Binding SelectIconCmd}"
+                            Content="APP ICON"
+                            FontSize="14"
+                            FontWeight="Bold"
+                            Style="{StaticResource LinkButton}" />
+                        <Border
+                            Grid.Row="22"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Margin="2"
+                            Padding="3"
+                            HorizontalAlignment="Left"
+                            Background="White"
+                            BorderBrush="Gray"
+                            BorderThickness="1">
+                            <Image
+                                Width="32"
+                                Height="32"
+                                Margin="3"
+                                Source="{Binding IconSource}" />
+                        </Border>
+                    </Grid>
+                </GroupBox>
+                <GridSplitter
+                    Grid.RowSpan="2"
+                    Grid.Column="1"
+                    Width="2"
+                    Margin="1,40"
+                    HorizontalAlignment="Center"
+                    BorderBrush="#FFFFFF"
+                    IsTabStop="False" />
+                <GroupBox Grid.Column="2">
+                    <GroupBox.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <Image
+                                Width="16"
+                                Margin="5,0"
+                                Source="/AutoSquirrel;component/Images/info_16_white.png" />
+                            <TextBlock
+                                FontSize="14"
+                                Foreground="White"
+                                Text="INSTALLER PACKAGE CONTENT" />
+                        </StackPanel>
+                    </GroupBox.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.Resources>
+                            <local:BindingProxy x:Key="DataContextProxy" Data="{Binding}" />
+                        </Grid.Resources>
+                        <mstv:MultiSelectTreeView
+                            x:Name="PackageTreeview"
+                            dd:DragDrop.DropHandler="{Binding}"
+                            dd:DragDrop.IsDragSource="True"
+                            dd:DragDrop.IsDropTarget="True"
+                            dd:DragDrop.UseDefaultDragAdorner="True"
+                            AllowDrop="True"
+                            ItemsSource="{Binding PackageFiles}"
+                            SelectionChanged="PackageTreeview_OnSelecting"
+                            Tag="{Binding DataContext, RelativeSource={RelativeSource Self}}">
+                            <mstv:MultiSelectTreeView.Template>
+                                <ControlTemplate TargetType="{x:Type mstv:MultiSelectTreeView}">
+                                    <Border
+                                        x:Name="Bd"
+                                        Padding="1"
+                                        Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        SnapsToDevicePixels="True">
+                                        <Grid>
+                                            <Border
+                                                x:Name="selectionBorder"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Top"
+                                                Background="{Binding BackgroundSelectionRectangle, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type mstv:MultiSelectTreeView}}}"
+                                                BorderBrush="{Binding BorderBrushSelectionRectangle, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type mstv:MultiSelectTreeView}}}"
+                                                BorderThickness="1"
+                                                Visibility="Collapsed" />
+                                            <TextBlock
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Top"
+                                                FontSize="50"
+                                                Foreground="#607D8B"
+                                                Opacity=".5"
+                                                Text="Drag File Here" />
+                                            <Image
+                                                MaxWidth="256"
+                                                MaxHeight="256"
+                                                Margin="0,60,0,0"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Opacity=".4"
+                                                Source="/AutoSquirrel;component/Images/package_256.png"
+                                                Stretch="Uniform" />
+                                            <ScrollViewer
+                                                x:Name="scrollViewer"
+                                                Padding="{TemplateBinding Padding}"
+                                                Focusable="false"
+                                                HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}">
+                                                <ScrollViewer.Resources>
+                                                    <Style x:Key="{x:Type ScrollBar}" TargetType="{x:Type ScrollBar}">
+                                                        <Setter Property="UseLayoutRounding" Value="True" />
+                                                    </Style>
+                                                </ScrollViewer.Resources>
+                                                <ItemsPresenter x:Name="content" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                            </ScrollViewer>
+                                        </Grid>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </mstv:MultiSelectTreeView.Template>
+                            <mstv:MultiSelectTreeView.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem
+                                        x:Name="AddDirectory"
+                                        cal:Message.Attach="[Event Click] = [Action AddDirectory]"
+                                        Header="Add Directory" />
+                                </ContextMenu>
+                            </mstv:MultiSelectTreeView.ContextMenu>
+                            <mstv:MultiSelectTreeView.ItemContainerStyle>
+                                <Style TargetType="{x:Type mstv:MultiSelectTreeViewItem}">
+                                    <Setter Property="ContextMenu">
+                                        <Setter.Value>
+                                            <ContextMenu StaysOpen="True">
+                                                <MenuItem Command="{Binding Path=Data.RefreshVersionNumber, Source={StaticResource DataContextProxy}}" Header="Refresh Version" />
+                                                <MenuItem Command="{Binding Path=Data.AddDirectoryCmd, Source={StaticResource DataContextProxy}}" Header="Add Directory" />
+                                                <MenuItem Command="{Binding Path=Data.RemoveItemCmd, Source={StaticResource DataContextProxy}}" Header="Remove Selected Items" />
+                                                <MenuItem Command="{Binding Path=Data.RemoveAllItemsCmd, Source={StaticResource DataContextProxy}}" Header="Remove All Items" />
+                                            </ContextMenu>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                                    <Setter Property="FontWeight" Value="Normal" />
+                                    <Setter Property="BorderThickness" Value="1" />
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="FontWeight" Value="Bold" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </mstv:MultiSelectTreeView.ItemContainerStyle>
+
+                            <mstv:MultiSelectTreeView.Resources>
+
+                                <HierarchicalDataTemplate DataType="{x:Type local:ItemLink}" ItemsSource="{Binding Children}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image
+                                            Width="24"
+                                            Height="24"
+                                            Margin="3,0"
+                                            Source="{Binding Path=FileIcon}" />
+                                        <local:EditableTextBlock Text="{Binding Filename, Mode=TwoWay}" />
+                                    </StackPanel>
+                                </HierarchicalDataTemplate>
+                            </mstv:MultiSelectTreeView.Resources>
+                        </mstv:MultiSelectTreeView>
+                        <Grid
+                            x:Name="DetailGrid"
+                            Grid.Row="1"
+                            Background="AliceBlue"
+                            DataContext="{Binding SelectedItem}"
+                            TextElement.FontSize="14"
+                            TextElement.Foreground="#607D8B">
+                            <Grid.Style>
+                                <Style TargetType="Grid">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding DataContext.Model.SelectedItem, ElementName=MainWindow}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Hidden" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Text="Source Filepath : " />
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="2"
+                                    Text="{Binding SourceFilepath}"
+                                    TextWrapping="Wrap" />
+
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Text="File Dimension : " />
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Grid.Column="2"
+                                    Text="{Binding FileDimension}"
+                                    TextWrapping="Wrap" />
+
+                                <TextBlock
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    Text="Last Edit : " />
+                                <TextBlock
+                                    Grid.Row="2"
+                                    Grid.Column="2"
+                                    Text="{Binding LastEdit}"
+                                    TextWrapping="Wrap" />
+
+                                <Image
+                                    Grid.Row="0"
+                                    Grid.RowSpan="5"
+                                    Grid.Column="0"
+                                    Width="24"
+                                    Margin="5"
+                                    Source="{Binding FileIcon}" />
+                            </Grid>
                         </Grid>
                     </Grid>
+                </GroupBox>
+
+                <GroupBox Grid.Row="1" Grid.Column="2">
+                    <GroupBox.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <Image
+                                Width="16"
+                                Margin="5,0"
+                                Source="/AutoSquirrel;component/Images/info_16_white.png" />
+                            <TextBlock
+                                FontSize="14"
+                                Foreground="White"
+                                Text="UPLOAD QUEUE" />
+                        </StackPanel>
+                    </GroupBox.Header>
+                    <ListView
+                        Grid.Row="1"
+                        ItemsSource="{Binding Path=UploadQueue}"
+                        SelectedItem="{Binding Path=SelectedUploadItem}">
+                        <ListView.View>
+                            <GridView>
+                                <GridView.Columns>
+                                    <GridViewColumn
+                                        Width="170"
+                                        DisplayMemberBinding="{Binding Path=Filename}"
+                                        Header="Filename" />
+                                    <GridViewColumn
+                                        Width="170"
+                                        DisplayMemberBinding="{Binding Path=ConnectionName}"
+                                        Header="Location" />
+                                    <GridViewColumn
+                                        Width="150"
+                                        DisplayMemberBinding="{Binding Path=FormattedStatus}"
+                                        Header="Status" />
+                                    <GridViewColumn
+                                        Width="100"
+                                        DisplayMemberBinding="{Binding Path=FileSize}"
+                                        Header="Size" />
+                                    <GridViewColumn Width="150" Header="Upload %">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <ProgressBar
+                                                    Maximum="100"
+                                                    Minimum="0"
+                                                    Value="{Binding Path=ProgressPercentage}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView.Columns>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </GroupBox>
+
+                <Grid Grid.Row="2" Grid.ColumnSpan="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <Button
+                        x:Name="PublishPackageOnlyUpdate"
+                        Width="320"
+                        Margin="5"
+                        Padding="0"
+                        HorizontalAlignment="Center"
+                        BorderBrush="DarkGray"
+                        Cursor="Hand">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Style.Triggers>
+                                    <Trigger Property="Button.IsMouseOver" Value="True">
+                                        <Setter Property="Button.BorderBrush" Value="#8BC34A" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+
+                        <StackPanel Orientation="Horizontal">
+                            <Image
+                                Width="32"
+                                Height="32"
+                                Margin="5,0"
+                                Source="/AutoSquirrel;component/Images/upload_32.png" />
+                            <TextBlock
+                                FontSize="20"
+                                FontWeight="Bold"
+                                Foreground="Green"
+                                Text="Publish Only Update Files" />
+                        </StackPanel>
+                    </Button>
+
+                    <Button
+                        x:Name="PublishPackageComplete"
+                        Grid.Column="1"
+                        Width="320"
+                        Margin="5"
+                        Padding="0"
+                        HorizontalAlignment="Center"
+                        BorderBrush="DarkGray"
+                        Cursor="Hand">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Style.Triggers>
+                                    <Trigger Property="Button.IsMouseOver" Value="True">
+                                        <Setter Property="Button.BorderBrush" Value="#8BC34A" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+
+                        <StackPanel Orientation="Horizontal">
+                            <Image
+                                Width="32"
+                                Height="32"
+                                Margin="5,0"
+                                Source="/AutoSquirrel;component/Images/upload_32.png" />
+                            <TextBlock
+                                FontSize="20"
+                                FontWeight="Bold"
+                                Foreground="Green"
+                                Text="Publish Complete Setup" />
+                        </StackPanel>
+                    </Button>
                 </Grid>
-            </GroupBox>
-
-            <GroupBox Grid.Row="1" Grid.Column="2">
-                <GroupBox.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <Image
-                            Width="16"
-                            Margin="5,0"
-                            Source="/AutoSquirrel;component/Images/info_16_white.png" />
-                        <TextBlock
-                            Foreground="White"
-                            FontSize="14"
-                            Text="UPLOAD QUEUE" />
-                    </StackPanel>
-                </GroupBox.Header>
-                <ListView
-                    Grid.Row="1"
-                    ItemsSource="{Binding Path=UploadQueue}"
-                    SelectedItem="{Binding Path=SelectedUploadItem}">
-                    <ListView.View>
-                        <GridView>
-                            <GridView.Columns>
-                                <GridViewColumn
-                                    Width="170"
-                                    DisplayMemberBinding="{Binding Path=Filename}"
-                                    Header="Filename" />
-                                <GridViewColumn
-                                    Width="170"
-                                    DisplayMemberBinding="{Binding Path=ConnectionName}"
-                                    Header="Location" />
-                                <GridViewColumn
-                                    Width="150"
-                                    DisplayMemberBinding="{Binding Path=FormattedStatus}"
-                                    Header="Status" />
-                                <GridViewColumn
-                                    Width="100"
-                                    DisplayMemberBinding="{Binding Path=FileSize}"
-                                    Header="Size" />
-                                <GridViewColumn Width="150" Header="Upload %">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <ProgressBar
-                                                Maximum="100"
-                                                Minimum="0"
-                                                Value="{Binding Path=ProgressPercentage}" />
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                            </GridView.Columns>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
-            </GroupBox>
-
-            <Grid Grid.Row="2" Grid.ColumnSpan="3">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-
-                <Button
-                    x:Name="PublishPackageOnlyUpdate"
-                    Width="320"
-                    Margin="5"
-                    Padding="0"
-                    HorizontalAlignment="Center"
-                    BorderBrush="DarkGray"
-                    Cursor="Hand">
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Style.Triggers>
-                                <Trigger Property="Button.IsMouseOver" Value="True">
-                                    <Setter Property="Button.BorderBrush" Value="#8BC34A" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-
-                    <StackPanel Orientation="Horizontal">
-                        <Image
-                            Width="32"
-                            Height="32"
-                            Margin="5,0"
-                            Source="/AutoSquirrel;component/Images/upload_32.png" />
-                        <TextBlock
-                            Foreground="Green"
-                            FontSize="20"
-                            FontWeight="Bold"
-                            Text="Publish Only Update Files" />
-                    </StackPanel>
-                </Button>
-
-                <Button
-                    x:Name="PublishPackageComplete"
-                    Grid.Column="1"
-                    Width="320"
-                    Margin="5"
-                    Padding="0"
-                    HorizontalAlignment="Center"
-                    BorderBrush="DarkGray"
-                    Cursor="Hand">
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Style.Triggers>
-                                <Trigger Property="Button.IsMouseOver" Value="True">
-                                    <Setter Property="Button.BorderBrush" Value="#8BC34A" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-
-                    <StackPanel Orientation="Horizontal">
-                        <Image
-                            Width="32"
-                            Height="32"
-                            Margin="5,0"
-                            Source="/AutoSquirrel;component/Images/upload_32.png" />
-                        <TextBlock
-                            Foreground="Green"
-                            FontSize="20"
-                            FontWeight="Bold"
-                            Text="Publish Complete Setup" />
-                    </StackPanel>
-                </Button>
             </Grid>
         </Grid>
-    </Grid>
-    <!--</xctk:BusyIndicator>-->
+    </xctk:BusyIndicator>
 </Controls:MetroWindow>

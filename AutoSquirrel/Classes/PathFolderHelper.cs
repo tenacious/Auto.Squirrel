@@ -84,10 +84,14 @@ namespace AutoSquirrel
             }
 
             if (string.IsNullOrWhiteSpace(folderPath))
+            {
                 throw new NotImplementedException("GetMyFilepath");
+            }
 
             if (!Directory.Exists(folderPath))
+            {
                 Directory.CreateDirectory(folderPath);
+            }
 
             return folderPath;
         }
@@ -120,7 +124,9 @@ namespace AutoSquirrel
                     foreach (var fp in temp)
                     {
                         if (File.Exists(fp))
+                        {
                             p.LastOpenedProject.Add(fp);
+                        }
                     }
 
                     return p;

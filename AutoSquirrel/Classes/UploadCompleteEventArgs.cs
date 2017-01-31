@@ -14,7 +14,7 @@ namespace AutoSquirrel
         /// <param name="sfu">The sfu.</param>
         public UploadCompleteEventArgs(SingleFileUpload sfu)
         {
-            FileUploaded = sfu;
+            this.FileUploaded = sfu;
         }
 
         /// <summary>

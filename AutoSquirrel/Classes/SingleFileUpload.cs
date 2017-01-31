@@ -44,13 +44,13 @@ namespace AutoSquirrel
         {
             get
             {
-                return _connection;
+                return this._connection;
             }
 
             set
             {
-                _connection = value;
-                NotifyOfPropertyChange(() => ConnectionName);
+                this._connection = value;
+                NotifyOfPropertyChange(() => this.ConnectionName);
             }
         }
 
@@ -63,13 +63,13 @@ namespace AutoSquirrel
         {
             get
             {
-                return _filename;
+                return this._filename;
             }
 
             set
             {
-                _filename = value;
-                NotifyOfPropertyChange(() => Filename);
+                this._filename = value;
+                NotifyOfPropertyChange(() => this.Filename);
             }
         }
 
@@ -82,13 +82,13 @@ namespace AutoSquirrel
         {
             get
             {
-                return _fileSize;
+                return this._fileSize;
             }
 
             set
             {
-                _fileSize = value;
-                NotifyOfPropertyChange(() => FileSize);
+                this._fileSize = value;
+                NotifyOfPropertyChange(() => this.FileSize);
             }
         }
 
@@ -96,7 +96,7 @@ namespace AutoSquirrel
         /// Gets the formatted status.
         /// </summary>
         /// <value>The formatted status.</value>
-        public string FormattedStatus => UploadStatus.ToString();
+        public string FormattedStatus => this.UploadStatus.ToString();
 
         /// <summary>
         /// Gets the full path.
@@ -113,13 +113,13 @@ namespace AutoSquirrel
         {
             get
             {
-                return _progressPercentage;
+                return this._progressPercentage;
             }
 
             set
             {
-                _progressPercentage = value;
-                NotifyOfPropertyChange(() => ProgressPercentage);
+                this._progressPercentage = value;
+                NotifyOfPropertyChange(() => this.ProgressPercentage);
             }
         }
 
@@ -131,26 +131,24 @@ namespace AutoSquirrel
         {
             get
             {
-                return _uploadStatus;
+                return this._uploadStatus;
             }
 
             set
             {
-                _uploadStatus = value;
-                NotifyOfPropertyChange(() => UploadStatus);
-                NotifyOfPropertyChange(() => FormattedStatus);
+                this._uploadStatus = value;
+                NotifyOfPropertyChange(() => this.UploadStatus);
+                NotifyOfPropertyChange(() => this.FormattedStatus);
             }
         }
 
         internal void StartUpload()
         {
-            var amazonCon = Connection as AmazonS3Connection;
-
-            if (amazonCon != null)
+            if (this.Connection is AmazonS3Connection amazonCon)
             {
                 var amazonClient = new AmazonS3Client(amazonCon.AccessKey, amazonCon.SecretAccessKey, amazonCon.GetRegion());
 
-                fileTransferUtility = new TransferUtility(amazonClient);
+                this.fileTransferUtility = new TransferUtility(amazonClient);
 
                 if (!(AmazonS3Util.DoesS3BucketExist(amazonClient, amazonCon.BucketName)))
                 {
@@ -161,21 +159,21 @@ namespace AutoSquirrel
                     new TransferUtilityUploadRequest
                     {
                         BucketName = amazonCon.BucketName,
-                        FilePath = FullPath,
+                        FilePath = this.FullPath,
                         CannedACL = S3CannedACL.PublicRead,
                     };
 
-                uploadRequest.UploadProgressEvent += uploadRequest_UploadPartProgressEvent;
+                uploadRequest.UploadProgressEvent += this.uploadRequest_UploadPartProgressEvent;
 
-                fileTransferUtility.UploadAsync(uploadRequest);
+                this.fileTransferUtility.UploadAsync(uploadRequest);
 
-                Trace.WriteLine("Start Upload : " + FullPath);
+                Trace.WriteLine("Start Upload : " + this.FullPath);
             }
         }
 
         private static void CreateABucket(IAmazonS3 client, string bucketName)
         {
-            PutBucketRequest putRequest1 = new PutBucketRequest
+            var putRequest1 = new PutBucketRequest
             {
                 BucketName = bucketName,
                 UseClientRegion = true
@@ -188,18 +186,16 @@ namespace AutoSquirrel
 
         private void RequesteUploadComplete(UploadCompleteEventArgs uploadEvent)
         {
-            UploadStatus = FileUploadStatus.Completed;
-            ProgressPercentage = 100;
+            this.UploadStatus = FileUploadStatus.Completed;
+            this.ProgressPercentage = 100;
 
-            var handler = OnUploadCompleted;
-            if (handler != null)
-                handler(null, uploadEvent);
+            OnUploadCompleted?.Invoke(null, uploadEvent);
         }
 
         private void uploadRequest_UploadPartProgressEvent(
           object sender, UploadProgressArgs e)
         {
-            ProgressPercentage = e.PercentDone;
+            this.ProgressPercentage = e.PercentDone;
 
             if (e.PercentDone == 100)
             {

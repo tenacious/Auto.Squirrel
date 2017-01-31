@@ -22,9 +22,10 @@ namespace AutoSquirrel
             {
                 using (StreamReader file = File.OpenText(filePath))
                 {
-                    JsonSerializer serializer = new JsonSerializer();
-                    serializer.TypeNameHandling = TypeNameHandling.All;
-
+                    var serializer = new JsonSerializer()
+                    {
+                        TypeNameHandling = TypeNameHandling.All
+                    };
                     return (TRet)serializer.Deserialize(file, typeof(TRet));
                 }
             }
@@ -50,10 +51,12 @@ namespace AutoSquirrel
 
             try
             {
-                var serializer = new JsonSerializer();
-                serializer.TypeNameHandling = TypeNameHandling.All;
-                serializer.NullValueHandling = NullValueHandling.Ignore;
-                using (StreamWriter sw = new StreamWriter(filePath))
+                var serializer = new JsonSerializer()
+                {
+                    TypeNameHandling = TypeNameHandling.All,
+                    NullValueHandling = NullValueHandling.Ignore
+                };
+                using (var sw = new StreamWriter(filePath))
                 using (JsonWriter writer = new JsonTextWriter(sw))
                 {
                     serializer.Serialize(writer, objectToSerialize);

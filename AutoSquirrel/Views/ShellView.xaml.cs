@@ -54,19 +54,21 @@
         {
             InitializeComponent();
 
-            Loaded += MainWindow_Loaded;
+            Loaded += this.MainWindow_Loaded;
 
-            PackageTreeview.PreviewMouseRightButtonDown += OnPreviewMouseRightButtonDown;
+            this.PackageTreeview.PreviewMouseRightButtonDown += this.OnPreviewMouseRightButtonDown;
 
-            Closing += ShellView_Closing;
+            Closing += this.ShellView_Closing;
         }
 
-        private static TreeViewExItem VisualUpwardSearch(DependencyObject source)
+        private static MultiSelectTreeView VisualUpwardSearch(DependencyObject source)
         {
-            while (source != null && !(source is TreeViewExItem))
+            while (source != null && !(source is MultiSelectTreeView))
+            {
                 source = VisualTreeHelper.GetParent(source);
+            }
 
-            return source as TreeViewExItem;
+            return source as MultiSelectTreeView;
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -104,24 +106,27 @@
 
         private void OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            TreeViewExItem treeViewItem = VisualUpwardSearch(e.OriginalSource as DependencyObject);
+            MultiSelectTreeView treeViewItem = VisualUpwardSearch(e.OriginalSource as DependencyObject);
 
-            if (treeViewItem == null) return;
+            if (treeViewItem == null)
+            {
+                return;
+            }
 
             treeViewItem.Focus();
 
             //e.Handled = true;
         }
 
-        private void PackageTreeview_OnSelecting(object sender, SelectionChangedCancelEventArgs e)
+        private void PackageTreeview_OnSelecting(object sender, EventArgs e)
         {
             IList<ItemLink> items = new List<ItemLink>();
-            foreach (var item in (sender as TreeViewEx).SelectedItems)
+            foreach (var item in (sender as MultiSelectTreeView).SelectedItems)
             {
                 items.Add(item as ItemLink);
             }
 
-            ((ShellViewModel)DataContext).Model.SetSelectedItem(items);
+            ((ShellViewModel)this.DataContext).Model.SetSelectedItem(items);
         }
 
         private void ShellView_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -135,7 +140,9 @@
             }
 
             if (askSave == MessageBoxResult.Yes)
-                ((ShellViewModel)DataContext).Save();
+            {
+                ((ShellViewModel)this.DataContext).Save();
+            }
         }
     }
 }

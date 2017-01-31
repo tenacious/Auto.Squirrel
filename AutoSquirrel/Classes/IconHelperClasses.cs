@@ -91,11 +91,16 @@ namespace AutoSquirrel
         {
             var extension = Path.GetExtension(fileName);
             if (extension == null)
+            {
                 return null;
+            }
+
             var cache = large ? _largeIconCache : _smallIconCache;
-            ImageSource icon;
-            if (cache.TryGetValue(extension, out icon))
+            if (cache.TryGetValue(extension, out var icon))
+            {
                 return icon;
+            }
+
             icon = IconReader.GetFileIcon(fileName, large ? IconReader.IconSize.Large : IconReader.IconSize.Small, false).ToImageSource();
             cache.Add(extension, icon);
             return icon;
@@ -135,7 +140,9 @@ namespace AutoSquirrel
                 flags);
 
             if (res == IntPtr.Zero)
+            {
                 throw Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error());
+            }
 
             // Load the icon from an HICON handle
             Icon.FromHandle(shfi.hIcon);
@@ -167,7 +174,10 @@ namespace AutoSquirrel
         /// <returns></returns>
         public static ImageSource ToImageSource(this Icon icon)
         {
-            if (icon == null) return null;
+            if (icon == null)
+            {
+                return null;
+            }
 
             ImageSource imageSource = Imaging.CreateBitmapSourceFromHIcon(
                 icon.Handle,
@@ -251,12 +261,20 @@ namespace AutoSquirrel
             {
                 var shfi = new Shell32.Shfileinfo();
                 var flags = Shell32.ShgfiIcon | Shell32.ShgfiUsefileattributes;
-                if (linkOverlay) flags += Shell32.ShgfiLinkoverlay;
+                if (linkOverlay)
+                {
+                    flags += Shell32.ShgfiLinkoverlay;
+                }
                 /* Check the size specified for return. */
                 if (IconSize.Small == size)
+                {
                     flags += Shell32.ShgfiSmallicon;
+                }
                 else
+                {
                     flags += Shell32.ShgfiLargeicon;
+                }
+
                 Shell32.SHGetFileInfo(name,
                     Shell32.FileAttributeNormal,
                     ref shfi,

@@ -29,7 +29,7 @@ namespace AutoSquirrel
         /// </summary>
         public AmazonS3Connection()
         {
-            ConnectionName = "Amazon S3";
+            this.ConnectionName = "Amazon S3";
         }
 
         /// <summary>
@@ -41,13 +41,13 @@ namespace AutoSquirrel
         {
             get
             {
-                return _accessKey;
+                return this._accessKey;
             }
 
             set
             {
-                _accessKey = value;
-                NotifyOfPropertyChange(() => AccessKey);
+                this._accessKey = value;
+                NotifyOfPropertyChange(() => this.AccessKey);
             }
         }
 
@@ -59,15 +59,17 @@ namespace AutoSquirrel
         {
             get
             {
-                if (_availableRegionList == null)
+                if (this._availableRegionList == null)
                 {
-                    _availableRegionList = new List<string>();
+                    this._availableRegionList = new List<string>();
 
                     foreach (var r in RegionEndpoint.EnumerableAllRegions)
-                        _availableRegionList.Add(r.DisplayName);
+                    {
+                        this._availableRegionList.Add(r.DisplayName);
+                    }
                 }
 
-                return _availableRegionList;
+                return this._availableRegionList;
             }
         }
 
@@ -80,17 +82,19 @@ namespace AutoSquirrel
         {
             get
             {
-                return _bucketName;
+                return this._bucketName;
             }
 
             set
             {
-                _bucketName = value;
-                if (_bucketName != null)
-                    _bucketName = _bucketName.ToLower().Replace(" ", string.Empty);
+                this._bucketName = value;
+                if (this._bucketName != null)
+                {
+                    this._bucketName = this._bucketName.ToLower().Replace(" ", string.Empty);
+                }
 
-                NotifyOfPropertyChange(() => BucketName);
-                NotifyOfPropertyChange(() => SetupDownloadUrl);
+                NotifyOfPropertyChange(() => this.BucketName);
+                NotifyOfPropertyChange(() => this.SetupDownloadUrl);
             }
         }
 
@@ -103,14 +107,14 @@ namespace AutoSquirrel
         {
             get
             {
-                return _regionName;
+                return this._regionName;
             }
 
             set
             {
-                _regionName = value;
-                NotifyOfPropertyChange(() => RegionName);
-                NotifyOfPropertyChange(() => SetupDownloadUrl);
+                this._regionName = value;
+                NotifyOfPropertyChange(() => this.RegionName);
+                NotifyOfPropertyChange(() => this.SetupDownloadUrl);
             }
         }
 
@@ -123,13 +127,13 @@ namespace AutoSquirrel
         {
             get
             {
-                return _secretAccessKey;
+                return this._secretAccessKey;
             }
 
             set
             {
-                _secretAccessKey = value;
-                NotifyOfPropertyChange(() => SecretAccessKey);
+                this._secretAccessKey = value;
+                NotifyOfPropertyChange(() => this.SecretAccessKey);
             }
         }
 
@@ -141,10 +145,12 @@ namespace AutoSquirrel
         {
             get
             {
-                if (string.IsNullOrWhiteSpace(BucketName) || string.IsNullOrWhiteSpace(RegionName))
+                if (string.IsNullOrWhiteSpace(this.BucketName) || string.IsNullOrWhiteSpace(this.RegionName))
+                {
                     return "Missing Parameter";
+                }
 
-                return "https://s3-" + GetRegion().SystemName + ".amazonaws.com/" + BucketName.ToLower() + "/Setup.exe";
+                return "https://s3-" + GetRegion().SystemName + ".amazonaws.com/" + this.BucketName.ToLower() + "/Setup.exe";
             }
         }
 
@@ -156,13 +162,15 @@ namespace AutoSquirrel
         {
             var commonValid = new Validator().Validate(this);
             if (!commonValid.IsValid)
+            {
                 return commonValid;
+            }
 
             return base.Validate();
         }
 
         internal RegionEndpoint GetRegion() =>
-            RegionEndpoint.EnumerableAllRegions.FirstOrDefault(r => r.DisplayName == RegionName);
+            RegionEndpoint.EnumerableAllRegions.FirstOrDefault(r => r.DisplayName == this.RegionName);
 
         private class Validator : AbstractValidator<AmazonS3Connection>
         {
@@ -178,7 +186,9 @@ namespace AutoSquirrel
             private static bool CheckBucketName(string bucketName)
             {
                 if (string.IsNullOrWhiteSpace(bucketName) || bucketName.Contains(" "))
+                {
                     return false;
+                }
 
                 return true;
             }

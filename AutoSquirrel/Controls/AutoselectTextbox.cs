@@ -44,9 +44,7 @@ namespace AutoSquirrel
 
         private static void ActivePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var textBox = d as TextBox;
-
-            if (textBox != null)
+            if (d is TextBox textBox)
             {
                 if ((e.NewValue as bool?).GetValueOrDefault(false))
                 {
@@ -74,8 +72,7 @@ namespace AutoSquirrel
 
         private static void OnKeyboardFocusSelectText(object sender, KeyboardFocusChangedEventArgs e)
         {
-            TextBox textBox = e.OriginalSource as TextBox;
-            if (textBox != null)
+            if (e.OriginalSource is TextBox textBox)
             {
                 textBox.SelectAll();
             }

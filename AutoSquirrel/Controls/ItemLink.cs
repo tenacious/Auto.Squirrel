@@ -40,15 +40,22 @@ namespace AutoSquirrel
         {
             get
             {
-                return _children;
+                return this._children;
             }
 
             set
             {
-                _children = value;
-                NotifyOfPropertyChange(() => Children);
+                this._children = value;
+                NotifyOfPropertyChange(() => this.Children);
             }
         }
+
+        /// <summary>
+        /// Gets the file dimension.
+        /// </summary>
+        /// <value>The file dimension.</value>
+        [DataMember]
+        public double FileDimension { get; internal set; }
 
         /// <summary>
         /// Gets the file icon.
@@ -62,18 +69,29 @@ namespace AutoSquirrel
                 {
                     Icon icon = null;
 
-                    if (IsDirectory && IsExpanded)
+                    if (this.IsDirectory && this.IsExpanded)
+                    {
                         icon = IconHelper.GetFolderIcon(IconSize.Large, FolderType.Open);
-                    else if (IsDirectory && !IsExpanded)
+                    }
+                    else if (this.IsDirectory && !this.IsExpanded)
+                    {
                         icon = IconHelper.GetFolderIcon(IconSize.Large, FolderType.Closed);
+                    }
                     else
                     {
-                        if (File.Exists(SourceFilepath))
-                            icon = Icon.ExtractAssociatedIcon(SourceFilepath);
+                        if (File.Exists(this.SourceFilepath))
+                        {
+                            icon = Icon.ExtractAssociatedIcon(this.SourceFilepath);
+                        }
                         else
-                            return IconHelper.FindIconForFilename(Path.GetFileName(SourceFilepath), true);
+                        {
+                            return IconHelper.FindIconForFilename(Path.GetFileName(this.SourceFilepath), true);
+                        }
                     }
-                    if (icon == null) return null;
+                    if (icon == null)
+                    {
+                        return null;
+                    }
 
                     return icon.ToImageSource();
                 }
@@ -95,19 +113,23 @@ namespace AutoSquirrel
         {
             get
             {
-                if (!string.IsNullOrWhiteSpace(OutputFilename))
-                    return OutputFilename;
+                if (!string.IsNullOrWhiteSpace(this.OutputFilename))
+                {
+                    return this.OutputFilename;
+                }
 
-                if (!string.IsNullOrWhiteSpace(SourceFilepath))
-                    return Path.GetFileName(SourceFilepath);
+                if (!string.IsNullOrWhiteSpace(this.SourceFilepath))
+                {
+                    return Path.GetFileName(this.SourceFilepath);
+                }
 
                 return "no_namefile";
             }
 
             set
             {
-                OutputFilename = value;
-                NotifyOfPropertyChange(() => Filename);
+                this.OutputFilename = value;
+                NotifyOfPropertyChange(() => this.Filename);
             }
         }
 
@@ -131,21 +153,17 @@ namespace AutoSquirrel
         {
             get
             {
-                return _isExpanded;
+                return this._isExpanded;
             }
 
             set
             {
-                if (value != _isExpanded)
+                if (value != this._isExpanded)
                 {
-                    _isExpanded = value;
-                    NotifyOfPropertyChange(() => IsExpanded);
-                    NotifyOfPropertyChange(() => FileIcon);
+                    this._isExpanded = value;
+                    NotifyOfPropertyChange(() => this.IsExpanded);
+                    NotifyOfPropertyChange(() => this.FileIcon);
                 }
-
-                //// Expand all the way up to the root.
-                //if (_isExpanded && _parent != null)
-                //    _parent.IsExpanded = true;
 
                 // Lazy load the child items, if necessary.
                 if (this.HasDummyChild)
@@ -170,18 +188,25 @@ namespace AutoSquirrel
         {
             get
             {
-                return _isSelected;
+                return this._isSelected;
             }
 
             set
             {
-                if (value != _isSelected)
+                if (value != this._isSelected)
                 {
-                    _isSelected = value;
-                    NotifyOfPropertyChange(() => IsSelected);
+                    this._isSelected = value;
+                    NotifyOfPropertyChange(() => this.IsSelected);
                 }
             }
         }
+
+        /// <summary>
+        /// Gets the last edit.
+        /// </summary>
+        /// <value>The last edit.</value>
+        [DataMember]
+        public string LastEdit { get; internal set; }
 
         /// <summary>
         /// Gets the output filename.
@@ -209,7 +234,9 @@ namespace AutoSquirrel
             {
                 var p = FindParent(this, node);
                 if (p != null)
+                {
                     return p;
+                }
             }
 
             return null;
@@ -228,13 +255,17 @@ namespace AutoSquirrel
             if (node.Children != null)
             {
                 if (node.Children.Contains(link))
+                {
                     return node;
+                }
 
                 foreach (var child in node.Children)
                 {
                     var p = FindParent(link, child);
                     if (p != null)
+                    {
                         return p;
+                    }
                 }
             }
 
