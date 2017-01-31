@@ -14,7 +14,7 @@ ____
 
 ### With a single mouse click you can :
 
-1. **Update Application Version** the package version is extracted from exe file , you don't need to set this value manually
+1. **Update Application Version** the package version is extracted from exe file , you don't need to set this value manually. Right click on a file and select refresh version to update while running.
 
 2. **Create Squirrel Package** . In similar way you do with Nuget Package Manager, just drag the file you want into window. No need to create lib/net45 folder.
 
@@ -27,7 +27,7 @@ ____
  ## Read also :
 
 
-* **[Project Version Auto-Increment](docs/VersionAutoIncrement.md)**
+* **[Project Version Auto-Increment](docs/VersionAutoIncrement.md)** (NOTE: must follow Semantic versioning i.e. Major.Minor.Build http://semver.org/)
 
 * **[Update Manager Integration](docs/SquirrelIntegration.md)**
 
@@ -44,4 +44,4 @@ ___
 - [ ] Button to abort upload
 - [ ] Renaming of output file and folder
 - [ ] Check if same filename is present in same directory
-- [ ] Possibility to select the main EXE file ( where i extract the version number) , if two or more exe files are present in package.
+- [ ] Possibility to select the main EXE file (where the version number is extracted) , if two or more exe files are present in package.
