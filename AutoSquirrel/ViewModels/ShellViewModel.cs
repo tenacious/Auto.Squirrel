@@ -614,8 +614,10 @@
             */
             var cmd = $@" -releasify {nugetPackagePath} -releaseDir {squirrelOutputPath}";
 
-            //if (File.Exists(Model.IconFilepath))
-            //  cmd += @" -setupIcon " + Model.IconFilepath ;
+            if (File.Exists(this.Model.IconFilepath))
+            {
+                cmd += @" -i " + this.Model.IconFilepath;
+            }
 
             var startInfo = new ProcessStartInfo()
             {
