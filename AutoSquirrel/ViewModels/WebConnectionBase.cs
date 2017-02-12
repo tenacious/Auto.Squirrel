@@ -4,6 +4,7 @@ namespace AutoSquirrel
     using System.Runtime.Serialization;
 
     /// <summary>
+    /// Web Connection Base
     /// </summary>
     /// <seealso cref="AutoSquirrel.PropertyChangedBaseValidable"/>
     public class WebConnectionBase : PropertyChangedBaseValidable
@@ -17,10 +18,7 @@ namespace AutoSquirrel
         [DataMember]
         public string ConnectionName
         {
-            get
-            {
-                return this._connectionName;
-            }
+            get => this._connectionName;
 
             set
             {

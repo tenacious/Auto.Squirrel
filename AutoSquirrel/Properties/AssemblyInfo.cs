@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 
 [assembly: AssemblyTitle("AutoSquirrel")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Squirrel Packaging Tool")]
 [assembly: AssemblyConfiguration(".Net 4.6.1")]
 [assembly: AssemblyCompany("https://github.com/ChrisPulman")]
 [assembly: AssemblyProduct("AutoSquirrel")]

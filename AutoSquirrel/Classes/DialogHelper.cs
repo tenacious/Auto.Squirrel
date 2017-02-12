@@ -4,15 +4,16 @@ namespace AutoSquirrel
     using Caliburn.Micro;
 
     /// <summary>
+    /// Dialog Helper
     /// </summary>
-    public class DialogHelper
+    public static class DialogHelper
     {
         /// <summary>
         /// Shows the window.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="param">The parameter.</param>
-        public static void ShowWindow<T>(params Object[] param) where T : class
+        public static void ShowWindow<T>(params object[] param) where T : class
         {
             var windowManager = new WindowManager();
             var viewModel = Activator.CreateInstance(typeof(T), param) as T;

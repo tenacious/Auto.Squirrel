@@ -27,10 +27,7 @@ namespace AutoSquirrel
         /// <summary>
         /// Initializes a new instance of the <see cref="AmazonS3Connection"/> class.
         /// </summary>
-        public AmazonS3Connection()
-        {
-            this.ConnectionName = "Amazon S3";
-        }
+        public AmazonS3Connection() => this.ConnectionName = "Amazon S3";
 
         /// <summary>
         /// Gets or sets the access key.
@@ -39,10 +36,7 @@ namespace AutoSquirrel
         [DataMember]
         public string AccessKey
         {
-            get
-            {
-                return this._accessKey;
-            }
+            get => this._accessKey;
 
             set
             {
@@ -63,7 +57,7 @@ namespace AutoSquirrel
                 {
                     this._availableRegionList = new List<string>();
 
-                    foreach (var r in RegionEndpoint.EnumerableAllRegions)
+                    foreach (RegionEndpoint r in RegionEndpoint.EnumerableAllRegions)
                     {
                         this._availableRegionList.Add(r.DisplayName);
                     }
@@ -80,10 +74,7 @@ namespace AutoSquirrel
         [DataMember]
         public string BucketName
         {
-            get
-            {
-                return this._bucketName;
-            }
+            get => this._bucketName;
 
             set
             {
@@ -105,10 +96,7 @@ namespace AutoSquirrel
         [DataMember]
         public string RegionName
         {
-            get
-            {
-                return this._regionName;
-            }
+            get => this._regionName;
 
             set
             {
@@ -125,10 +113,7 @@ namespace AutoSquirrel
         [DataMember]
         public string SecretAccessKey
         {
-            get
-            {
-                return this._secretAccessKey;
-            }
+            get => this._secretAccessKey;
 
             set
             {
@@ -160,7 +145,7 @@ namespace AutoSquirrel
         /// <returns></returns>
         public override ValidationResult Validate()
         {
-            var commonValid = new Validator().Validate(this);
+            ValidationResult commonValid = new Validator().Validate(this);
             if (!commonValid.IsValid)
             {
                 return commonValid;

@@ -7,6 +7,7 @@ using System.Windows.Media;
 namespace AutoSquirrel
 {
     /// <summary>
+    /// Select Text On Focus
     /// </summary>
     /// <seealso cref="System.Windows.DependencyObject"/>
     public class SelectTextOnFocus : DependencyObject
@@ -27,20 +28,14 @@ namespace AutoSquirrel
         /// <returns></returns>
         [AttachedPropertyBrowsableForChildrenAttribute(IncludeDescendants = false)]
         [AttachedPropertyBrowsableForType(typeof(TextBox))]
-        public static bool GetActive(DependencyObject @object)
-        {
-            return (bool)@object.GetValue(ActiveProperty);
-        }
+        public static bool GetActive(DependencyObject @object) => (bool)@object.GetValue(ActiveProperty);
 
         /// <summary>
         /// Sets the active.
         /// </summary>
         /// <param name="object">The object.</param>
         /// <param name="value">if set to <c>true</c> [value].</param>
-        public static void SetActive(DependencyObject @object, bool value)
-        {
-            @object.SetValue(ActiveProperty, value);
-        }
+        public static void SetActive(DependencyObject @object, bool value) => @object.SetValue(ActiveProperty, value);
 
         private static void ActivePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

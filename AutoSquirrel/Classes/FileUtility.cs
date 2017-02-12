@@ -4,6 +4,9 @@ namespace AutoSquirrel
     using System.IO;
     using System.Windows;
     using Newtonsoft.Json;
+    using System.Runtime.Serialization;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
 
     /// <summary>
     /// File Utility
@@ -26,6 +29,11 @@ namespace AutoSquirrel
                     {
                         TypeNameHandling = TypeNameHandling.All
                     };
+                    if (typeof(TRet) == typeof(AutoSquirrelModel))
+                    {
+                        serializer.Binder = new AutoSquirrelBindAll();
+                    }
+
                     return (TRet)serializer.Deserialize(file, typeof(TRet));
                 }
             }
@@ -56,6 +64,7 @@ namespace AutoSquirrel
                     TypeNameHandling = TypeNameHandling.All,
                     NullValueHandling = NullValueHandling.Ignore
                 };
+
                 using (var sw = new StreamWriter(filePath))
                 using (JsonWriter writer = new JsonTextWriter(sw))
                 {
@@ -65,6 +74,39 @@ namespace AutoSquirrel
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
+            }
+        }
+
+        private class AutoSquirrelBindAll : SerializationBinder
+        {
+            public override Type BindToType(string assemblyName, string typeName)
+            {
+                switch (typeName)
+                {
+                    case "AutoSquirrel.WebConnectionBase":
+                        return typeof(WebConnectionBase);
+
+                    case "AutoSquirrel.AutoSquirrelModel":
+                        return typeof(AutoSquirrelModel);
+
+                    case "AutoSquirrel.FileSystemConnection":
+                        return typeof(FileSystemConnection);
+
+                    case "AutoSquirrel.AmazonS3Connection":
+                        return typeof(AmazonS3Connection);
+
+                    case "AutoSquirrel.ItemLink":
+                        return typeof(ItemLink);
+
+                    case "System.Collections.Generic.List`1[[AutoSquirrel.WebConnectionBase, AutoSquirrel]]":
+                        return typeof(List<WebConnectionBase>);
+
+                    case "System.Collections.ObjectModel.ObservableCollection`1[[AutoSquirrel.ItemLink, AutoSquirrel]]":
+                        return typeof(ObservableCollection<ItemLink>);
+
+                    default:
+                        return null;
+                }
             }
         }
     }

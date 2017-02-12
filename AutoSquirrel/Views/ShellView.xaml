@@ -167,6 +167,7 @@
                             Grid.Row="2"
                             Grid.Column="1"
                             Controls:TextBoxHelper.Watermark="APP ID"
+                            IsReadOnly="True"
                             Text="{Binding AppId, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
 
                         <TextBlock
@@ -215,6 +216,7 @@
                             Grid.Row="9"
                             Grid.Column="1"
                             Controls:TextBoxHelper.Watermark="Title"
+                            IsReadOnly="True"
                             Text="{Binding Title, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
 
                         <TextBlock
@@ -236,6 +238,7 @@
                             Height="50"
                             Controls:TextBoxHelper.Watermark="DESCRIPTION"
                             AcceptsReturn="True"
+                            IsReadOnly="True"
                             Text="{Binding Description, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
 
                         <TextBlock
@@ -254,6 +257,7 @@
                             Grid.Row="15"
                             Grid.Column="1"
                             Controls:TextBoxHelper.Watermark="AUTHORS"
+                            IsReadOnly="True"
                             Text="{Binding Authors, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
 
                         <TextBlock

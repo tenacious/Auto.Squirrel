@@ -57,10 +57,7 @@
         /// <value>The current package creation stage.</value>
         public string CurrentPackageCreationStage
         {
-            get
-            {
-                return this._currentPackageCreationStage;
-            }
+            get => this._currentPackageCreationStage;
 
             set
             {
@@ -75,10 +72,7 @@
         /// <value>The file path.</value>
         public string FilePath
         {
-            get
-            {
-                return this.Model.CurrentFilePath;
-            }
+            get => this.Model.CurrentFilePath;
 
             set
             {
@@ -93,10 +87,7 @@
         /// <value><c>true</c> if this instance is busy; otherwise, <c>false</c>.</value>
         public bool IsBusy
         {
-            get
-            {
-                return this._isBusy;
-            }
+            get => this._isBusy;
 
             set
             {
@@ -111,10 +102,7 @@
         /// <value>The model.</value>
         public AutoSquirrelModel Model
         {
-            get
-            {
-                return this._model;
-            }
+            get => this._model;
 
             set
             {
@@ -127,8 +115,6 @@
         /// The user preference
         /// </summary>
         public Preference UserPreference { get; }
-
-        //// M E T H O D S
 
         /// <summary>
         /// Gets the window title.
@@ -145,7 +131,7 @@
                     fp = Path.GetFileNameWithoutExtension(this.FilePath);
                 }
 
-                return string.Format("{0} {1} - {2}", PathFolderHelper.ProgramName, PathFolderHelper.GetProgramVersion(), fp);
+                return $"{PathFolderHelper.ProgramName} {PathFolderHelper.GetProgramVersion()} - {fp}";
             }
         }
 
@@ -172,7 +158,7 @@
         /// </summary>
         public void CreateNewProject()
         {
-            var rslt = MessageBox.Show("Save current project ?", "New Project", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+            MessageBoxResult rslt = MessageBox.Show("Save current project ?", "New Project", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
 
             if (rslt == MessageBoxResult.Cancel)
             {
@@ -207,7 +193,7 @@
                     ofd.InitialDirectory = iniDir;
                 }
 
-                var o = ofd.ShowDialog();
+                System.Windows.Forms.DialogResult o = ofd.ShowDialog();
 
                 if (o != System.Windows.Forms.DialogResult.OK || !File.Exists(ofd.FileName))
                 {
@@ -220,8 +206,7 @@
             }
             catch (Exception)
             {
-                MessageBox.Show("Loading File Error, file no more supported", "Error", MessageBoxButton.OK,
-                    MessageBoxImage.Error, MessageBoxResult.None);
+                MessageBox.Show("Loading File Error, file no more supported", "Error", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.None);
             }
         }
 
@@ -235,14 +220,13 @@
             {
                 if (string.IsNullOrEmpty(filepath) || !File.Exists(filepath))
                 {
-                    MessageBox.Show("This file doesn't exist : " + filepath, "Error", MessageBoxButton.OK,
-                    MessageBoxImage.Error, MessageBoxResult.None);
+                    MessageBox.Show("This file doesn't exist : " + filepath, "Error", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.None);
                     return;
                 }
 
                 this.FilePath = filepath;
 
-                var m = FileUtility.Deserialize<AutoSquirrelModel>(filepath);
+                AutoSquirrelModel m = FileUtility.Deserialize<AutoSquirrelModel>(filepath);
 
                 if (m == null)
                 {
@@ -250,19 +234,14 @@
                 }
 
                 this.Model = m;
-
                 this.Model.PackageFiles = AutoSquirrelModel.OrderFileList(this.Model.PackageFiles);
-
                 this.Model.RefreshPackageVersion();
-
                 AddLastProject(filepath);
-
                 NotifyOfPropertyChange(() => this.WindowTitle);
             }
             catch (Exception)
             {
-                MessageBox.Show("Loading File Error, file no more supported", "Error", MessageBoxButton.OK,
-                    MessageBoxImage.Error, MessageBoxResult.None);
+                MessageBox.Show("Loading File Error, file no more supported", "Error", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.None);
             }
         }
 
@@ -276,7 +255,7 @@
         {
             try
             {
-                if (this.ActiveBackgroungWorker != null && this.ActiveBackgroungWorker.IsBusy)
+                if (this.ActiveBackgroungWorker?.IsBusy == true)
                 {
                     Trace.TraceError("You shouldn't be here !");
                     return;
@@ -324,9 +303,6 @@
             {
                 MessageBox.Show(ex.ToString(), "Error on publishing", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            finally
-            {
-            }
         }
 
         /// <summary>
@@ -358,18 +334,18 @@
         /// </summary>
         public void Save()
         {
+            if (this.FilePath.Contains(".asproj"))
+            {
+                this.FilePath = Path.GetDirectoryName(this.FilePath);
+            }
             if (string.IsNullOrWhiteSpace(this.FilePath))
             {
                 SaveAs();
                 return;
             }
 
-            var filename = Path.GetFileNameWithoutExtension(this.FilePath);
-
-            var baseDir = Path.GetDirectoryName(this.FilePath);
-
-            this.Model.NupkgOutputPath = baseDir + Path.DirectorySeparatorChar + filename + "_files" + PathFolderHelper.PackageDirectory;
-            this.Model.SquirrelOutputPath = baseDir + Path.DirectorySeparatorChar + filename + "_files" + PathFolderHelper.ReleasesDirectory;
+            this.Model.NupkgOutputPath = this.FilePath + Path.DirectorySeparatorChar + this.Model.AppId + "_files" + PathFolderHelper.PackageDirectory;
+            this.Model.SquirrelOutputPath = this.FilePath + Path.DirectorySeparatorChar + this.Model.AppId + "_files" + PathFolderHelper.ReleasesDirectory;
 
             if (!Directory.Exists(this.Model.NupkgOutputPath))
             {
@@ -381,13 +357,14 @@
                 Directory.CreateDirectory(this.Model.SquirrelOutputPath);
             }
 
-            FileUtility.SerializeToFile(this.FilePath, this.Model);
+            var asProj = Path.Combine(this.FilePath, $"{this.Model.AppId}.asproj");
+            FileUtility.SerializeToFile(asProj, this.Model);
 
             Trace.WriteLine("FILE SAVED ! : " + this.FilePath);
 
             this._isSaved = true;
 
-            AddLastProject(this.FilePath);
+            AddLastProject(asProj);
 
             NotifyOfPropertyChange(() => this.WindowTitle);
         }
@@ -401,27 +378,18 @@
 
             try
             {
-                var saveFileDialog = new System.Windows.Forms.SaveFileDialog
+                var saveFileDialog = new System.Windows.Forms.FolderBrowserDialog
                 {
-                    DefaultExt = PathFolderHelper.ProjectFileExtension,
-                    AddExtension = true,
-                    Filter = PathFolderHelper.FileDialogName,
+                    SelectedPath = PathFolderHelper.GetMyDirectory(MyDirectory.Project),
+                    ShowNewFolderButton = true
                 };
-
-                // todo : usare cartella di salvataggio.
-                var iniDir = PathFolderHelper.GetMyDirectory(MyDirectory.Project);
-
-                if (!string.IsNullOrWhiteSpace(iniDir))
-                {
-                    saveFileDialog.InitialDirectory = iniDir;
-                }
 
                 if (saveFileDialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                 {
                     return;
                 }
 
-                this.FilePath = saveFileDialog.FileName;
+                this.FilePath = saveFileDialog.SelectedPath;
 
                 Save();
             }
@@ -449,11 +417,11 @@
 
             //As Squirrel convention i put everything in lib/net45 folder
 
-            var directoryBase = "/lib/net45";
+            const string directoryBase = "/lib/net45";
 
             var files = new List<ManifestFile>();
 
-            foreach (var node in model.PackageFiles)
+            foreach (ItemLink node in model.PackageFiles)
             {
                 AddFileToPackage(directoryBase, node, files);
             }
@@ -478,7 +446,7 @@
             {
                 directoryBase += "/" + node.Filename;
 
-                foreach (var subNode in node.Children)
+                foreach (ItemLink subNode in node.Children)
                 {
                     AddFileToPackage(directoryBase, subNode, files);
                 }
@@ -537,9 +505,7 @@
 
         private void AddLastProject(string filePath)
         {
-            var existing = this.UserPreference.LastOpenedProject.Where(p => p.ToLower() == filePath.ToLower()).ToList();
-
-            foreach (var fp in existing)
+            foreach (var fp in this.UserPreference.LastOpenedProject.Where(p => p.ToLower() == filePath.ToLower()).ToList())
             {
                 this.UserPreference.LastOpenedProject.Remove(fp);
             }

@@ -11,6 +11,7 @@ using System.Windows.Media.Imaging;
 namespace AutoSquirrel
 {
     /// <summary>
+    /// Icon Helper
     /// </summary>
     public static class IconHelper
     {
@@ -51,6 +52,7 @@ namespace AutoSquirrel
         private static readonly Dictionary<string, ImageSource> _smallIconCache = new Dictionary<string, ImageSource>();
 
         /// <summary>
+        /// Folder Type
         /// </summary>
         public enum FolderType
         {
@@ -66,6 +68,7 @@ namespace AutoSquirrel
         }
 
         /// <summary>
+        /// Icon Size
         /// </summary>
         public enum IconSize
         {
@@ -95,7 +98,7 @@ namespace AutoSquirrel
                 return null;
             }
 
-            var cache = large ? _largeIconCache : _smallIconCache;
+            Dictionary<string, ImageSource> cache = large ? _largeIconCache : _smallIconCache;
             if (cache.TryGetValue(extension, out var icon))
             {
                 return icon;
@@ -112,10 +115,11 @@ namespace AutoSquirrel
         /// <param name="size">The size.</param>
         /// <param name="folderType">Type of the folder.</param>
         /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static Icon GetFolderIcon(IconSize size, FolderType folderType)
         {
             // Need to add size check, although errors generated at present!
-            uint flags = SHGFI_ICON | SHGFI_USEFILEATTRIBUTES;
+            var flags = SHGFI_ICON | SHGFI_USEFILEATTRIBUTES;
 
             if (FolderType.Open == folderType)
             {
@@ -133,7 +137,7 @@ namespace AutoSquirrel
             // Get the folder icon
             var shfi = new SHFILEINFO();
 
-            var res = SHGetFileInfo(Environment.GetFolderPath(Environment.SpecialFolder.Windows),
+            IntPtr res = SHGetFileInfo(Environment.GetFolderPath(Environment.SpecialFolder.Windows),
                 FILE_ATTRIBUTE_DIRECTORY,
                 out shfi,
                 (uint)Marshal.SizeOf(shfi),
@@ -179,12 +183,10 @@ namespace AutoSquirrel
                 return null;
             }
 
-            ImageSource imageSource = Imaging.CreateBitmapSourceFromHIcon(
+            return Imaging.CreateBitmapSourceFromHIcon(
                 icon.Handle,
                 Int32Rect.Empty,
                 BitmapSizeOptions.FromEmptyOptions());
-
-            return imageSource;
         }
 
         [DllImport("user32.dll", SetLastError = true)]
@@ -192,6 +194,7 @@ namespace AutoSquirrel
         private static extern bool DestroyIcon(IntPtr hIcon);
 
         /// <summary>
+        /// SH FILE INFO
         /// </summary>
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         public struct SHFILEINFO
@@ -222,7 +225,7 @@ namespace AutoSquirrel
             /// </summary>
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
             public string szTypeName;
-        };
+        }
 
         /// <summary>
         /// Provides static methods to read system icons for both folders and files.
@@ -332,7 +335,7 @@ namespace AutoSquirrel
 
                 [MarshalAs(UnmanagedType.ByValTStr, SizeConst = Namesize)]
                 private readonly string szTypeName;
-            };
+            }
         }
 
         /// <summary>

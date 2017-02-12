@@ -33,13 +33,13 @@ namespace AutoSquirrel
         {
             get
             {
-                var __ValidationResults = Validate();
+                ValidationResult __ValidationResults = Validate();
                 if (__ValidationResults == null)
                 {
                     return string.Empty;
                 }
 
-                var __ColumnResults = __ValidationResults.Errors.FirstOrDefault(x => string.Compare(x.PropertyName, columnName, true) == 0);
+                ValidationFailure __ColumnResults = __ValidationResults.Errors.FirstOrDefault(x => string.Compare(x.PropertyName, columnName, true) == 0);
                 return __ColumnResults != null ? __ColumnResults.ErrorMessage : string.Empty;
             }
         }
@@ -52,7 +52,7 @@ namespace AutoSquirrel
         public static string GetError(ValidationResult result)
         {
             var __ValidationErrors = new StringBuilder();
-            foreach (var validationFailure in result.Errors)
+            foreach (ValidationFailure validationFailure in result.Errors)
             {
                 __ValidationErrors.Append(validationFailure.ErrorMessage);
                 __ValidationErrors.Append(Environment.NewLine);

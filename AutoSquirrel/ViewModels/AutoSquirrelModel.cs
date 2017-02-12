@@ -22,7 +22,7 @@
     /// <seealso cref="AutoSquirrel.PropertyChangedBaseValidable"/>
     /// <seealso cref="GongSolutions.Wpf.DragDrop.IDropTarget"/>
     [DataContract]
-    public class AutoSquirrelModel : PropertyChangedBaseValidable, GongSolutions.Wpf.DragDrop.IDropTarget
+    public class AutoSquirrelModel : PropertyChangedBaseValidable, IDropTarget
     {
         [DataMember]
         internal List<WebConnectionBase> CachedConnection = new List<WebConnectionBase>();
@@ -55,10 +55,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="AutoSquirrelModel"/> class.
         /// </summary>
-        public AutoSquirrelModel()
-        {
-            this.PackageFiles = new ObservableCollection<ItemLink>();
-        }
+        public AutoSquirrelModel() => this.PackageFiles = new ObservableCollection<ItemLink>();
 
         /// <summary>
         /// Gets the add directory command.
@@ -107,14 +104,11 @@
         {
             get
             {
-                if (this._availableUploadLocation == null)
-                {
-                    this._availableUploadLocation = new List<string>()
+                this._availableUploadLocation = this._availableUploadLocation ?? new List<string>()
                     {
                         "Amazon S3",
                         "File System",
                     };
-                }
 
                 return this._availableUploadLocation;
             }
@@ -411,7 +405,7 @@
 
             set
             {
-                var test = value.Split('.');
+                string[] test = value.Split('.');
                 if (test.Length <= 3)
                 {
                     this._version = value;
@@ -437,7 +431,7 @@
                 return;
             }
 
-            var selectedLink = this.SelectedLink[0];
+            ItemLink selectedLink = this.SelectedLink[0];
             if (selectedLink != null)
             {
                 var validFolderName = GetValidName(this.newFolderName, selectedLink.Children);
@@ -472,6 +466,7 @@
         /// <summary>
         /// ON DROP
         /// </summary>
+        /// <param name="dropInfo"></param>
         public void Drop(IDropInfo dropInfo)
         {
             // MOVE FILE INSIDE PACKAGE
@@ -501,11 +496,12 @@
             {
                 if (dataObj.GetDataPresent(DataFormats.FileDrop))
                 {
-                    var files = (string[])dataObj.GetData(DataFormats.FileDrop);
-
-                    foreach (string filePath in files)
+                    foreach (var filePath in (string[])dataObj.GetData(DataFormats.FileDrop))
                     {
-                        AddFile(filePath, targetItem);
+                        if (!filePath.Contains(".pdb") && !filePath.Contains(".nupkg") && !filePath.Contains(".vshost."))
+                        {
+                            AddFile(filePath, targetItem);
+                        }
                     }
                 }
 
@@ -527,7 +523,7 @@
             {
                 DataContext = this.SelectedConnection
             };
-            var rslt = vw.ShowDialog();
+            bool? rslt = vw.ShowDialog();
         }
 
         /// <summary>
@@ -573,7 +569,7 @@
                 return;
             }
 
-            foreach (var link in this.SelectedLink)
+            foreach (ItemLink link in this.SelectedLink)
             {
                 RemoveFromTreeview(link);
             }
@@ -591,7 +587,7 @@
                 Filter = "ICON | *.ico"
             };
 
-            var o = ofd.ShowDialog();
+            System.Windows.Forms.DialogResult o = ofd.ShowDialog();
 
             if (o != System.Windows.Forms.DialogResult.OK || !File.Exists(ofd.FileName))
             {
@@ -613,7 +609,7 @@
                 dialog.SelectedPath = this.NupkgOutputPath;
             }
 
-            var result = dialog.ShowDialog();
+            System.Windows.Forms.DialogResult result = dialog.ShowDialog();
 
             if (result != System.Windows.Forms.DialogResult.OK)
             {
@@ -635,7 +631,7 @@
                 dialog.SelectedPath = this.SquirrelOutputPath;
             }
 
-            var result = dialog.ShowDialog();
+            System.Windows.Forms.DialogResult result = dialog.ShowDialog();
 
             if (result != System.Windows.Forms.DialogResult.OK)
             {
@@ -661,7 +657,7 @@
         /// <returns></returns>
         public override ValidationResult Validate()
         {
-            var commonValid = new Validator().Validate(this);
+            ValidationResult commonValid = new Validator().Validate(this);
             if (!commonValid.IsValid)
             {
                 return commonValid;
@@ -696,7 +692,7 @@
 
         internal static ObservableCollection<ItemLink> OrderFileList(ObservableCollection<ItemLink> packageFiles)
         {
-            foreach (var node in packageFiles)
+            foreach (ItemLink node in packageFiles)
             {
                 node.Children = OrderFileList(node.Children);
             }
@@ -708,9 +704,11 @@
         /// 29/01/2015
         /// 1) Create update files list
         /// 2) Create queue upload list. Iterating file list foreach connection ( i can have multiple
-        ///    cloud storage )
+        /// cloud storage )
         /// 3) Start async upload.
         /// </summary>
+        /// <param name="mode">The mode.</param>
+        /// <exception cref="Exception"></exception>
         internal void BeginUpdatedFiles(int mode)
         {
             // ? -> Set IsEnabled = false on GUI to prevent change during upload ?
@@ -758,17 +756,13 @@
                 updatedFiles.Add(new FileInfo(ffp));
             }
 
-            if (this.UploadQueue == null)
-            {
-                this.UploadQueue = new ObservableCollection<SingleFileUpload>();
-            }
+            this.UploadQueue = this.UploadQueue ?? new ObservableCollection<SingleFileUpload>();
 
             this.UploadQueue.Clear();
 
-            var WebConnections = new List<WebConnectionBase>() { SelectedConnection };
-            foreach (var connection in WebConnections)
+            foreach (WebConnectionBase connection in new List<WebConnectionBase>() { SelectedConnection })
             {
-                foreach (var file in updatedFiles)
+                foreach (FileInfo file in updatedFiles)
                 {
                     this.UploadQueue.Add(new SingleFileUpload()
                     {
@@ -789,7 +783,7 @@
             ProcessNextUploadFile();
         }
 
-        private static String BytesToString(long byteCount)
+        private static string BytesToString(long byteCount)
         {
             string[] suf = { "B", "KB", "MB", "GB", "TB", "PB", "EB" }; //Longs run out around EB
             if (byteCount == 0)
@@ -797,9 +791,9 @@
                 return "0" + suf[0];
             }
 
-            long bytes = Math.Abs(byteCount);
-            int place = Convert.ToInt32(Math.Floor(Math.Log(bytes, 1024)));
-            double num = Math.Round(bytes / Math.Pow(1024, place), 1);
+            var bytes = Math.Abs(byteCount);
+            var place = Convert.ToInt32(Math.Floor(Math.Log(bytes, 1024)));
+            var num = Math.Round(bytes / Math.Pow(1024, place), 1);
             return (Math.Sign(byteCount) * num).ToString() + suf[place];
         }
 
@@ -807,7 +801,7 @@
         {
             var folderName = newFolderName;
 
-            var ex = children.FirstOrDefault(i => i.Filename == folderName);
+            ItemLink ex = children.FirstOrDefault(i => i.Filename == folderName);
             var index = 0;
             while (ex != null)
             {
@@ -822,7 +816,7 @@
 
         private static void SearchNodeByFilepath(string filepath, ObservableCollection<ItemLink> root, List<ItemLink> rslt)
         {
-            foreach (var node in root)
+            foreach (ItemLink node in root)
             {
                 if (node.SourceFilepath != null && filepath.ToLower() == node.SourceFilepath.ToLower())
                 {
@@ -849,7 +843,7 @@
             ItemLink parent = targetItem;
             if (targetItem == null)
             {
-                //Porto su root
+                //Add to root
                 this._packageFiles.Add(node);
             }
             else
@@ -875,15 +869,15 @@
             {
                 var dir = new DirectoryInfo(filePath);
 
-                var files = dir.GetFiles("*.*", SearchOption.TopDirectoryOnly);
-                var subDirectory = dir.GetDirectories("*.*", SearchOption.TopDirectoryOnly);
+                FileInfo[] files = dir.GetFiles("*.*", SearchOption.TopDirectoryOnly);
+                DirectoryInfo[] subDirectory = dir.GetDirectories("*.*", SearchOption.TopDirectoryOnly);
 
-                foreach (var f in files)
+                foreach (FileInfo f in files)
                 {
                     AddFile(f.FullName, node);
                 }
 
-                foreach (var f in subDirectory)
+                foreach (DirectoryInfo f in subDirectory)
                 {
                     AddFile(f.FullName, node);
                 }
@@ -895,23 +889,30 @@
 
                 if (ext == ".exe")
                 {
-                    this.MainExePath = filePath;
+                    ItemLink nodeParent = node.GetParent(this.PackageFiles);
+                    if (nodeParent == null)
+                    {
+                        var fileName = Path.GetFileNameWithoutExtension(filePath);
+                        this.AppId = fileName;
+                        this.Title = fileName;
+                        this.MainExePath = filePath;
+                        var versInfo = FileVersionInfo.GetVersionInfo(this.MainExePath);
+                        this.Description = versInfo.Comments;
+                        this.Authors = versInfo.CompanyName;
 
-                    RefreshPackageVersion();
+                        RefreshPackageVersion();
+                    }
                 }
             }
         }
 
         private void Current_OnUploadCompleted(object sender, UploadCompleteEventArgs e)
         {
-            var i = e.FileUploaded;
+            SingleFileUpload i = e.FileUploaded;
 
             i.OnUploadCompleted -= this.Current_OnUploadCompleted;
 
             Trace.WriteLine("Upload Complete " + i.Filename);
-
-            //if (i != null && UploadQueue.Contains(i))
-            //    UploadQueue.Remove(i);
 
             ProcessNextUploadFile();
         }
@@ -954,7 +955,7 @@
         {
             try
             {
-                var current = this.UploadQueue.FirstOrDefault(u => u.UploadStatus == FileUploadStatus.Queued);
+                SingleFileUpload current = this.UploadQueue.FirstOrDefault(u => u.UploadStatus == FileUploadStatus.Queued);
 
                 if (current == null)
                 {
@@ -973,7 +974,7 @@
 
         private void RemoveAllFromTreeview(ItemLink item)
         {
-            var parent = item.GetParent(this.PackageFiles);
+            ItemLink parent = item.GetParent(this.PackageFiles);
 
             // Element is in the treeview root.
             if (parent == null)
@@ -992,7 +993,7 @@
 
         private void RemoveFromTreeview(ItemLink item)
         {
-            var parent = item.GetParent(this.PackageFiles);
+            ItemLink parent = item.GetParent(this.PackageFiles);
 
             if (this.MainExePath != null && item.SourceFilepath != null && this.MainExePath.ToLower() == item.SourceFilepath.ToLower())
             {
@@ -1021,7 +1022,7 @@
 
             SearchNodeByFilepath(filepath, this.PackageFiles, list);
 
-            foreach (var node in list)
+            foreach (ItemLink node in list)
             {
                 RemoveFromTreeview(node);
             }
@@ -1031,6 +1032,7 @@
         /// I keep in memory created WebConnectionBase, so if the user switch accidentally the
         /// connection string , he don't lose inserted parameter
         /// </summary>
+        /// <param name="connectionType">Type of the connection.</param>
         private void UpdateSelectedConnection(string connectionType)
         {
             if (string.IsNullOrWhiteSpace(connectionType))
@@ -1038,32 +1040,20 @@
                 return;
             }
 
-            if (this.CachedConnection == null)
-            {
-                this.CachedConnection = new List<WebConnectionBase>();
-            }
+            this.CachedConnection = this.CachedConnection ?? new List<WebConnectionBase>();
 
             WebConnectionBase con = null;
             switch (connectionType)
             {
                 case "Amazon S3":
                     {
-                        con = this.CachedConnection.FirstOrDefault(c => c is AmazonS3Connection);
-
-                        if (con == null)
-                        {
-                            con = new AmazonS3Connection();
-                        }
+                        con = this.CachedConnection.Find(c => c is AmazonS3Connection) ?? new AmazonS3Connection();
                     }
                     break;
 
                 case "File System":
                     {
-                        con = this.CachedConnection.FirstOrDefault(c => c is FileSystemConnection);
-                        if (con == null)
-                        {
-                            con = new FileSystemConnection();
-                        }
+                        con = this.CachedConnection.Find(c => c is FileSystemConnection) ?? new FileSystemConnection();
                     }
                     break;
             }

@@ -11,36 +11,6 @@
     using Squirrel;
 
     /// <summary>
-    /// Binding Proxy
-    /// </summary>
-    /// <seealso cref="System.Windows.Freezable"/>
-    public class BindingProxy : Freezable
-    {
-        /// <summary>
-        /// The data property
-        /// </summary>
-        public static readonly DependencyProperty DataProperty =
-            DependencyProperty.Register("Data", typeof(object), typeof(BindingProxy), new UIPropertyMetadata(null));
-
-        /// <summary>
-        /// Gets or sets the data.
-        /// </summary>
-        /// <value>The data.</value>
-        public object Data
-        {
-            get { return GetValue(DataProperty); }
-            set { SetValue(DataProperty, value); }
-        }
-
-        /// <summary>
-        /// When implemented in a derived class, creates a new instance of the <see
-        /// cref="T:System.Windows.Freezable"/> derived class.
-        /// </summary>
-        /// <returns>The new instance.</returns>
-        protected override Freezable CreateInstanceCore() => new BindingProxy();
-    }
-
-    /// <summary>
     /// Shell View
     /// </summary>
     /// <seealso cref="MahApps.Metro.Controls.MetroWindow"/>
@@ -71,38 +41,36 @@
             return source as MultiSelectTreeView;
         }
 
-        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
-        {
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e) =>
             Task.Run(async () =>
-            {
-                using (var mgr = new UpdateManager(@"https://s3-eu-west-1.amazonaws.com/autosquirrel", "AutoSquirrel"))
                 {
-                    try
+                    using (var mgr = new UpdateManager(@"https://s3-eu-west-1.amazonaws.com/autosquirrel", "AutoSquirrel"))
                     {
-                        if (mgr.IsInstalledApp)
+                        try
                         {
-                            var updates = await mgr.CheckForUpdate();
-                            if (updates.ReleasesToApply.Any())
+                            if (mgr.IsInstalledApp)
                             {
-                                var lastVersion = updates.ReleasesToApply.OrderBy(x => x.Version).Last();
-                                await mgr.DownloadReleases(new[] { lastVersion });
-                                await mgr.ApplyReleases(updates);
-                                await mgr.UpdateApp();
-
-                                if (MessageBox.Show("The application has been updated - please restart.", "Restart?", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                                UpdateInfo updates = await mgr.CheckForUpdate();
+                                if (updates.ReleasesToApply.Count > 0)
                                 {
-                                    var ignore = Task.Run(() => UpdateManager.RestartApp());
+                                    ReleaseEntry lastVersion = updates.ReleasesToApply.OrderBy(x => x.Version).Last();
+                                    await mgr.DownloadReleases(new[] { lastVersion });
+                                    await mgr.ApplyReleases(updates);
+                                    await mgr.UpdateApp();
+
+                                    if (MessageBox.Show("The application has been updated - please restart.", "Restart?", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                                    {
+                                        var ignore = Task.Run(() => UpdateManager.RestartApp());
+                                    }
                                 }
                             }
                         }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("From Update Manager : " + Environment.NewLine + ex.InnerException.Message + Environment.NewLine + ex.Message);
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("From Update Manager : " + Environment.NewLine + ex.InnerException.Message + Environment.NewLine + ex.Message);
-                    }
-                }
-            });
-        }
+                });
 
         private void OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -131,7 +99,7 @@
 
         private void ShellView_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            var askSave = MessageBox.Show("Do you want save?", "Exit Application", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+            MessageBoxResult askSave = MessageBox.Show("Do you want save?", "Exit Application", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
 
             if (askSave == MessageBoxResult.Cancel)
             {

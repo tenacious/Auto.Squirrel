@@ -5,18 +5,19 @@ namespace AutoSquirrel
     using System.Windows.Input;
 
     /// <summary>
+    /// Delegate Command
     /// </summary>
     /// <seealso cref="System.Windows.Input.ICommand"/>
     public class DelegateCommand : ICommand
     {
         private readonly Predicate<object> _canExecute;
-        private readonly System.Action _execute;
+        private readonly Action _execute;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DelegateCommand"/> class.
         /// </summary>
         /// <param name="execute">The execute.</param>
-        public DelegateCommand(System.Action execute) : this(execute, null)
+        public DelegateCommand(Action execute) : this(execute, null)
         {
         }
 
@@ -26,20 +27,19 @@ namespace AutoSquirrel
         /// <param name="execute">The execute.</param>
         /// <param name="canExecute">The can execute.</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public DelegateCommand(System.Action execute, Predicate<object> canExecute)
+        public DelegateCommand(Action execute, Predicate<object> canExecute)
         {
-            if (execute == null)
-            {
-                throw new ArgumentNullException(nameof(execute));
-            }
-
-            this._execute = execute; this._canExecute = canExecute;
+            this._execute = execute ?? throw new ArgumentNullException(nameof(execute)); this._canExecute = canExecute;
         }
 
         /// <summary>
         /// Occurs when changes occur that affect whether or not the command should execute.
         /// </summary>
-        public event EventHandler CanExecuteChanged { add { CommandManager.RequerySuggested += value; } remove { CommandManager.RequerySuggested -= value; } }
+        public event EventHandler CanExecuteChanged
+        {
+            add => CommandManager.RequerySuggested += value;
+            remove => CommandManager.RequerySuggested -= value;
+        }
 
         /// <summary>
         /// Defines the method that determines whether the command can execute in its current state.
@@ -59,9 +59,6 @@ namespace AutoSquirrel
         /// Data used by the command. If the command does not require data to be passed, this object
         /// can be set to null.
         /// </param>
-        public void Execute(object parameter)
-        {
-            this._execute();
-        }
+        public void Execute(object parameter) => this._execute();
     }
 }

@@ -26,6 +26,8 @@ namespace AutoSquirrel
         //bool _isExpanded;
         private bool _isSelected;
 
+        private string sourceFilepath;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ItemLink"/> class.
         /// </summary>
@@ -38,10 +40,7 @@ namespace AutoSquirrel
         /// </summary>
         public ObservableCollection<ItemLink> Children
         {
-            get
-            {
-                return this._children;
-            }
+            get => this._children;
 
             set
             {
@@ -151,10 +150,7 @@ namespace AutoSquirrel
         [DataMember]
         public bool IsExpanded
         {
-            get
-            {
-                return this._isExpanded;
-            }
+            get => this._isExpanded;
 
             set
             {
@@ -186,10 +182,7 @@ namespace AutoSquirrel
         [DataMember]
         public bool IsSelected
         {
-            get
-            {
-                return this._isSelected;
-            }
+            get => this._isSelected;
 
             set
             {
@@ -219,7 +212,27 @@ namespace AutoSquirrel
         /// Filepath of linked source file. Absolute ?
         /// </summary>
         [DataMember]
-        public string SourceFilepath { get; set; }
+        public string SourceFilepath
+        {
+            get => this.sourceFilepath;
+
+            set
+            {
+                this.sourceFilepath = value;
+                NotifyOfPropertyChange(() => this.SourceFilepath);
+                NotifyOfPropertyChange(() => this.Filename);
+                FileAttributes fa = File.GetAttributes(value);
+                if ((fa & FileAttributes.Directory) != 0)
+                {
+                    this.SetDirectoryInfo(value);
+                    return;
+                }
+
+                var fileInfo = new FileInfo(value);
+                this.LastEdit = fileInfo.LastWriteTime.ToString();
+                this.FileDimension = fileInfo.Length;
+            }
+        }
 
         private bool _isExpanded { get; set; }
 
@@ -230,9 +243,9 @@ namespace AutoSquirrel
         /// <returns></returns>
         public ItemLink GetParent(ObservableCollection<ItemLink> root)
         {
-            foreach (var node in root)
+            foreach (ItemLink node in root)
             {
-                var p = FindParent(this, node);
+                ItemLink p = FindParent(this, node);
                 if (p != null)
                 {
                     return p;
@@ -259,9 +272,9 @@ namespace AutoSquirrel
                     return node;
                 }
 
-                foreach (var child in node.Children)
+                foreach (ItemLink child in node.Children)
                 {
-                    var p = FindParent(link, child);
+                    ItemLink p = FindParent(link, child);
                     if (p != null)
                     {
                         return p;
@@ -277,6 +290,13 @@ namespace AutoSquirrel
             string[] directories = relativeOutputPath.Split(new List<char> { Path.DirectorySeparatorChar }.ToArray(), StringSplitOptions.RemoveEmptyEntries);
 
             return directories.LastOrDefault();
+        }
+
+        private void SetDirectoryInfo(string folderPath)
+        {
+            var dirInfo = new DirectoryInfo(folderPath);
+            this.LastEdit = dirInfo.LastWriteTime.ToString();
+            this.FileDimension = dirInfo.EnumerateFiles("*.*", SearchOption.AllDirectories).Sum(fi => fi.Length);
         }
     }
 }

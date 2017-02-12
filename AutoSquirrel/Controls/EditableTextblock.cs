@@ -50,10 +50,7 @@ namespace AutoSquirrel
         private TextBlock m_TextBlockDisplayText;
         private TextBox m_TextBoxEditText;
 
-        static EditableTextBlock()
-        {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(EditableTextBlock), new FrameworkPropertyMetadata(typeof(EditableTextBlock)));
-        }
+        static EditableTextBlock() => DefaultStyleKeyProperty.OverrideMetadata(typeof(EditableTextBlock), new FrameworkPropertyMetadata(typeof(EditableTextBlock)));
 
         /// <summary>
         /// Gets or sets the text.
@@ -61,8 +58,7 @@ namespace AutoSquirrel
         /// <value>The text.</value>
         public string Text
         {
-            get { return (string)GetValue(TextProperty); }
-            set { SetValue(TextProperty, value); }
+            get => (string)GetValue(TextProperty); set => SetValue(TextProperty, value);
         }
 
         /// <summary>
@@ -71,8 +67,7 @@ namespace AutoSquirrel
         /// <value>The color of the text block background.</value>
         public Brush TextBlockBackgroundColor
         {
-            get { return (Brush)GetValue(TextBlockBackgroundColorProperty); }
-            set { SetValue(TextBlockBackgroundColorProperty, value); }
+            get => (Brush)GetValue(TextBlockBackgroundColorProperty); set => SetValue(TextBlockBackgroundColorProperty, value);
         }
 
         /// <summary>
@@ -81,8 +76,7 @@ namespace AutoSquirrel
         /// <value>The color of the text block foreground.</value>
         public Brush TextBlockForegroundColor
         {
-            get { return (Brush)GetValue(TextBlockForegroundColorProperty); }
-            set { SetValue(TextBlockForegroundColorProperty, value); }
+            get => (Brush)GetValue(TextBlockForegroundColorProperty); set => SetValue(TextBlockForegroundColorProperty, value);
         }
 
         /// <summary>
@@ -91,8 +85,7 @@ namespace AutoSquirrel
         /// <value>The color of the text box background.</value>
         public Brush TextBoxBackgroundColor
         {
-            get { return (Brush)GetValue(TextBoxBackgroundColorProperty); }
-            set { SetValue(TextBoxBackgroundColorProperty, value); }
+            get => (Brush)GetValue(TextBoxBackgroundColorProperty); set => SetValue(TextBoxBackgroundColorProperty, value);
         }
 
         /// <summary>
@@ -101,8 +94,7 @@ namespace AutoSquirrel
         /// <value>The color of the text box foreground.</value>
         public Brush TextBoxForegroundColor
         {
-            get { return (Brush)GetValue(TextBoxForegroundColorProperty); }
-            set { SetValue(TextBoxForegroundColorProperty, value); }
+            get => (Brush)GetValue(TextBoxForegroundColorProperty); set => SetValue(TextBoxForegroundColorProperty, value);
         }
 
         /// <summary>

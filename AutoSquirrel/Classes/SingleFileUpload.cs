@@ -42,10 +42,7 @@ namespace AutoSquirrel
         [DataMember]
         public string ConnectionName
         {
-            get
-            {
-                return this._connection;
-            }
+            get => this._connection;
 
             set
             {
@@ -61,10 +58,7 @@ namespace AutoSquirrel
         [DataMember]
         public string Filename
         {
-            get
-            {
-                return this._filename;
-            }
+            get => this._filename;
 
             set
             {
@@ -80,10 +74,7 @@ namespace AutoSquirrel
         [DataMember]
         public string FileSize
         {
-            get
-            {
-                return this._fileSize;
-            }
+            get => this._fileSize;
 
             set
             {
@@ -111,10 +102,7 @@ namespace AutoSquirrel
         [DataMember]
         public double ProgressPercentage
         {
-            get
-            {
-                return this._progressPercentage;
-            }
+            get => this._progressPercentage;
 
             set
             {
@@ -129,10 +117,7 @@ namespace AutoSquirrel
         /// <value>The upload status.</value>
         public FileUploadStatus UploadStatus
         {
-            get
-            {
-                return this._uploadStatus;
-            }
+            get => this._uploadStatus;
 
             set
             {
@@ -168,6 +153,10 @@ namespace AutoSquirrel
                 this.fileTransferUtility.UploadAsync(uploadRequest);
 
                 Trace.WriteLine("Start Upload : " + this.FullPath);
+            }
+            else if (this.Connection is FileSystemConnection fileCon)
+            {
+                this.uploadRequest_UploadPartProgressEvent(this, new UploadProgressArgs(100, 100, 100));
             }
         }
 
@@ -207,10 +196,7 @@ namespace AutoSquirrel
                 {
                     Application.Current.Dispatcher.BeginInvoke(
                       DispatcherPriority.Background,
-                      new System.Action(() =>
-                      {
-                          RequesteUploadComplete(new UploadCompleteEventArgs(this));
-                      }));
+                      new System.Action(() => RequesteUploadComplete(new UploadCompleteEventArgs(this))));
                 }
             }
         }

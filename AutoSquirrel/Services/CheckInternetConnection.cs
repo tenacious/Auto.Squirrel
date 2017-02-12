@@ -17,8 +17,7 @@ namespace AutoSquirrel
         {
             try
             {
-                int desc;
-                return InternetGetConnectedState(out desc, 0);
+                return InternetGetConnectedState(out var desc, 0);
             }
             catch
             {

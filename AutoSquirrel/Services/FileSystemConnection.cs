@@ -17,10 +17,7 @@ namespace AutoSquirrel
         /// <summary>
         /// Initializes a new instance of the <see cref="FileSystemConnection"/> class.
         /// </summary>
-        public FileSystemConnection()
-        {
-            this.ConnectionName = "File System";
-        }
+        public FileSystemConnection() => this.ConnectionName = "File System";
 
         /// <summary>
         /// Gets or sets the file system path.
@@ -29,10 +26,7 @@ namespace AutoSquirrel
         [DataMember]
         public string FileSystemPath
         {
-            get
-            {
-                return this._fileSystemPath;
-            }
+            get => this._fileSystemPath;
 
             set
             {
@@ -56,7 +50,7 @@ namespace AutoSquirrel
                     return "Missing Parameter";
                 }
 
-                return this.FileSystemPath + "/Setup.exe";
+                return this.FileSystemPath + "\\Setup.exe";
             }
         }
 
@@ -66,7 +60,7 @@ namespace AutoSquirrel
         /// <returns></returns>
         public override ValidationResult Validate()
         {
-            var commonValid = new Validator().Validate(this);
+            ValidationResult commonValid = new Validator().Validate(this);
             if (!commonValid.IsValid)
             {
                 return commonValid;
@@ -77,10 +71,7 @@ namespace AutoSquirrel
 
         private class Validator : AbstractValidator<FileSystemConnection>
         {
-            public Validator()
-            {
-                RuleFor(c => c.FileSystemPath).NotEmpty();
-            }
+            public Validator() => RuleFor(c => c.FileSystemPath).NotEmpty();
         }
     }
 }

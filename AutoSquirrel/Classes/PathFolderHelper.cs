@@ -98,7 +98,7 @@ namespace AutoSquirrel
 
         internal static string GetProgramVersion()
         {
-            var ver = Assembly.GetExecutingAssembly()
+            Version ver = Assembly.GetExecutingAssembly()
                              .GetName()
                              .Version;
 
@@ -113,7 +113,7 @@ namespace AutoSquirrel
 
                 if (File.Exists(path))
                 {
-                    var p = FileUtility.Deserialize<Preference>(path);
+                    Preference p = FileUtility.Deserialize<Preference>(path);
 
                     // Check if project files still exist.
 
@@ -158,7 +158,7 @@ namespace AutoSquirrel
         {
             var invalidChars = Regex.Escape(new string(Path.GetInvalidFileNameChars()));
             var invalidReStr = $@"([{invalidChars}]*\.+$)|([{invalidChars}]+)";
-            return Regex.Replace(filename, invalidReStr, String.Empty);
+            return Regex.Replace(filename, invalidReStr, string.Empty);
         }
     }
 }
