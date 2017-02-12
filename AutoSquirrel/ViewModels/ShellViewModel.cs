@@ -578,11 +578,12 @@
                     { "l=|shortcut-locations=", "Comma-separated string of shortcut locations, e.g. 'Desktop,StartMenu'", v => shortcutArgs = v},
                     { "no-msi", "Don't generate an MSI package", v => noMsi = true},
             */
-            var cmd = $@" -releasify {nugetPackagePath} -releaseDir {squirrelOutputPath}";
+            var cmd = $@" -releasify {nugetPackagePath} -releaseDir {squirrelOutputPath} -l 'Desktop'";
 
             if (File.Exists(this.Model.IconFilepath))
             {
                 cmd += @" -i " + this.Model.IconFilepath;
+                cmd += @" -setupIcon " + this.Model.IconFilepath;
             }
 
             var startInfo = new ProcessStartInfo()
