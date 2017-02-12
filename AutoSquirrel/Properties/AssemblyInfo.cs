@@ -5,7 +5,7 @@ using System.Windows;
 [assembly: AssemblyTitle("AutoSquirrel")]
 [assembly: AssemblyDescription("Squirrel Packaging Tool")]
 [assembly: AssemblyConfiguration(".Net 4.6.1")]
-[assembly: AssemblyCompany("https://github.com/ChrisPulman")]
+[assembly: AssemblyCompany("ChrisPulman")]
 [assembly: AssemblyProduct("AutoSquirrel")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

@@ -82,11 +82,11 @@
                     <ColumnDefinition Width="*" MinWidth="300" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height=".75*" />
-                    <RowDefinition Height=".25*" />
+                    <RowDefinition Height="509*" />
+                    <RowDefinition Height="204*" />
                     <RowDefinition Height="60" />
                 </Grid.RowDefinitions>
-                <GroupBox Grid.RowSpan="2">
+                <GroupBox Grid.RowSpan="2" Margin="5,5,5,4.5">
                     <GroupBox.Header>
                         <StackPanel Orientation="Horizontal">
                             <Image
@@ -331,11 +331,11 @@
                     Grid.RowSpan="2"
                     Grid.Column="1"
                     Width="2"
-                    Margin="1,40"
+                    Margin="2,40,3,40.5"
                     HorizontalAlignment="Center"
                     BorderBrush="#FFFFFF"
                     IsTabStop="False" />
-                <GroupBox Grid.Column="2">
+                <GroupBox Grid.Column="2" Margin="5,5,5,4.5">
                     <GroupBox.Header>
                         <StackPanel Orientation="Horizontal">
                             <Image
@@ -539,7 +539,10 @@
                     </Grid>
                 </GroupBox>
 
-                <GroupBox Grid.Row="1" Grid.Column="2">
+                <GroupBox
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Margin="5,5.5,5,4.5">
                     <GroupBox.Header>
                         <StackPanel Orientation="Horizontal">
                             <Image
@@ -591,7 +594,10 @@
                     </ListView>
                 </GroupBox>
 
-                <Grid Grid.Row="2" Grid.ColumnSpan="3">
+                <Grid
+                    Grid.Row="2"
+                    Grid.ColumnSpan="3"
+                    Margin="0,1.5,0,0.5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
                         <ColumnDefinition />

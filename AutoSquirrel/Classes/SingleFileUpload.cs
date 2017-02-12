@@ -131,6 +131,11 @@ namespace AutoSquirrel
         {
             if (this.Connection is AmazonS3Connection amazonCon)
             {
+                if (!CheckInternetConnection.IsConnectedToInternet())
+                {
+                    throw new Exception("Internet Connection not available");
+                }
+
                 var amazonClient = new AmazonS3Client(amazonCon.AccessKey, amazonCon.SecretAccessKey, amazonCon.GetRegion());
 
                 this.fileTransferUtility = new TransferUtility(amazonClient);

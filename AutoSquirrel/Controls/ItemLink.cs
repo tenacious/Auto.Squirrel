@@ -221,16 +221,22 @@ namespace AutoSquirrel
                 this.sourceFilepath = value;
                 NotifyOfPropertyChange(() => this.SourceFilepath);
                 NotifyOfPropertyChange(() => this.Filename);
-                FileAttributes fa = File.GetAttributes(value);
-                if ((fa & FileAttributes.Directory) != 0)
+                try
                 {
-                    this.SetDirectoryInfo(value);
-                    return;
-                }
+                    FileAttributes fa = File.GetAttributes(value);
+                    if ((fa & FileAttributes.Directory) != 0)
+                    {
+                        this.SetDirectoryInfo(value);
+                        return;
+                    }
 
-                var fileInfo = new FileInfo(value);
-                this.LastEdit = fileInfo.LastWriteTime.ToString();
-                this.FileDimension = fileInfo.Length;
+                    var fileInfo = new FileInfo(value);
+                    this.LastEdit = fileInfo.LastWriteTime.ToString();
+                    this.FileDimension = fileInfo.Length;
+                }
+                catch
+                {
+                }
             }
         }
 

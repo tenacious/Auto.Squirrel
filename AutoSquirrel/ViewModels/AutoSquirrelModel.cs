@@ -775,11 +775,6 @@
                 }
             }
 
-            if (!CheckInternetConnection.IsConnectedToInternet())
-            {
-                throw new Exception("Internet Connection not available");
-            }
-
             ProcessNextUploadFile();
         }
 
