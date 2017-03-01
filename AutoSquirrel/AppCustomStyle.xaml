@@ -28,8 +28,8 @@
                             <Setter Property="Effect">
                                 <Setter.Value>
                                     <DropShadowEffect
-                                        Opacity="0.8"
                                         Direction="315"
+                                        Opacity="0.8"
                                         ShadowDepth="3"
                                         Color="Black" />
                                 </Setter.Value>

@@ -346,6 +346,7 @@
             {
                 this._setVersionManually = value;
                 NotifyOfPropertyChange(() => this.SetVersionManually);
+                this.RefreshPackageVersion();
             }
         }
 

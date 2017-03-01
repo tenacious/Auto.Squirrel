@@ -177,6 +177,7 @@
     <Compile Include="Services\AmazonS3Connection.cs" />
     <Compile Include="Controls\AutoselectTextbox.cs" />
     <Compile Include="Services\ConnectionDiscoveryService.cs" />
+    <Compile Include="Services\IConnectionDiscoveryService.cs" />
     <Compile Include="ViewModels\AutoSquirrelModel.cs" />
     <Compile Include="Services\CheckInternetConnection.cs" />
     <Compile Include="Controls\EditableTextblock.cs" />
