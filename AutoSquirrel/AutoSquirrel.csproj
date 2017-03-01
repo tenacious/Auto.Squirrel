@@ -176,6 +176,7 @@
     </Compile>
     <Compile Include="Services\AmazonS3Connection.cs" />
     <Compile Include="Controls\AutoselectTextbox.cs" />
+    <Compile Include="Services\ConnectionDiscoveryService.cs" />
     <Compile Include="ViewModels\AutoSquirrelModel.cs" />
     <Compile Include="Services\CheckInternetConnection.cs" />
     <Compile Include="Controls\EditableTextblock.cs" />
@@ -331,9 +332,7 @@
   <ItemGroup>
     <Analyzer Include="..\packages\AWSSDK.S3.3.3.5.4\analyzers\dotnet\cs\AWSSDK.S3.CodeAnalysis.dll" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Upload\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

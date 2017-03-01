@@ -52,6 +52,8 @@
         private string newFolderName = "NEW FOLDER";
         private ItemLink selectedItem = new ItemLink();
 
+        private readonly ConnectionDiscoveryService connectionDiscoveryService = new ConnectionDiscoveryService();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AutoSquirrelModel"/> class.
         /// </summary>
@@ -104,11 +106,10 @@
         {
             get
             {
-                this._availableUploadLocation = this._availableUploadLocation ?? new List<string>()
-                    {
-                        "Amazon S3",
-                        "File System",
-                    };
+                this._availableUploadLocation =
+                    this._availableUploadLocation ?? new List<string>(
+                        this.connectionDiscoveryService.AvailableConnections.Select(
+                            connection => connection.ConnectionName));
 
                 return this._availableUploadLocation;
             }
@@ -630,12 +631,12 @@
         /// </summary>
         public void RemoveAllItems()
         {
-            if (this.SelectedLink?.Count == 0)
+            if (this.SelectedLink == null || this.SelectedLink.Count == 0)
             {
                 return;
             }
 
-            RemoveAllFromTreeview(this.SelectedLink[0]);
+            this.RemoveAllFromTreeview(this.SelectedLink[0]);
         }
 
         /// <summary>
@@ -643,14 +644,14 @@
         /// </summary>
         public void RemoveItem()
         {
-            if (this.SelectedLink?.Count == 0)
+            if (this.SelectedLink == null || this.SelectedLink?.Count == 0)
             {
                 return;
             }
 
-            foreach (ItemLink link in this.SelectedLink)
+            foreach (var link in this.SelectedLink)
             {
-                RemoveFromTreeview(link);
+                this.RemoveFromTreeview(link);
             }
         }
 
@@ -1110,32 +1111,19 @@
         private void UpdateSelectedConnection(string connectionType)
         {
             if (string.IsNullOrWhiteSpace(connectionType))
-            {
                 return;
-            }
 
+            // Instantiate cache if null
             this.CachedConnection = this.CachedConnection ?? new List<WebConnectionBase>();
 
-            WebConnectionBase con = null;
-            switch (connectionType)
-            {
-                case "Amazon S3":
-                    {
-                        con = this.CachedConnection.Find(c => c is AmazonS3Connection) ?? new AmazonS3Connection();
-                    }
-                    break;
+            // Retrieve cached connection or take new isntance from connection service
+            var con = 
+                this.CachedConnection.FirstOrDefault(c => c.ConnectionName == connectionType) ?? 
+                this.connectionDiscoveryService.GetByName(connectionType);
 
-                case "File System":
-                    {
-                        con = this.CachedConnection.Find(c => c is FileSystemConnection) ?? new FileSystemConnection();
-                    }
-                    break;
-            }
-
+            // Cache connection if not cached already
             if (con != null && !this.CachedConnection.Contains(con))
-            {
                 this.CachedConnection.Add(con);
-            }
 
             this.SelectedConnection = con;
         }

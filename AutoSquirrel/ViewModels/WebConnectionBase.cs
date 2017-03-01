@@ -7,7 +7,7 @@ namespace AutoSquirrel
     /// Web Connection Base
     /// </summary>
     /// <seealso cref="AutoSquirrel.PropertyChangedBaseValidable"/>
-    public class WebConnectionBase : PropertyChangedBaseValidable
+    public abstract class WebConnectionBase : PropertyChangedBaseValidable
     {
         private string _connectionName;
 
