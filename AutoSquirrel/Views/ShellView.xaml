@@ -132,6 +132,9 @@
 
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
+
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <Menu
                             Grid.ColumnSpan="3"
@@ -325,6 +328,12 @@
                                 Margin="3"
                                 Source="{Binding IconSource}" />
                         </Border>
+
+                        <Button Grid.Row="23" Grid.ColumnSpan="2" Grid.Column="0" FontWeight="Bold"  FontSize="14" Content="SPLASH" Style="{StaticResource LinkButton}"
+                            Command="{Binding SelectSplashCmd}"/>
+                        <Border Grid.Row="24" Padding="3" Margin="2" BorderBrush="Gray" Background="White" BorderThickness="1" HorizontalAlignment="Left" Grid.Column="0" Grid.ColumnSpan="2">
+                            <Image  Source="{Binding Path=SplashSource}" Width="32" Height="32" Margin="3" />
+                        </Border>
                     </Grid>
                 </GroupBox>
                 <GridSplitter
@@ -346,6 +355,10 @@
                                 FontSize="14"
                                 Foreground="White"
                                 Text="INSTALLER PACKAGE CONTENT" />
+                            <Button Content="Remove All" 
+                                    Command="{Binding RemoveAllItemsCmd}" 
+                                    Foreground="White" 
+                                    FontSize="14" />
                         </StackPanel>
                     </GroupBox.Header>
                     <Grid>
