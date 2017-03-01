@@ -89,10 +89,6 @@
                 <GroupBox Grid.RowSpan="2" Margin="5,5,5,4.5">
                     <GroupBox.Header>
                         <StackPanel Orientation="Horizontal">
-                            <Image
-                                Width="16"
-                                Margin="5,0"
-                                Source="/AutoSquirrel;component/Images/info_16_white.png" />
                             <TextBlock
                                 FontSize="14"
                                 Foreground="White"
@@ -347,18 +343,10 @@
                 <GroupBox Grid.Column="2" Margin="5,5,5,4.5">
                     <GroupBox.Header>
                         <StackPanel Orientation="Horizontal">
-                            <Image
-                                Width="16"
-                                Margin="5,0"
-                                Source="/AutoSquirrel;component/Images/info_16_white.png" />
                             <TextBlock
                                 FontSize="14"
                                 Foreground="White"
                                 Text="INSTALLER PACKAGE CONTENT" />
-                            <Button Content="Remove All" 
-                                    Command="{Binding RemoveAllItemsCmd}" 
-                                    Foreground="White" 
-                                    FontSize="14" />
                         </StackPanel>
                     </GroupBox.Header>
                     <Grid>
@@ -558,10 +546,6 @@
                     Margin="5,5.5,5,4.5">
                     <GroupBox.Header>
                         <StackPanel Orientation="Horizontal">
-                            <Image
-                                Width="16"
-                                Margin="5,0"
-                                Source="/AutoSquirrel;component/Images/info_16_white.png" />
                             <TextBlock
                                 FontSize="14"
                                 Foreground="White"
