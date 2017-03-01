@@ -1,37 +1,42 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:AutoSquirrel">
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:AutoSquirrel">
 
     <!--<Style TargetType="TextBox">
-        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="local:SelectTextOnFocus.Active" Value="True" />
     </Style>-->
 
-
-
     <Style TargetType="{x:Type TextBlock}">
-        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
-    
+
     <Style x:Key="imageButton" TargetType="{x:Type Button}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
-                    <Image Width="19" Height="19"
-                           x:Name="img" Opacity="1.0"
-                           Stretch="UniformToFill"
-                           Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"/>
+                    <Image
+                        x:Name="img"
+                        Width="19"
+                        Height="19"
+                        Opacity="1.0"
+                        Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"
+                        Stretch="UniformToFill" />
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Effect">
                                 <Setter.Value>
-                                    <DropShadowEffect Color="Black" 
-                                      ShadowDepth="3" Direction="315" Opacity="0.8"/>
+                                    <DropShadowEffect
+                                        Opacity="0.8"
+                                        Direction="315"
+                                        ShadowDepth="3"
+                                        Color="Black" />
                                 </Setter.Value>
                             </Setter>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter TargetName="img" Property="Opacity" Value="0.3"/>
+                            <Setter TargetName="img" Property="Opacity" Value="0.3" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -39,35 +44,34 @@
         </Setter>
     </Style>
 
-
     <Style x:Key="LinkButton" TargetType="{x:Type Button}">
-        <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="HorizontalAlignment" Value="Left"/>
-        <Setter Property="Cursor" Value="Hand"/>
-        <Setter Property="Foreground" Value="#408DD9"/>
-        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Foreground" Value="#408DD9" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
-                    <TextBlock TextDecorations="Underline" 
-                    Text="{TemplateBinding Content}"
-                    Background="{TemplateBinding Background}"/>
+                    <TextBlock
+                        Background="{TemplateBinding Background}"
+                        Text="{TemplateBinding Content}"
+                        TextDecorations="Underline" />
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter Property="Foreground" Value="Red"/>
+                            <Setter Property="Foreground" Value="Red" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Foreground" Value="Red"/>
+                            <Setter Property="Foreground" Value="Red" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Foreground" Value="#FF515050"/>
+                            <Setter Property="Foreground" Value="#FF515050" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-
 
     <!--<Style TargetType="{x:Type TextBox}">
         <Setter Property="SnapsToDevicePixels" Value="True" />
@@ -78,7 +82,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TextBoxBase}">
                     <Border Name="MainBorder" Background="Transparent" CornerRadius="2">
-                        <Grid  Margin="4" >
+                        <Grid  Margin="4">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
@@ -97,7 +101,7 @@
                                 Fill="#808080"
                                 Height="15"
                                 Stretch="Fill" Width="15"
-                                VerticalAlignment="Bottom"/>
+                                VerticalAlignment="Bottom" />
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -115,7 +119,7 @@
                                         <ColorAnimation Storyboard.TargetName="BorderUnderline" Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)"
                                                                 To="#029cc7" Duration="0:0:0.3" />
                                         <ColorAnimation Storyboard.TargetName="PathTriangle" Storyboard.TargetProperty="(Path.Fill).(SolidColorBrush.Color)"
-                                                                To="#029cc7" Duration="0:0:0.3"/>
+                                                                To="#029cc7" Duration="0:0:0.3" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.EnterActions>
@@ -127,7 +131,7 @@
                                         <ColorAnimation Storyboard.TargetName="BorderUnderline" Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)"
                                                                 To="#808080" Duration="0:0:0.3" />
                                         <ColorAnimation Storyboard.TargetName="PathTriangle" Storyboard.TargetProperty="(Path.Fill).(SolidColorBrush.Color)"
-                                                                To="#808080" Duration="0:0:0.3"/>
+                                                                To="#808080" Duration="0:0:0.3" />
                                     </Storyboard>
                                 </BeginStoryboard>
                             </Trigger.ExitActions>
@@ -137,5 +141,4 @@
             </Setter.Value>
         </Setter>
     </Style>-->
-
 </ResourceDictionary>
