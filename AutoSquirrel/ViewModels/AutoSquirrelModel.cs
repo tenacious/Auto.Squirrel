@@ -250,6 +250,7 @@
         public ICommand RemoveItemCmd => this._removeItemCmd ??
        (this._removeItemCmd = new DelegateCommand(this.RemoveItem));
 
+
         /// <summary>
         /// Gets or sets the selected connection.
         /// </summary>
@@ -420,6 +421,84 @@
                 }
             }
         }
+
+        #region SPLASH
+
+        private ICommand selectSplashCmd;
+
+        /// <summary>
+        /// Gets the select splash command.
+        /// </summary>
+        /// <value>
+        /// The select splash command.
+        /// </value>
+        public ICommand SelectSplashCmd =>
+                    selectSplashCmd ?? (selectSplashCmd = new DelegateCommand(SelectSplash));
+
+        /// <summary>
+        /// Handles the splash screen selection.
+        /// </summary>
+        public void SelectSplash()
+        {
+            var ofd = new System.Windows.Forms.OpenFileDialog
+            {
+                AddExtension = true,
+                DefaultExt = ".gif",
+                Filter = "GIF | *.gif"
+            };
+
+            var o = ofd.ShowDialog();
+
+            if (o != System.Windows.Forms.DialogResult.OK || !File.Exists(ofd.FileName)) return;
+
+            SplashFilepath = ofd.FileName;
+        }
+
+        private string _splashFilepath;
+
+        /// <summary>
+        /// Gets or sets the splash filepath.
+        /// </summary>
+        /// <value>
+        /// The splash filepath.
+        /// </value>
+        [DataMember]
+        public string SplashFilepath
+        {
+            get { return _splashFilepath; }
+
+            set
+            {
+                _splashFilepath = value;
+                NotifyOfPropertyChange(() => SplashFilepath);
+                NotifyOfPropertyChange(() => SplashSource);
+            }
+        }
+
+        /// <summary>
+        /// Gets the splash source.
+        /// </summary>
+        /// <value>
+        /// The splash source.
+        /// </value>
+        public ImageSource SplashSource
+        {
+            get
+            {
+                try
+                {
+                    return GetImageFromFilepath(SplashFilepath);
+                }
+                catch
+                {
+                    //Todo - splasha default
+                    return null;
+                }
+
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// Adds the directory.

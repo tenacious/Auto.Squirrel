@@ -586,7 +586,12 @@
                 cmd += @" -setupIcon " + this.Model.IconFilepath;
             }
 
-            var startInfo = new ProcessStartInfo()
+            if (File.Exists(Model.SplashFilepath))
+            {
+                cmd += @" -g " + Path.GetFullPath(Model.SplashFilepath);
+            }
+
+            var startInfo = new ProcessStartInfo
             {
                 WindowStyle = ProcessWindowStyle.Hidden,
                 FileName = @"tools\Squirrel-Windows.exe",
