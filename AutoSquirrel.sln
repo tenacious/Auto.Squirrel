@@ -1,9 +1,32 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.26127.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoSquirrel", "AutoSquirrel\AutoSquirrel.csproj", "{CEEF6526-7DAA-4AE9-8FE5-7C6E6C07093D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CEFE0C7D-4652-49F4-BAAC-261053714A9C}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{708D7157-695C-4B62-8994-F1A0F84DA6C2}"
+	ProjectSection(SolutionItems) = preProject
+		docs\PackageCreation.md = docs\PackageCreation.md
+		docs\SquirrelIntegration.md = docs\SquirrelIntegration.md
+		docs\VersionAutoIncrement.md = docs\VersionAutoIncrement.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{732589F0-331E-4ADF-B48E-2A99EAAD667D}"
+	ProjectSection(SolutionItems) = preProject
+		docs\images\assembly_version_attribute.png = docs\images\assembly_version_attribute.png
+		docs\images\AssemblyVersion_Project.png = docs\images\AssemblyVersion_Project.png
+		docs\images\connection_detail.png = docs\images\connection_detail.png
+		docs\images\PackageCreatorGUI.png = docs\images\PackageCreatorGUI.png
+		docs\images\pre_compilation_edit.png = docs\images\pre_compilation_edit.png
+		docs\images\squirrel_upload.png = docs\images\squirrel_upload.png
+		docs\images\upload_location.png = docs\images\upload_location.png
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,5 +41,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{708D7157-695C-4B62-8994-F1A0F84DA6C2} = {CEFE0C7D-4652-49F4-BAAC-261053714A9C}
+		{732589F0-331E-4ADF-B48E-2A99EAAD667D} = {708D7157-695C-4B62-8994-F1A0F84DA6C2}
 	EndGlobalSection
 EndGlobal
