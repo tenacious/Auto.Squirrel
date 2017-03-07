@@ -123,6 +123,7 @@
       <HintPath>..\packages\squirrel.windows.1.4.4\lib\Net45\Squirrel.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management" />
@@ -175,6 +176,8 @@
     </Compile>
     <Compile Include="Services\AmazonS3Connection.cs" />
     <Compile Include="Controls\AutoselectTextbox.cs" />
+    <Compile Include="Services\ConnectionDiscoveryService.cs" />
+    <Compile Include="Services\IConnectionDiscoveryService.cs" />
     <Compile Include="ViewModels\AutoSquirrelModel.cs" />
     <Compile Include="Services\CheckInternetConnection.cs" />
     <Compile Include="Controls\EditableTextblock.cs" />
@@ -330,6 +333,7 @@
   <ItemGroup>
     <Analyzer Include="..\packages\AWSSDK.S3.3.3.5.4\analyzers\dotnet\cs\AWSSDK.S3.CodeAnalysis.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

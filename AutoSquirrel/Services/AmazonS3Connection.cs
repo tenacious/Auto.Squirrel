@@ -1,13 +1,13 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
+using Amazon;
+using AutoSquirrel;
+using FluentValidation;
+using FluentValidation.Results;
+
 namespace AutoSquirrel
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Runtime.Serialization;
-    using Amazon;
-    using FluentValidation;
-    using FluentValidation.Results;
-
     /// <summary>
     /// This class contains all information about WebConncetion uploading. Information for user :
     /// Credentials are stored in clear format.
