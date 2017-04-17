@@ -1,13 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26127.0
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoSquirrel", "AutoSquirrel\AutoSquirrel.csproj", "{CEEF6526-7DAA-4AE9-8FE5-7C6E6C07093D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CEFE0C7D-4652-49F4-BAAC-261053714A9C}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
+		Rebracer.xml = Rebracer.xml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{708D7157-695C-4B62-8994-F1A0F84DA6C2}"

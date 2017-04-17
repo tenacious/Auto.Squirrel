@@ -53,12 +53,10 @@ namespace AutoSquirrel
         {
             get
             {
-                if (this._availableRegionList == null)
-                {
+                if (this._availableRegionList == null) {
                     this._availableRegionList = new List<string>();
 
-                    foreach (RegionEndpoint r in RegionEndpoint.EnumerableAllRegions)
-                    {
+                    foreach (RegionEndpoint r in RegionEndpoint.EnumerableAllRegions) {
                         this._availableRegionList.Add(r.DisplayName);
                     }
                 }
@@ -79,8 +77,7 @@ namespace AutoSquirrel
             set
             {
                 this._bucketName = value;
-                if (this._bucketName != null)
-                {
+                if (this._bucketName != null) {
                     this._bucketName = this._bucketName.ToLower().Replace(" ", string.Empty);
                 }
 
@@ -130,8 +127,7 @@ namespace AutoSquirrel
         {
             get
             {
-                if (string.IsNullOrWhiteSpace(this.BucketName) || string.IsNullOrWhiteSpace(this.RegionName))
-                {
+                if (string.IsNullOrWhiteSpace(this.BucketName) || string.IsNullOrWhiteSpace(this.RegionName)) {
                     return "Missing Parameter";
                 }
 
@@ -146,8 +142,7 @@ namespace AutoSquirrel
         public override ValidationResult Validate()
         {
             ValidationResult commonValid = new Validator().Validate(this);
-            if (!commonValid.IsValid)
-            {
+            if (!commonValid.IsValid) {
                 return commonValid;
             }
 
@@ -170,8 +165,7 @@ namespace AutoSquirrel
 
             private static bool CheckBucketName(string bucketName)
             {
-                if (string.IsNullOrWhiteSpace(bucketName) || bucketName.Contains(" "))
-                {
+                if (string.IsNullOrWhiteSpace(bucketName) || bucketName.Contains(" ")) {
                     return false;
                 }
 

@@ -49,8 +49,7 @@ namespace AutoSquirrel
             var filePath = $"{path}\\{filename}.{fileExt}";
 
             var fileC = 0;
-            while (File.Exists(filePath))
-            {
+            while (File.Exists(filePath)) {
                 filePath = $"{path}\\{filename}_{fileC}.{fileExt}";
                 fileC++;
             }
@@ -68,28 +67,26 @@ namespace AutoSquirrel
         {
             var folderPath = string.Empty;
 
-            switch (directory)
-            {
-                //case MyDirectory.PackageDir:
-                //    folderPath = GetMyDirectory(MyDirectory.Base) + PackageDirectory;
-                //    break;
+            switch (directory) {
 
-                case MyDirectory.Project:
-                    folderPath = GetMyDirectory(MyDirectory.Base) + ProjectDirectory;
-                    break;
+            //case MyDirectory.PackageDir:
+            //    folderPath = GetMyDirectory(MyDirectory.Base) + PackageDirectory;
+            //    break;
 
-                case MyDirectory.Base:
-                    folderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + ProgramBaseDirectory;
-                    break;
+            case MyDirectory.Project:
+                folderPath = GetMyDirectory(MyDirectory.Base) + ProjectDirectory;
+                break;
+
+            case MyDirectory.Base:
+                folderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + ProgramBaseDirectory;
+                break;
             }
 
-            if (string.IsNullOrWhiteSpace(folderPath))
-            {
+            if (string.IsNullOrWhiteSpace(folderPath)) {
                 throw new NotImplementedException("GetMyFilepath");
             }
 
-            if (!Directory.Exists(folderPath))
-            {
+            if (!Directory.Exists(folderPath)) {
                 Directory.CreateDirectory(folderPath);
             }
 
@@ -107,12 +104,10 @@ namespace AutoSquirrel
 
         internal static Preference LoadUserPreference()
         {
-            try
-            {
+            try {
                 var path = GetMyDirectory(MyDirectory.Base) + "\\Preference.txt";
 
-                if (File.Exists(path))
-                {
+                if (File.Exists(path)) {
                     Preference p = FileUtility.Deserialize<Preference>(path);
 
                     // Check if project files still exist.
@@ -121,10 +116,8 @@ namespace AutoSquirrel
 
                     p.LastOpenedProject.Clear();
 
-                    foreach (var fp in temp)
-                    {
-                        if (File.Exists(fp))
-                        {
+                    foreach (var fp in temp) {
+                        if (File.Exists(fp)) {
                             p.LastOpenedProject.Add(fp);
                         }
                     }
@@ -133,23 +126,18 @@ namespace AutoSquirrel
                 }
 
                 return new Preference();
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 return new Preference();
             }
         }
 
         internal static void SavePreference(Preference userPreference)
         {
-            try
-            {
+            try {
                 var path = GetMyDirectory(MyDirectory.Base) + "\\Preference.txt";
 
                 FileUtility.SerializeToFile(path, userPreference);
-            }
-            catch (Exception)
-            {
+            } catch (Exception) {
                 MessageBox.Show("Error on saving preference !");
             }
         }

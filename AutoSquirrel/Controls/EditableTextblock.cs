@@ -105,8 +105,7 @@ namespace AutoSquirrel
         {
             base.OnApplyTemplate();
             this.m_GridContainer = this.Template.FindName(GRID_NAME, this) as Grid;
-            if (this.m_GridContainer != null)
-            {
+            if (this.m_GridContainer != null) {
                 this.m_TextBlockDisplayText = this.m_GridContainer.Children[0] as TextBlock;
                 this.m_TextBoxEditText = this.m_GridContainer.Children[1] as TextBox;
                 this.m_TextBoxEditText.LostFocus += this.OnTextBoxLostFocus;
@@ -124,8 +123,7 @@ namespace AutoSquirrel
         /// </param>
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            if (e.Key == Key.Enter)
-            {
+            if (e.Key == Key.Enter) {
                 this.m_TextBlockDisplayText.Visibility = Visibility.Visible;
                 this.m_TextBoxEditText.Visibility = Visibility.Hidden;
             }

@@ -39,15 +39,11 @@ namespace AutoSquirrel
 
         private static void ActivePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is TextBox textBox)
-            {
-                if ((e.NewValue as bool?).GetValueOrDefault(false))
-                {
+            if (d is TextBox textBox) {
+                if ((e.NewValue as bool?).GetValueOrDefault(false)) {
                     textBox.GotKeyboardFocus += OnKeyboardFocusSelectText;
                     textBox.PreviewMouseLeftButtonDown += OnMouseLeftButtonDown;
-                }
-                else
-                {
+                } else {
                     textBox.GotKeyboardFocus -= OnKeyboardFocusSelectText;
                     textBox.PreviewMouseLeftButtonDown -= OnMouseLeftButtonDown;
                 }
@@ -57,8 +53,7 @@ namespace AutoSquirrel
         private static DependencyObject GetParentFromVisualTree(object source)
         {
             DependencyObject parent = source as UIElement;
-            while (parent != null && !(parent is TextBox))
-            {
+            while (parent != null && !(parent is TextBox)) {
                 parent = VisualTreeHelper.GetParent(parent);
             }
 
@@ -67,8 +62,7 @@ namespace AutoSquirrel
 
         private static void OnKeyboardFocusSelectText(object sender, KeyboardFocusChangedEventArgs e)
         {
-            if (e.OriginalSource is TextBox textBox)
-            {
+            if (e.OriginalSource is TextBox textBox) {
                 textBox.SelectAll();
             }
         }
@@ -77,14 +71,12 @@ namespace AutoSquirrel
         {
             DependencyObject dependencyObject = GetParentFromVisualTree(e.OriginalSource);
 
-            if (dependencyObject == null)
-            {
+            if (dependencyObject == null) {
                 return;
             }
 
             var textBox = (TextBox)dependencyObject;
-            if (!textBox.IsKeyboardFocusWithin)
-            {
+            if (!textBox.IsKeyboardFocusWithin) {
                 textBox.Focus();
                 e.Handled = true;
             }

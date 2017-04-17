@@ -27,6 +27,7 @@
         [DataMember]
         internal List<WebConnectionBase> CachedConnection = new List<WebConnectionBase>();
 
+        private readonly ConnectionDiscoveryService connectionDiscoveryService = new ConnectionDiscoveryService();
         private ICommand _addDirectoryCmd;
         private string _appId;
         private string _authors;
@@ -45,14 +46,14 @@
         private SingleFileUpload _selectedUploadItem;
         private ICommand _selectIconCmd;
         private bool _setVersionManually;
+        private string _splashFilepath;
         private string _squirrelOutputPath;
         private string _title;
         private ObservableCollection<SingleFileUpload> _uploadQueue = new ObservableCollection<SingleFileUpload>();
         private string _version;
         private string newFolderName = "NEW FOLDER";
         private ItemLink selectedItem = new ItemLink();
-
-        private readonly ConnectionDiscoveryService connectionDiscoveryService = new ConnectionDiscoveryService();
+        private ICommand selectSplashCmd;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutoSquirrelModel"/> class.
@@ -251,7 +252,6 @@
         public ICommand RemoveItemCmd => this._removeItemCmd ??
        (this._removeItemCmd = new DelegateCommand(this.RemoveItem));
 
-
         /// <summary>
         /// Gets or sets the selected connection.
         /// </summary>
@@ -334,6 +334,13 @@
        (this._selectIconCmd = new DelegateCommand(this.SelectIcon));
 
         /// <summary>
+        /// Gets the select splash command.
+        /// </summary>
+        /// <value>The select splash command.</value>
+        public ICommand SelectSplashCmd =>
+                    this.selectSplashCmd ?? (this.selectSplashCmd = new DelegateCommand(this.SelectSplash));
+
+        /// <summary>
         /// Gets or sets a value indicating whether [set version manually].
         /// </summary>
         /// <value><c>true</c> if [set version manually]; otherwise, <c>false</c>.</value>
@@ -347,6 +354,43 @@
                 this._setVersionManually = value;
                 NotifyOfPropertyChange(() => this.SetVersionManually);
                 this.RefreshPackageVersion();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the splash filepath.
+        /// </summary>
+        /// <value>The splash filepath.</value>
+        [DataMember]
+        public string SplashFilepath
+        {
+            get => this._splashFilepath;
+
+            set
+            {
+                this._splashFilepath = value;
+                NotifyOfPropertyChange(() => this.SplashFilepath);
+                NotifyOfPropertyChange(() => this.SplashSource);
+            }
+        }
+
+        /// <summary>
+        /// Gets the splash source.
+        /// </summary>
+        /// <value>The splash source.</value>
+        public ImageSource SplashSource
+        {
+            get
+            {
+                try
+                {
+                    return GetImageFromFilepath(this.SplashFilepath);
+                }
+                catch
+                {
+                    //Todo - splasha default
+                    return null;
+                }
             }
         }
 
@@ -423,84 +467,6 @@
                 }
             }
         }
-
-        #region SPLASH
-
-        private ICommand selectSplashCmd;
-
-        /// <summary>
-        /// Gets the select splash command.
-        /// </summary>
-        /// <value>
-        /// The select splash command.
-        /// </value>
-        public ICommand SelectSplashCmd =>
-                    selectSplashCmd ?? (selectSplashCmd = new DelegateCommand(SelectSplash));
-
-        /// <summary>
-        /// Handles the splash screen selection.
-        /// </summary>
-        public void SelectSplash()
-        {
-            var ofd = new System.Windows.Forms.OpenFileDialog
-            {
-                AddExtension = true,
-                DefaultExt = ".gif",
-                Filter = "GIF | *.gif"
-            };
-
-            var o = ofd.ShowDialog();
-
-            if (o != System.Windows.Forms.DialogResult.OK || !File.Exists(ofd.FileName)) return;
-
-            SplashFilepath = ofd.FileName;
-        }
-
-        private string _splashFilepath;
-
-        /// <summary>
-        /// Gets or sets the splash filepath.
-        /// </summary>
-        /// <value>
-        /// The splash filepath.
-        /// </value>
-        [DataMember]
-        public string SplashFilepath
-        {
-            get { return _splashFilepath; }
-
-            set
-            {
-                _splashFilepath = value;
-                NotifyOfPropertyChange(() => SplashFilepath);
-                NotifyOfPropertyChange(() => SplashSource);
-            }
-        }
-
-        /// <summary>
-        /// Gets the splash source.
-        /// </summary>
-        /// <value>
-        /// The splash source.
-        /// </value>
-        public ImageSource SplashSource
-        {
-            get
-            {
-                try
-                {
-                    return GetImageFromFilepath(SplashFilepath);
-                }
-                catch
-                {
-                    //Todo - splasha default
-                    return null;
-                }
-
-            }
-        }
-
-        #endregion
 
         /// <summary>
         /// Adds the directory.
@@ -650,7 +616,7 @@
                 return;
             }
 
-            foreach (var link in this.SelectedLink)
+            foreach (ItemLink link in this.SelectedLink)
             {
                 this.RemoveFromTreeview(link);
             }
@@ -720,6 +686,28 @@
             }
 
             this.SquirrelOutputPath = dialog.SelectedPath;
+        }
+
+        /// <summary>
+        /// Handles the splash screen selection.
+        /// </summary>
+        public void SelectSplash()
+        {
+            var ofd = new System.Windows.Forms.OpenFileDialog
+            {
+                AddExtension = true,
+                DefaultExt = ".gif",
+                Filter = "GIF | *.gif"
+            };
+
+            System.Windows.Forms.DialogResult o = ofd.ShowDialog();
+
+            if (o != System.Windows.Forms.DialogResult.OK || !File.Exists(ofd.FileName))
+            {
+                return;
+            }
+
+            this.SplashFilepath = ofd.FileName;
         }
 
         /// <summary>
@@ -894,7 +882,7 @@
         {
             foreach (ItemLink node in root)
             {
-                if (node.SourceFilepath != null && filepath.ToLower() == node.SourceFilepath.ToLower())
+                if (node.SourceFilepath != null && string.Equals(filepath, node.SourceFilepath, StringComparison.CurrentCultureIgnoreCase))
                 {
                     rslt.Add(node);
                 }
@@ -969,12 +957,26 @@
                     if (nodeParent == null)
                     {
                         var fileName = Path.GetFileNameWithoutExtension(filePath);
-                        this.AppId = fileName;
-                        this.Title = fileName;
+                        if (string.IsNullOrWhiteSpace(this.AppId))
+                        {
+                            this.AppId = fileName;
+                        }
+                        if (string.IsNullOrWhiteSpace(this.Title))
+                        {
+                            this.Title = fileName;
+                        }
+
                         this.MainExePath = filePath;
                         var versInfo = FileVersionInfo.GetVersionInfo(this.MainExePath);
-                        this.Description = versInfo.Comments;
-                        this.Authors = versInfo.CompanyName;
+                        if (string.IsNullOrWhiteSpace(this.Description))
+                        {
+                            this.Description = versInfo.Comments;
+                        }
+
+                        if (string.IsNullOrWhiteSpace(this.Authors))
+                        {
+                            this.Authors = versInfo.CompanyName;
+                        }
 
                         RefreshPackageVersion();
                     }
@@ -1071,7 +1073,7 @@
         {
             ItemLink parent = item.GetParent(this.PackageFiles);
 
-            if (this.MainExePath != null && item.SourceFilepath != null && this.MainExePath.ToLower() == item.SourceFilepath.ToLower())
+            if (this.MainExePath != null && item.SourceFilepath != null && string.Equals(this.MainExePath, item.SourceFilepath, StringComparison.CurrentCultureIgnoreCase))
             {
                 this.MainExePath = string.Empty;
                 RefreshPackageVersion();
@@ -1112,19 +1114,23 @@
         private void UpdateSelectedConnection(string connectionType)
         {
             if (string.IsNullOrWhiteSpace(connectionType))
+            {
                 return;
+            }
 
             // Instantiate cache if null
             this.CachedConnection = this.CachedConnection ?? new List<WebConnectionBase>();
 
             // Retrieve cached connection or take new isntance from connection service
-            var con = 
-                this.CachedConnection.FirstOrDefault(c => c.ConnectionName == connectionType) ?? 
+            WebConnectionBase con =
+                this.CachedConnection.FirstOrDefault(c => c.ConnectionName == connectionType) ??
                 this.connectionDiscoveryService.GetByName(connectionType);
 
             // Cache connection if not cached already
             if (con != null && !this.CachedConnection.Contains(con))
+            {
                 this.CachedConnection.Add(con);
+            }
 
             this.SelectedConnection = con;
         }

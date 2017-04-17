@@ -15,12 +15,9 @@ namespace AutoSquirrel
         /// <returns><c>true</c> if [is connected to internet]; otherwise, <c>false</c>.</returns>
         public static bool IsConnectedToInternet()
         {
-            try
-            {
+            try {
                 return InternetGetConnectedState(out var desc, 0);
-            }
-            catch
-            {
+            } catch {
                 Debug.WriteLine("Problem with the connection to the Internet");
             }
 

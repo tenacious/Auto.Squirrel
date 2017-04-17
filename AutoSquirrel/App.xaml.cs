@@ -25,8 +25,7 @@ namespace AutoSquirrel
         {
             Trace.AutoFlush = true;
 
-            try
-            {
+            try {
                 var log = new TextWriterTraceListener(File.Create(traceFilename))
                 {
                     Filter = new EventTypeFilter(SourceLevels.Information),
@@ -34,9 +33,7 @@ namespace AutoSquirrel
                 };
 
                 Trace.Listeners.Add(log);
-            }
-            catch
-            {
+            } catch {
             }
 
             this.DispatcherUnhandledException += this.App_DispatcherUnhandledException;
@@ -77,14 +74,13 @@ namespace AutoSquirrel
         /// </summary>
         public AppBootstrapper()
         {
-            using (var mgr = new UpdateManager(@"https://s3-eu-west-1.amazonaws.com/autosquirrel", "AutoSquirrel"))
-            {
+            using (var mgr = new UpdateManager(@"https://s3-eu-west-1.amazonaws.com/autosquirrel", "AutoSquirrel")) {
+
                 // We have to re-implement the things Squirrel does for normal applications, because
                 // we're marked as Squirrel-aware
                 SquirrelAwareApp.HandleEvents(
                     onInitialInstall: v => mgr.CreateShortcutForThisExe(),
-                    onAppUpdate: v =>
-                    {
+                    onAppUpdate: v => {
                         mgr.CreateShortcutForThisExe();
 
                         // Update the shortcuts

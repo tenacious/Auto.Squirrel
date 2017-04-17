@@ -33,8 +33,7 @@
 
         private static MultiSelectTreeView VisualUpwardSearch(DependencyObject source)
         {
-            while (source != null && !(source is MultiSelectTreeView))
-            {
+            while (source != null && !(source is MultiSelectTreeView)) {
                 source = VisualTreeHelper.GetParent(source);
             }
 
@@ -42,42 +41,33 @@
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e) =>
-            Task.Run(async () =>
-                {
-                    using (var mgr = new UpdateManager(@"https://s3-eu-west-1.amazonaws.com/autosquirrel", "AutoSquirrel"))
-                    {
-                        try
-                        {
-                            if (mgr.IsInstalledApp)
-                            {
-                                UpdateInfo updates = await mgr.CheckForUpdate();
-                                if (updates.ReleasesToApply.Count > 0)
-                                {
-                                    ReleaseEntry lastVersion = updates.ReleasesToApply.OrderBy(x => x.Version).Last();
-                                    await mgr.DownloadReleases(new[] { lastVersion });
-                                    await mgr.ApplyReleases(updates);
-                                    await mgr.UpdateApp();
+            Task.Run(async () => {
+                using (var mgr = new UpdateManager(@"https://s3-eu-west-1.amazonaws.com/autosquirrel", "AutoSquirrel")) {
+                    try {
+                        if (mgr.IsInstalledApp) {
+                            UpdateInfo updates = await mgr.CheckForUpdate();
+                            if (updates.ReleasesToApply.Count > 0) {
+                                ReleaseEntry lastVersion = updates.ReleasesToApply.OrderBy(x => x.Version).Last();
+                                await mgr.DownloadReleases(new[] { lastVersion });
+                                await mgr.ApplyReleases(updates);
+                                await mgr.UpdateApp();
 
-                                    if (MessageBox.Show("The application has been updated - please restart.", "Restart?", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                                    {
-                                        var ignore = Task.Run(() => UpdateManager.RestartApp());
-                                    }
+                                if (MessageBox.Show("The application has been updated - please restart.", "Restart?", MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
+                                    var ignore = Task.Run(() => UpdateManager.RestartApp());
                                 }
                             }
                         }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show("From Update Manager : " + Environment.NewLine + ex.InnerException.Message + Environment.NewLine + ex.Message);
-                        }
+                    } catch (Exception ex) {
+                        MessageBox.Show("From Update Manager : " + Environment.NewLine + ex.InnerException.Message + Environment.NewLine + ex.Message);
                     }
-                });
+                }
+            });
 
         private void OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             MultiSelectTreeView treeViewItem = VisualUpwardSearch(e.OriginalSource as DependencyObject);
 
-            if (treeViewItem == null)
-            {
+            if (treeViewItem == null) {
                 return;
             }
 
@@ -89,8 +79,7 @@
         private void PackageTreeview_OnSelecting(object sender, EventArgs e)
         {
             IList<ItemLink> items = new List<ItemLink>();
-            foreach (var item in (sender as MultiSelectTreeView).SelectedItems)
-            {
+            foreach (var item in (sender as MultiSelectTreeView).SelectedItems) {
                 items.Add(item as ItemLink);
             }
 
@@ -101,14 +90,12 @@
         {
             MessageBoxResult askSave = MessageBox.Show("Do you want save?", "Exit Application", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
 
-            if (askSave == MessageBoxResult.Cancel)
-            {
+            if (askSave == MessageBoxResult.Cancel) {
                 e.Cancel = true;
                 return;
             }
 
-            if (askSave == MessageBoxResult.Yes)
-            {
+            if (askSave == MessageBoxResult.Yes) {
                 ((ShellViewModel)this.DataContext).Save();
             }
         }
