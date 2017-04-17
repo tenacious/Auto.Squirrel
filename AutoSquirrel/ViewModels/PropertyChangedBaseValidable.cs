@@ -34,8 +34,7 @@ namespace AutoSquirrel
             get
             {
                 ValidationResult __ValidationResults = Validate();
-                if (__ValidationResults == null)
-                {
+                if (__ValidationResults == null) {
                     return string.Empty;
                 }
 
@@ -52,8 +51,7 @@ namespace AutoSquirrel
         public static string GetError(ValidationResult result)
         {
             var __ValidationErrors = new StringBuilder();
-            foreach (ValidationFailure validationFailure in result.Errors)
-            {
+            foreach (ValidationFailure validationFailure in result.Errors) {
                 __ValidationErrors.Append(validationFailure.ErrorMessage);
                 __ValidationErrors.Append(Environment.NewLine);
             }

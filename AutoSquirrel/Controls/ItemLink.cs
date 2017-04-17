@@ -23,9 +23,7 @@ namespace AutoSquirrel
         [DataMember]
         private ObservableCollection<ItemLink> _children = new ObservableCollection<ItemLink>();
 
-        //bool _isExpanded;
         private bool _isSelected;
-
         private string sourceFilepath;
 
         /// <summary>
@@ -64,39 +62,28 @@ namespace AutoSquirrel
         {
             get
             {
-                try
-                {
+                try {
                     Icon icon = null;
 
-                    if (this.IsDirectory && this.IsExpanded)
-                    {
+                    if (this.IsDirectory && this.IsExpanded) {
                         icon = IconHelper.GetFolderIcon(IconSize.Large, FolderType.Open);
-                    }
-                    else if (this.IsDirectory && !this.IsExpanded)
-                    {
+                    } else if (this.IsDirectory && !this.IsExpanded) {
                         icon = IconHelper.GetFolderIcon(IconSize.Large, FolderType.Closed);
-                    }
-                    else
-                    {
-                        if (File.Exists(this.SourceFilepath))
-                        {
+                    } else {
+                        if (File.Exists(this.SourceFilepath)) {
                             icon = Icon.ExtractAssociatedIcon(this.SourceFilepath);
-                        }
-                        else
-                        {
+                        } else {
                             return IconHelper.FindIconForFilename(Path.GetFileName(this.SourceFilepath), true);
                         }
                     }
-                    if (icon == null)
-                    {
+                    if (icon == null) {
                         return null;
                     }
 
                     return icon.ToImageSource();
-                }
-                catch
-                {
-                    //Todo - icona default
+                } catch {
+
+                    //TODO - Get default icon
                     return null;
                 }
             }
@@ -112,13 +99,11 @@ namespace AutoSquirrel
         {
             get
             {
-                if (!string.IsNullOrWhiteSpace(this.OutputFilename))
-                {
+                if (!string.IsNullOrWhiteSpace(this.OutputFilename)) {
                     return this.OutputFilename;
                 }
 
-                if (!string.IsNullOrWhiteSpace(this.SourceFilepath))
-                {
+                if (!string.IsNullOrWhiteSpace(this.SourceFilepath)) {
                     return Path.GetFileName(this.SourceFilepath);
                 }
 
@@ -154,16 +139,14 @@ namespace AutoSquirrel
 
             set
             {
-                if (value != this._isExpanded)
-                {
+                if (value != this._isExpanded) {
                     this._isExpanded = value;
                     NotifyOfPropertyChange(() => this.IsExpanded);
                     NotifyOfPropertyChange(() => this.FileIcon);
                 }
 
                 // Lazy load the child items, if necessary.
-                if (this.HasDummyChild)
-                {
+                if (this.HasDummyChild) {
                     this.Children.Remove(DummyChild);
                     this.LoadChildren();
                 }
@@ -186,8 +169,7 @@ namespace AutoSquirrel
 
             set
             {
-                if (value != this._isSelected)
-                {
+                if (value != this._isSelected) {
                     this._isSelected = value;
                     NotifyOfPropertyChange(() => this.IsSelected);
                 }
@@ -221,11 +203,9 @@ namespace AutoSquirrel
                 this.sourceFilepath = value;
                 NotifyOfPropertyChange(() => this.SourceFilepath);
                 NotifyOfPropertyChange(() => this.Filename);
-                try
-                {
+                try {
                     FileAttributes fa = File.GetAttributes(value);
-                    if ((fa & FileAttributes.Directory) != 0)
-                    {
+                    if ((fa & FileAttributes.Directory) != 0) {
                         this.SetDirectoryInfo(value);
                         return;
                     }
@@ -233,9 +213,7 @@ namespace AutoSquirrel
                     var fileInfo = new FileInfo(value);
                     this.LastEdit = fileInfo.LastWriteTime.ToString();
                     this.FileDimension = fileInfo.Length;
-                }
-                catch
-                {
+                } catch {
                 }
             }
         }
@@ -249,11 +227,9 @@ namespace AutoSquirrel
         /// <returns></returns>
         public ItemLink GetParent(ObservableCollection<ItemLink> root)
         {
-            foreach (ItemLink node in root)
-            {
+            foreach (ItemLink node in root) {
                 ItemLink p = FindParent(this, node);
-                if (p != null)
-                {
+                if (p != null) {
                     return p;
                 }
             }
@@ -271,18 +247,14 @@ namespace AutoSquirrel
 
         private static ItemLink FindParent(ItemLink link, ItemLink node)
         {
-            if (node.Children != null)
-            {
-                if (node.Children.Contains(link))
-                {
+            if (node.Children != null) {
+                if (node.Children.Contains(link)) {
                     return node;
                 }
 
-                foreach (ItemLink child in node.Children)
-                {
+                foreach (ItemLink child in node.Children) {
                     ItemLink p = FindParent(link, child);
-                    if (p != null)
-                    {
+                    if (p != null) {
                         return p;
                     }
                 }

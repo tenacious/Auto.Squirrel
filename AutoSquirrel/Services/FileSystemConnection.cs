@@ -45,8 +45,7 @@ namespace AutoSquirrel
         {
             get
             {
-                if (string.IsNullOrWhiteSpace(this.FileSystemPath))
-                {
+                if (string.IsNullOrWhiteSpace(this.FileSystemPath)) {
                     return "Missing Parameter";
                 }
 
@@ -61,8 +60,7 @@ namespace AutoSquirrel
         public override ValidationResult Validate()
         {
             ValidationResult commonValid = new Validator().Validate(this);
-            if (!commonValid.IsValid)
-            {
+            if (!commonValid.IsValid) {
                 return commonValid;
             }
 

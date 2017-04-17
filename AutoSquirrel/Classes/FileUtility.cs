@@ -21,24 +21,19 @@ namespace AutoSquirrel
         /// <returns></returns>
         public static TRet Deserialize<TRet>(string filePath)
         {
-            try
-            {
-                using (StreamReader file = File.OpenText(filePath))
-                {
+            try {
+                using (StreamReader file = File.OpenText(filePath)) {
                     var serializer = new JsonSerializer()
                     {
                         TypeNameHandling = TypeNameHandling.All
                     };
-                    if (typeof(TRet) == typeof(AutoSquirrelModel))
-                    {
+                    if (typeof(TRet) == typeof(AutoSquirrelModel)) {
                         serializer.Binder = new AutoSquirrelBindAll();
                     }
 
                     return (TRet)serializer.Deserialize(file, typeof(TRet));
                 }
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 MessageBox.Show(ex.ToString());
             }
             return default(TRet);
@@ -52,13 +47,11 @@ namespace AutoSquirrel
         /// <param name="objectToSerialize">The object to serialize.</param>
         public static void SerializeToFile<TRet>(string filePath, TRet objectToSerialize)
         {
-            if (!File.Exists(filePath))
-            {
+            if (!File.Exists(filePath)) {
                 File.Create(filePath).Close();
             }
 
-            try
-            {
+            try {
                 var serializer = new JsonSerializer()
                 {
                     TypeNameHandling = TypeNameHandling.All,
@@ -66,13 +59,10 @@ namespace AutoSquirrel
                 };
 
                 using (var sw = new StreamWriter(filePath))
-                using (JsonWriter writer = new JsonTextWriter(sw))
-                {
+                using (JsonWriter writer = new JsonTextWriter(sw)) {
                     serializer.Serialize(writer, objectToSerialize);
                 }
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 MessageBox.Show(ex.ToString());
             }
         }
@@ -81,31 +71,30 @@ namespace AutoSquirrel
         {
             public override Type BindToType(string assemblyName, string typeName)
             {
-                switch (typeName)
-                {
-                    case "AutoSquirrel.WebConnectionBase":
-                        return typeof(WebConnectionBase);
+                switch (typeName) {
+                case "AutoSquirrel.WebConnectionBase":
+                    return typeof(WebConnectionBase);
 
-                    case "AutoSquirrel.AutoSquirrelModel":
-                        return typeof(AutoSquirrelModel);
+                case "AutoSquirrel.AutoSquirrelModel":
+                    return typeof(AutoSquirrelModel);
 
-                    case "AutoSquirrel.FileSystemConnection":
-                        return typeof(FileSystemConnection);
+                case "AutoSquirrel.FileSystemConnection":
+                    return typeof(FileSystemConnection);
 
-                    case "AutoSquirrel.AmazonS3Connection":
-                        return typeof(AmazonS3Connection);
+                case "AutoSquirrel.AmazonS3Connection":
+                    return typeof(AmazonS3Connection);
 
-                    case "AutoSquirrel.ItemLink":
-                        return typeof(ItemLink);
+                case "AutoSquirrel.ItemLink":
+                    return typeof(ItemLink);
 
-                    case "System.Collections.Generic.List`1[[AutoSquirrel.WebConnectionBase, AutoSquirrel]]":
-                        return typeof(List<WebConnectionBase>);
+                case "System.Collections.Generic.List`1[[AutoSquirrel.WebConnectionBase, AutoSquirrel]]":
+                    return typeof(List<WebConnectionBase>);
 
-                    case "System.Collections.ObjectModel.ObservableCollection`1[[AutoSquirrel.ItemLink, AutoSquirrel]]":
-                        return typeof(ObservableCollection<ItemLink>);
+                case "System.Collections.ObjectModel.ObservableCollection`1[[AutoSquirrel.ItemLink, AutoSquirrel]]":
+                    return typeof(ObservableCollection<ItemLink>);
 
-                    default:
-                        return null;
+                default:
+                    return null;
                 }
             }
         }

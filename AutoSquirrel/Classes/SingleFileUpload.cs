@@ -129,10 +129,8 @@ namespace AutoSquirrel
 
         internal void StartUpload()
         {
-            if (this.Connection is AmazonS3Connection amazonCon)
-            {
-                if (!CheckInternetConnection.IsConnectedToInternet())
-                {
+            if (this.Connection is AmazonS3Connection amazonCon) {
+                if (!CheckInternetConnection.IsConnectedToInternet()) {
                     throw new Exception("Internet Connection not available");
                 }
 
@@ -140,8 +138,7 @@ namespace AutoSquirrel
 
                 this.fileTransferUtility = new TransferUtility(amazonClient);
 
-                if (!(AmazonS3Util.DoesS3BucketExist(amazonClient, amazonCon.BucketName)))
-                {
+                if (!(AmazonS3Util.DoesS3BucketExist(amazonClient, amazonCon.BucketName))) {
                     CreateABucket(amazonClient, amazonCon.BucketName);
                 }
 
@@ -158,9 +155,7 @@ namespace AutoSquirrel
                 this.fileTransferUtility.UploadAsync(uploadRequest);
 
                 Trace.WriteLine("Start Upload : " + this.FullPath);
-            }
-            else if (this.Connection is FileSystemConnection fileCon)
-            {
+            } else if (this.Connection is FileSystemConnection fileCon) {
                 this.uploadRequest_UploadPartProgressEvent(this, new UploadProgressArgs(100, 100, 100));
             }
         }
@@ -191,14 +186,10 @@ namespace AutoSquirrel
         {
             this.ProgressPercentage = e.PercentDone;
 
-            if (e.PercentDone == 100)
-            {
-                if (Application.Current.Dispatcher.CheckAccess())
-                {
+            if (e.PercentDone == 100) {
+                if (Application.Current.Dispatcher.CheckAccess()) {
                     RequesteUploadComplete(new UploadCompleteEventArgs(this));
-                }
-                else
-                {
+                } else {
                     Application.Current.Dispatcher.BeginInvoke(
                       DispatcherPriority.Background,
                       new System.Action(() => RequesteUploadComplete(new UploadCompleteEventArgs(this))));

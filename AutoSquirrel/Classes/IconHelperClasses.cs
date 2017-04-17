@@ -93,14 +93,12 @@ namespace AutoSquirrel
         public static ImageSource FindIconForFilename(string fileName, bool large)
         {
             var extension = Path.GetExtension(fileName);
-            if (extension == null)
-            {
+            if (extension == null) {
                 return null;
             }
 
             Dictionary<string, ImageSource> cache = large ? _largeIconCache : _smallIconCache;
-            if (cache.TryGetValue(extension, out var icon))
-            {
+            if (cache.TryGetValue(extension, out var icon)) {
                 return icon;
             }
 
@@ -121,16 +119,12 @@ namespace AutoSquirrel
             // Need to add size check, although errors generated at present!
             var flags = SHGFI_ICON | SHGFI_USEFILEATTRIBUTES;
 
-            if (FolderType.Open == folderType)
-            {
+            if (FolderType.Open == folderType) {
                 flags += SHGFI_OPENICON;
             }
-            if (IconSize.Small == size)
-            {
+            if (IconSize.Small == size) {
                 flags += SHGFI_SMALLICON;
-            }
-            else
-            {
+            } else {
                 flags += SHGFI_LARGEICON;
             }
 
@@ -143,8 +137,7 @@ namespace AutoSquirrel
                 (uint)Marshal.SizeOf(shfi),
                 flags);
 
-            if (res == IntPtr.Zero)
-            {
+            if (res == IntPtr.Zero) {
                 throw Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error());
             }
 
@@ -178,8 +171,7 @@ namespace AutoSquirrel
         /// <returns></returns>
         public static ImageSource ToImageSource(this Icon icon)
         {
-            if (icon == null)
-            {
+            if (icon == null) {
                 return null;
             }
 
@@ -264,17 +256,13 @@ namespace AutoSquirrel
             {
                 var shfi = new Shell32.Shfileinfo();
                 var flags = Shell32.ShgfiIcon | Shell32.ShgfiUsefileattributes;
-                if (linkOverlay)
-                {
+                if (linkOverlay) {
                     flags += Shell32.ShgfiLinkoverlay;
                 }
                 /* Check the size specified for return. */
-                if (IconSize.Small == size)
-                {
+                if (IconSize.Small == size) {
                     flags += Shell32.ShgfiSmallicon;
-                }
-                else
-                {
+                } else {
                     flags += Shell32.ShgfiLargeicon;
                 }
 

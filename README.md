@@ -1,15 +1,14 @@
 # **Squirrel Package Manager**
 
-This is a fork of the original **[Auto.Squirrel](https://github.com/tenacious/Auto.Squirrel)**
 
 
 
-####You can install the improved version from **[Setup](https://s3-eu-west-1.amazonaws.com/autosquirrel/Setup.exe)**
+####You can install the latest version from **[Setup](https://s3-eu-west-1.amazonaws.com/autosquirrel/Setup.exe)**
 ___
 
 #### This utility is useful to create installer based on **[Squirrel.Windows](https://github.com/Squirrel/Squirrel.Windows)**.
 
-The main purpose is to fully automatize the application deploy, from build to upload the updated files.
+The main purpose is to fully automatize the application deploy, from build to upload the updated files. App ID (`AssemblyTitle`), Title (`AssemblyTitle`), Author (`AssemblyCompany`), Description (`AssemblyDescription`) and Version (`AssemblyVersion`) are all read from the Main exe assembly information
 ____
 
 ### With a single mouse click you can :
@@ -42,6 +41,5 @@ ___
 ## TODOS
 
 - [ ] Button to abort upload
-- [ ] Renaming of output file and folder
+- [ ] Filter out unwanted files from installer list
 - [ ] Check if same filename is present in same directory
-- [ ] Possibility to select the main EXE file (where the version number is extracted) , if two or more exe files are present in package.
