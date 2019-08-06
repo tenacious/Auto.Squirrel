@@ -1,8 +1,8 @@
+﻿using System;
+using Caliburn.Micro;
+
 namespace AutoSquirrel
 {
-    using System;
-    using Caliburn.Micro;
-
     /// <summary>
     /// Dialog Helper
     /// </summary>

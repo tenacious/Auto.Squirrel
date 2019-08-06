@@ -1,7 +1,7 @@
+﻿using System;
+
 namespace AutoSquirrel
 {
-    using System;
-
     /// <summary>
     /// My Directory
     /// </summary>

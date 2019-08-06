@@ -97,7 +97,7 @@ namespace AutoSquirrel
                 return null;
             }
 
-            Dictionary<string, ImageSource> cache = large ? _largeIconCache : _smallIconCache;
+            var cache = large ? _largeIconCache : _smallIconCache;
             if (cache.TryGetValue(extension, out var icon)) {
                 return icon;
             }
@@ -131,7 +131,7 @@ namespace AutoSquirrel
             // Get the folder icon
             var shfi = new SHFILEINFO();
 
-            IntPtr res = SHGetFileInfo(Environment.GetFolderPath(Environment.SpecialFolder.Windows),
+            var res = SHGetFileInfo(Environment.GetFolderPath(Environment.SpecialFolder.Windows),
                 FILE_ATTRIBUTE_DIRECTORY,
                 out shfi,
                 (uint)Marshal.SizeOf(shfi),

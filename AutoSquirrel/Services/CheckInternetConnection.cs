@@ -1,9 +1,9 @@
+﻿using System;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+
 namespace AutoSquirrel
 {
-    using System;
-    using System.Diagnostics;
-    using System.Runtime.InteropServices;
-
     /// <summary>
     /// Check Internet Connection
     /// </summary>

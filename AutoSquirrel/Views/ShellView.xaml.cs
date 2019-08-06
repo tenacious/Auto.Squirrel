@@ -1,15 +1,15 @@
-﻿namespace AutoSquirrel
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Input;
-    using System.Windows.Media;
-    using Squirrel;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
+using Squirrel;
 
+namespace AutoSquirrel
+{
     /// <summary>
     /// Shell View
     /// </summary>
@@ -24,11 +24,11 @@
         {
             InitializeComponent();
 
-            Loaded += this.MainWindow_Loaded;
+            Loaded += MainWindow_Loaded;
 
-            this.PackageTreeview.PreviewMouseRightButtonDown += this.OnPreviewMouseRightButtonDown;
+            PackageTreeview.PreviewMouseRightButtonDown += OnPreviewMouseRightButtonDown;
 
-            Closing += this.ShellView_Closing;
+            Closing += ShellView_Closing;
         }
 
         private static MultiSelectTreeView VisualUpwardSearch(DependencyObject source)
@@ -45,9 +45,9 @@
                 using (var mgr = new UpdateManager(@"https://s3-eu-west-1.amazonaws.com/autosquirrel", "AutoSquirrel")) {
                     try {
                         if (mgr.IsInstalledApp) {
-                            UpdateInfo updates = await mgr.CheckForUpdate();
+                            var updates = await mgr.CheckForUpdate();
                             if (updates.ReleasesToApply.Count > 0) {
-                                ReleaseEntry lastVersion = updates.ReleasesToApply.OrderBy(x => x.Version).Last();
+                                var lastVersion = updates.ReleasesToApply.OrderBy(x => x.Version).Last();
                                 await mgr.DownloadReleases(new[] { lastVersion });
                                 await mgr.ApplyReleases(updates);
                                 await mgr.UpdateApp();
@@ -65,7 +65,7 @@
 
         private void OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            MultiSelectTreeView treeViewItem = VisualUpwardSearch(e.OriginalSource as DependencyObject);
+            var treeViewItem = VisualUpwardSearch(e.OriginalSource as DependencyObject);
 
             if (treeViewItem == null) {
                 return;
@@ -83,12 +83,12 @@
                 items.Add(item as ItemLink);
             }
 
-            ((ShellViewModel)this.DataContext).Model.SetSelectedItem(items);
+            ((ShellViewModel)DataContext).Model.SetSelectedItem(items);
         }
 
         private void ShellView_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            MessageBoxResult askSave = MessageBox.Show("Do you want save?", "Exit Application", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+            var askSave = MessageBox.Show("Do you want save?", "Exit Application", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
 
             if (askSave == MessageBoxResult.Cancel) {
                 e.Cancel = true;
@@ -96,7 +96,7 @@
             }
 
             if (askSave == MessageBoxResult.Yes) {
-                ((ShellViewModel)this.DataContext).Save();
+                ((ShellViewModel)DataContext).Save();
             }
         }
     }

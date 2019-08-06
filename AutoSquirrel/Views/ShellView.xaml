@@ -446,7 +446,7 @@
                                             Height="24"
                                             Margin="3,0"
                                             Source="{Binding Path=FileIcon}" />
-                                        <local:EditableTextBlock Text="{Binding Filename, Mode=TwoWay}" />
+                                        <mstv:EditTextBox Text="{Binding Filename, Mode=TwoWay}" />
                                     </StackPanel>
                                 </HierarchicalDataTemplate>
                             </mstv:MultiSelectTreeView.Resources>
