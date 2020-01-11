@@ -36,7 +36,7 @@
     <PackageReference Include="MultiSelectTreeView" Version="1.0.9" />
     <PackageReference Include="Extended.Wpf.Toolkit" Version="3.7.0" />
     <PackageReference Include="MahApps.Metro" Version="1.6.5" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="squirrel.windows" Version="1.9.1" />
   </ItemGroup>
   <ItemGroup>
