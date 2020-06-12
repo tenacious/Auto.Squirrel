@@ -29,7 +29,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AWSSDK.S3" Version="3.3.110.61" />
+    <PackageReference Include="AWSSDK.S3" Version="3.3.111.4" />
     <PackageReference Include="Caliburn.Micro" Version="3.2.0" />
     <PackageReference Include="FluentValidation" Version="8.6.2" />
     <PackageReference Include="gong-wpf-dragdrop" Version="2.2.0" />
