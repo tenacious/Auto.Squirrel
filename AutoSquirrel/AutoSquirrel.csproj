@@ -35,7 +35,7 @@
     <PackageReference Include="gong-wpf-dragdrop" Version="2.2.0" />
     <PackageReference Include="MultiSelectTreeView" Version="1.0.9" />
     <PackageReference Include="Extended.Wpf.Toolkit" Version="4.0.1" />
-    <PackageReference Include="MahApps.Metro" Version="2.1.0" />
+    <PackageReference Include="MahApps.Metro" Version="2.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="squirrel.windows" Version="1.9.1" />
   </ItemGroup>
