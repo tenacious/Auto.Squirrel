@@ -1,10 +1,10 @@
+﻿using System;
+using System.Runtime.Serialization;
+using FluentValidation;
+using FluentValidation.Results;
+
 namespace AutoSquirrel
 {
-    using System;
-    using System.Runtime.Serialization;
-    using FluentValidation;
-    using FluentValidation.Results;
-
     /// <summary>
     /// This class contains all information about WebConncetion uploading. Information for user :
     /// Credentials are stored in clear format.
@@ -17,7 +17,7 @@ namespace AutoSquirrel
         /// <summary>
         /// Initializes a new instance of the <see cref="FileSystemConnection"/> class.
         /// </summary>
-        public FileSystemConnection() => this.ConnectionName = "File System";
+        public FileSystemConnection() => ConnectionName = "File System";
 
         /// <summary>
         /// Gets or sets the file system path.
@@ -26,14 +26,14 @@ namespace AutoSquirrel
         [DataMember]
         public string FileSystemPath
         {
-            get => this._fileSystemPath;
+            get => _fileSystemPath;
 
             set
             {
-                this._fileSystemPath = value;
+                _fileSystemPath = value;
 
-                NotifyOfPropertyChange(() => this.FileSystemPath);
-                NotifyOfPropertyChange(() => this.SetupDownloadUrl);
+                NotifyOfPropertyChange(() => FileSystemPath);
+                NotifyOfPropertyChange(() => SetupDownloadUrl);
             }
         }
 
@@ -45,11 +45,11 @@ namespace AutoSquirrel
         {
             get
             {
-                if (string.IsNullOrWhiteSpace(this.FileSystemPath)) {
+                if (string.IsNullOrWhiteSpace(FileSystemPath)) {
                     return "Missing Parameter";
                 }
 
-                return this.FileSystemPath + "\\Setup.exe";
+                return FileSystemPath + "\\Setup.exe";
             }
         }
 
@@ -59,7 +59,7 @@ namespace AutoSquirrel
         /// <returns></returns>
         public override ValidationResult Validate()
         {
-            ValidationResult commonValid = new Validator().Validate(this);
+            var commonValid = new Validator().Validate(this);
             if (!commonValid.IsValid) {
                 return commonValid;
             }

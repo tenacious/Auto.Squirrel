@@ -1,7 +1,7 @@
+﻿using System;
+
 namespace AutoSquirrel
 {
-    using System;
-
     /// <summary>
     /// File Upload Status
     /// </summary>

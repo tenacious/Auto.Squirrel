@@ -18,8 +18,8 @@ namespace AutoSquirrel
         /// <value>The available connections.</value>
         /// <remarks>This will cache all available connections on first request.</remarks>
         public IEnumerable<WebConnectionBase> AvailableConnections =>
-            this.availableConnections?.Values ??
-            (this.availableConnections =
+            availableConnections?.Values ??
+            (availableConnections =
                 Assembly
                     .GetExecutingAssembly()
                     .GetExportedTypes()
@@ -38,11 +38,11 @@ namespace AutoSquirrel
         public WebConnectionBase GetByName(string connectionName)
         {
             if (connectionName == null
-                || !this.availableConnections.ContainsKey(connectionName)) {
+                || !availableConnections.ContainsKey(connectionName)) {
                 return null;
             }
 
-            return this.availableConnections[connectionName];
+            return availableConnections[connectionName];
         }
     }
 }

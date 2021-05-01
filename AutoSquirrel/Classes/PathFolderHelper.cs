@@ -1,12 +1,12 @@
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using System.Windows;
+
 namespace AutoSquirrel
 {
-    using System;
-    using System.IO;
-    using System.Linq;
-    using System.Reflection;
-    using System.Text.RegularExpressions;
-    using System.Windows;
-
     /// <summary>
     /// Path Folder Helper
     /// </summary>
@@ -68,18 +68,17 @@ namespace AutoSquirrel
             var folderPath = string.Empty;
 
             switch (directory) {
+                //case MyDirectory.PackageDir:
+                //    folderPath = GetMyDirectory(MyDirectory.Base) + PackageDirectory;
+                //    break;
 
-            //case MyDirectory.PackageDir:
-            //    folderPath = GetMyDirectory(MyDirectory.Base) + PackageDirectory;
-            //    break;
+                case MyDirectory.Project:
+                    folderPath = GetMyDirectory(MyDirectory.Base) + ProjectDirectory;
+                    break;
 
-            case MyDirectory.Project:
-                folderPath = GetMyDirectory(MyDirectory.Base) + ProjectDirectory;
-                break;
-
-            case MyDirectory.Base:
-                folderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + ProgramBaseDirectory;
-                break;
+                case MyDirectory.Base:
+                    folderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + ProgramBaseDirectory;
+                    break;
             }
 
             if (string.IsNullOrWhiteSpace(folderPath)) {
@@ -95,20 +94,21 @@ namespace AutoSquirrel
 
         internal static string GetProgramVersion()
         {
-            Version ver = Assembly.GetExecutingAssembly()
+            var ver = Assembly.GetExecutingAssembly()
                              .GetName()
                              .Version;
 
             return $"{ver.Major}.{ver.Minor}.{ver.Build}";
         }
 
+        [Obsolete]
         internal static Preference LoadUserPreference()
         {
             try {
                 var path = GetMyDirectory(MyDirectory.Base) + "\\Preference.txt";
 
                 if (File.Exists(path)) {
-                    Preference p = FileUtility.Deserialize<Preference>(path);
+                    var p = FileUtility.Deserialize<Preference>(path);
 
                     // Check if project files still exist.
 

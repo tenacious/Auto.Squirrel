@@ -36,7 +36,7 @@ namespace AutoSquirrel
             } catch {
             }
 
-            this.DispatcherUnhandledException += this.App_DispatcherUnhandledException;
+            DispatcherUnhandledException += App_DispatcherUnhandledException;
             base.OnStartup(e);
         }
 
@@ -75,7 +75,6 @@ namespace AutoSquirrel
         public AppBootstrapper()
         {
             using (var mgr = new UpdateManager(@"https://s3-eu-west-1.amazonaws.com/autosquirrel", "AutoSquirrel")) {
-
                 // We have to re-implement the things Squirrel does for normal applications, because
                 // we're marked as Squirrel-aware
                 SquirrelAwareApp.HandleEvents(

@@ -1,7 +1,7 @@
+﻿using System;
+
 namespace AutoSquirrel
 {
-    using System;
-
     /// <summary>
     /// Upload Complete EventArgs
     /// </summary>
@@ -12,7 +12,7 @@ namespace AutoSquirrel
         /// Initializes a new instance of the <see cref="UploadCompleteEventArgs"/> class.
         /// </summary>
         /// <param name="sfu">The sfu.</param>
-        public UploadCompleteEventArgs(SingleFileUpload sfu) => this.FileUploaded = sfu;
+        public UploadCompleteEventArgs(SingleFileUpload sfu) => FileUploaded = sfu;
 
         /// <summary>
         /// Gets the file uploaded.

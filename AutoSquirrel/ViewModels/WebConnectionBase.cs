@@ -1,8 +1,8 @@
+﻿using System;
+using System.Runtime.Serialization;
+
 namespace AutoSquirrel
 {
-    using System;
-    using System.Runtime.Serialization;
-
     /// <summary>
     /// Web Connection Base
     /// </summary>
@@ -18,12 +18,12 @@ namespace AutoSquirrel
         [DataMember]
         public string ConnectionName
         {
-            get => this._connectionName;
+            get => _connectionName;
 
             set
             {
-                this._connectionName = value;
-                NotifyOfPropertyChange(() => this.ConnectionName);
+                _connectionName = value;
+                NotifyOfPropertyChange(() => ConnectionName);
             }
         }
     }

@@ -1,16 +1,16 @@
+﻿using System;
+using System.Diagnostics;
+using System.Runtime.Serialization;
+using System.Windows;
+using System.Windows.Threading;
+using Amazon.S3;
+using Amazon.S3.Model;
+using Amazon.S3.Transfer;
+using Amazon.S3.Util;
+using Caliburn.Micro;
+
 namespace AutoSquirrel
 {
-    using System;
-    using System.Diagnostics;
-    using System.Runtime.Serialization;
-    using System.Windows;
-    using System.Windows.Threading;
-    using Amazon.S3;
-    using Amazon.S3.Model;
-    using Amazon.S3.Transfer;
-    using Amazon.S3.Util;
-    using Caliburn.Micro;
-
     /// <summary>
     /// Used in Upload queue list. I don't need serialization for this class.
     /// </summary>
@@ -42,12 +42,12 @@ namespace AutoSquirrel
         [DataMember]
         public string ConnectionName
         {
-            get => this._connection;
+            get => _connection;
 
             set
             {
-                this._connection = value;
-                NotifyOfPropertyChange(() => this.ConnectionName);
+                _connection = value;
+                NotifyOfPropertyChange(() => ConnectionName);
             }
         }
 
@@ -58,12 +58,12 @@ namespace AutoSquirrel
         [DataMember]
         public string Filename
         {
-            get => this._filename;
+            get => _filename;
 
             set
             {
-                this._filename = value;
-                NotifyOfPropertyChange(() => this.Filename);
+                _filename = value;
+                NotifyOfPropertyChange(() => Filename);
             }
         }
 
@@ -74,12 +74,12 @@ namespace AutoSquirrel
         [DataMember]
         public string FileSize
         {
-            get => this._fileSize;
+            get => _fileSize;
 
             set
             {
-                this._fileSize = value;
-                NotifyOfPropertyChange(() => this.FileSize);
+                _fileSize = value;
+                NotifyOfPropertyChange(() => FileSize);
             }
         }
 
@@ -87,7 +87,7 @@ namespace AutoSquirrel
         /// Gets the formatted status.
         /// </summary>
         /// <value>The formatted status.</value>
-        public string FormattedStatus => this.UploadStatus.ToString();
+        public string FormattedStatus => UploadStatus.ToString();
 
         /// <summary>
         /// Gets the full path.
@@ -102,12 +102,12 @@ namespace AutoSquirrel
         [DataMember]
         public double ProgressPercentage
         {
-            get => this._progressPercentage;
+            get => _progressPercentage;
 
             set
             {
-                this._progressPercentage = value;
-                NotifyOfPropertyChange(() => this.ProgressPercentage);
+                _progressPercentage = value;
+                NotifyOfPropertyChange(() => ProgressPercentage);
             }
         }
 
@@ -117,28 +117,28 @@ namespace AutoSquirrel
         /// <value>The upload status.</value>
         public FileUploadStatus UploadStatus
         {
-            get => this._uploadStatus;
+            get => _uploadStatus;
 
             set
             {
-                this._uploadStatus = value;
-                NotifyOfPropertyChange(() => this.UploadStatus);
-                NotifyOfPropertyChange(() => this.FormattedStatus);
+                _uploadStatus = value;
+                NotifyOfPropertyChange(() => UploadStatus);
+                NotifyOfPropertyChange(() => FormattedStatus);
             }
         }
 
         internal void StartUpload()
         {
-            if (this.Connection is AmazonS3Connection amazonCon) {
+            if (Connection is AmazonS3Connection amazonCon) {
                 if (!CheckInternetConnection.IsConnectedToInternet()) {
                     throw new Exception("Internet Connection not available");
                 }
 
                 var amazonClient = new AmazonS3Client(amazonCon.AccessKey, amazonCon.SecretAccessKey, amazonCon.GetRegion());
 
-                this.fileTransferUtility = new TransferUtility(amazonClient);
+                fileTransferUtility = new TransferUtility(amazonClient);
 
-                if (!(AmazonS3Util.DoesS3BucketExist(amazonClient, amazonCon.BucketName))) {
+                if (!(AmazonS3Util.DoesS3BucketExistV2(amazonClient, amazonCon.BucketName))) {
                     CreateABucket(amazonClient, amazonCon.BucketName);
                 }
 
@@ -146,17 +146,17 @@ namespace AutoSquirrel
                     new TransferUtilityUploadRequest
                     {
                         BucketName = amazonCon.BucketName,
-                        FilePath = this.FullPath,
+                        FilePath = FullPath,
                         CannedACL = S3CannedACL.PublicRead,
                     };
 
-                uploadRequest.UploadProgressEvent += this.uploadRequest_UploadPartProgressEvent;
+                uploadRequest.UploadProgressEvent += uploadRequest_UploadPartProgressEvent;
 
-                this.fileTransferUtility.UploadAsync(uploadRequest);
+                fileTransferUtility.UploadAsync(uploadRequest);
 
-                Trace.WriteLine("Start Upload : " + this.FullPath);
-            } else if (this.Connection is FileSystemConnection fileCon) {
-                this.uploadRequest_UploadPartProgressEvent(this, new UploadProgressArgs(100, 100, 100));
+                Trace.WriteLine("Start Upload : " + FullPath);
+            } else if (Connection is FileSystemConnection fileCon) {
+                uploadRequest_UploadPartProgressEvent(this, new UploadProgressArgs(100, 100, 100));
             }
         }
 
@@ -168,15 +168,15 @@ namespace AutoSquirrel
                 UseClientRegion = true
             };
 
-            PutBucketResponse response1 = client.PutBucket(putRequest1);
+            var response1 = client.PutBucket(putRequest1);
 
             Trace.WriteLine("Creating a bucket " + bucketName);
         }
 
         private void RequesteUploadComplete(UploadCompleteEventArgs uploadEvent)
         {
-            this.UploadStatus = FileUploadStatus.Completed;
-            this.ProgressPercentage = 100;
+            UploadStatus = FileUploadStatus.Completed;
+            ProgressPercentage = 100;
 
             OnUploadCompleted?.Invoke(null, uploadEvent);
         }
@@ -184,7 +184,7 @@ namespace AutoSquirrel
         private void uploadRequest_UploadPartProgressEvent(
           object sender, UploadProgressArgs e)
         {
-            this.ProgressPercentage = e.PercentDone;
+            ProgressPercentage = e.PercentDone;
 
             if (e.PercentDone == 100) {
                 if (Application.Current.Dispatcher.CheckAccess()) {

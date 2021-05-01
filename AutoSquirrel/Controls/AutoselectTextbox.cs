@@ -69,7 +69,7 @@ namespace AutoSquirrel
 
         private static void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            DependencyObject dependencyObject = GetParentFromVisualTree(e.OriginalSource);
+            var dependencyObject = GetParentFromVisualTree(e.OriginalSource);
 
             if (dependencyObject == null) {
                 return;

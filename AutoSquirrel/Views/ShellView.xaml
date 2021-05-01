@@ -281,6 +281,13 @@
                                         Margin="3"
                                         Source="{Binding IconSource}" />
                                 </Border>
+                                <Button
+                                    HorizontalAlignment="Center"
+                                    Command="{Binding SelectIconCmd}"
+                                    Content="CLEAR APP ICON"
+                                    FontSize="14"
+                                    FontWeight="Bold"
+                                    Style="{StaticResource LinkButton}" />
                             </StackPanel>
                             <StackPanel
                                 Grid.Column="1"
@@ -306,8 +313,33 @@
                                         Margin="3"
                                         Source="{Binding Path=SplashSource}" />
                                 </Border>
+                                <Button
+                                    HorizontalAlignment="Center"
+                                    Command="{Binding ClearSplashCmd}"
+                                    Content="CLEAR SPLASH"
+                                    FontSize="14"
+                                    FontWeight="Bold"
+                                    Style="{StaticResource LinkButton}" />
                             </StackPanel>
                         </Grid>
+                        <StackPanel Grid.Row="22">
+                            <Button
+                                Margin="0,5"
+                                HorizontalAlignment="Center"
+                                Command="{Binding SetBootStrapperCmd}"
+                                Content="SET BOOT STRAPPER"
+                                FontSize="14"
+                                FontWeight="Bold"
+                                Style="{StaticResource LinkButton}" />
+                            <Button
+                                Margin="0,5"
+                                HorizontalAlignment="Center"
+                                Command="{Binding ClearBootStrapperCmd}"
+                                Content="CLEAR BOOT STRAPPER"
+                                FontSize="14"
+                                FontWeight="Bold"
+                                Style="{StaticResource LinkButton}" />
+                        </StackPanel>
                     </Grid>
                 </GroupBox>
                 <GridSplitter
@@ -446,7 +478,7 @@
                                             Height="24"
                                             Margin="3,0"
                                             Source="{Binding Path=FileIcon}" />
-                                        <local:EditableTextBlock Text="{Binding Filename, Mode=TwoWay}" />
+                                        <mstv:EditTextBox Text="{Binding Filename, Mode=TwoWay}" />
                                     </StackPanel>
                                 </HierarchicalDataTemplate>
                             </mstv:MultiSelectTreeView.Resources>

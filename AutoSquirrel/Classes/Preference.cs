@@ -1,9 +1,9 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+
 namespace AutoSquirrel
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Runtime.Serialization;
-
     /// <summary>
     /// Preference
     /// </summary>
