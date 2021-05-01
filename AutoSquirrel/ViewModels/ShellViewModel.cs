@@ -30,6 +30,7 @@ namespace AutoSquirrel
         /// <summary>
         /// Initializes a new instance of the <see cref="ShellViewModel"/> class.
         /// </summary>
+        [Obsolete]
         public ShellViewModel()
         {
             Model = new AutoSquirrelModel();
@@ -170,6 +171,7 @@ namespace AutoSquirrel
         /// <summary>
         /// Opens the project.
         /// </summary>
+        [Obsolete]
         public void OpenProject()
         {
             try {
@@ -203,6 +205,7 @@ namespace AutoSquirrel
         /// Opens the project.
         /// </summary>
         /// <param name="filepath">The filepath.</param>
+        [Obsolete]
         public void OpenProject(string filepath)
         {
             try {

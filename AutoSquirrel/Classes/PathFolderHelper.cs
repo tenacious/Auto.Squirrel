@@ -101,6 +101,7 @@ namespace AutoSquirrel
             return $"{ver.Major}.{ver.Minor}.{ver.Build}";
         }
 
+        [Obsolete]
         internal static Preference LoadUserPreference()
         {
             try {

@@ -138,7 +138,7 @@ namespace AutoSquirrel
 
                 fileTransferUtility = new TransferUtility(amazonClient);
 
-                if (!(AmazonS3Util.DoesS3BucketExist(amazonClient, amazonCon.BucketName))) {
+                if (!(AmazonS3Util.DoesS3BucketExistV2(amazonClient, amazonCon.BucketName))) {
                     CreateABucket(amazonClient, amazonCon.BucketName);
                 }
 

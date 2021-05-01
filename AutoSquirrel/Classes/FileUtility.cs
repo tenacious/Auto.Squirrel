@@ -19,6 +19,7 @@
         /// <typeparam name="TRet">The type of the ret.</typeparam>
         /// <param name="filePath">The file path.</param>
         /// <returns></returns>
+        [Obsolete]
         public static TRet Deserialize<TRet>(string filePath)
         {
             try {
@@ -36,7 +37,7 @@
             } catch (Exception ex) {
                 MessageBox.Show(ex.ToString());
             }
-            return default(TRet);
+            return default;
         }
 
         /// <summary>
