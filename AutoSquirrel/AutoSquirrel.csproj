@@ -4,7 +4,7 @@
     <TargetFrameworks>net48</TargetFrameworks>
     <OutputType>WinExe</OutputType>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Version>1.1.28</Version>
+    <Version>1.1.29</Version>
     <ApplicationIcon>appIcon.ico</ApplicationIcon>
     <Company>ChrisPulman</Company>
     <Description>Squirrel Packaging Tool</Description>

@@ -45,6 +45,7 @@ namespace AutoSquirrel
         private string _selectedConnectionString;
         private SingleFileUpload _selectedUploadItem;
         private ICommand _selectIconCmd;
+        private ICommand _clearIconCmd;
         private bool _setVersionManually;
         private string _splashFilepath;
         private string _squirrelOutputPath;
@@ -54,6 +55,11 @@ namespace AutoSquirrel
         private string newFolderName = "NEW FOLDER";
         private ItemLink selectedItem = new ItemLink();
         private ICommand selectSplashCmd;
+        private ICommand clearSplashCmd;
+        private ICommand setBootStrapperCmd;
+        private ICommand clearBootStrapperCmd;
+        private string _bootStrapperFilepath;
+        //SetBootStrapperCmd
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutoSquirrelModel"/> class.
@@ -330,11 +336,47 @@ namespace AutoSquirrel
        (_selectIconCmd = new DelegateCommand(SelectIcon));
 
         /// <summary>
+        /// Gets the clear icon command.
+        /// </summary>
+        /// <value>
+        /// The clear icon command.
+        /// </value>
+        public ICommand ClearIconCmd => _clearIconCmd ??
+       (_clearIconCmd = new DelegateCommand(ClearIcon));
+
+        /// <summary>
         /// Gets the select splash command.
         /// </summary>
         /// <value>The select splash command.</value>
         public ICommand SelectSplashCmd =>
                     selectSplashCmd ?? (selectSplashCmd = new DelegateCommand(SelectSplash));
+
+        /// <summary>
+        /// Gets the clear splash command.
+        /// </summary>
+        /// <value>
+        /// The clear splash command.
+        /// </value>
+        public ICommand ClearSplashCmd =>
+                    clearSplashCmd ?? (clearSplashCmd = new DelegateCommand(ClearSplash));
+
+        /// <summary>
+        /// Gets the set boot strapper command.
+        /// </summary>
+        /// <value>
+        /// The set boot strapper command.
+        /// </value>
+        public ICommand SetBootStrapperCmd =>
+                    setBootStrapperCmd ?? (setBootStrapperCmd = new DelegateCommand(SelectBootStrapper));
+
+        /// <summary>
+        /// Gets the clear boot strapper command.
+        /// </summary>
+        /// <value>
+        /// The clear boot strapper command.
+        /// </value>
+        public ICommand ClearBootStrapperCmd =>
+                    clearBootStrapperCmd ?? (clearBootStrapperCmd = new DelegateCommand(ClearBootStrapper));
 
         /// <summary>
         /// Gets or sets a value indicating whether [set version manually].
@@ -367,6 +409,24 @@ namespace AutoSquirrel
                 _splashFilepath = value;
                 NotifyOfPropertyChange(() => SplashFilepath);
                 NotifyOfPropertyChange(() => SplashSource);
+            }
+        }
+
+        /// <summary>
+        /// Gets the boot strapper filepath.
+        /// </summary>
+        /// <value>
+        /// The boot strapper filepath.
+        /// </value>
+        [DataMember]
+        public string BootStrapperFilepath
+        {
+            get => _bootStrapperFilepath;
+
+            internal set
+            {
+                _bootStrapperFilepath = value;
+                NotifyOfPropertyChange(() => BootStrapperFilepath);
             }
         }
 
@@ -595,6 +655,11 @@ namespace AutoSquirrel
             }
         }
 
+        public void ClearIcon()
+        {
+            IconFilepath = string.Empty;
+        }
+
         /// <summary>
         /// Selects the icon.
         /// </summary>
@@ -656,6 +721,11 @@ namespace AutoSquirrel
             SquirrelOutputPath = dialog.SelectedPath;
         }
 
+        public void ClearSplash()
+        {
+            SplashFilepath = string.Empty;
+        }
+
         /// <summary>
         /// Handles the splash screen selection.
         /// </summary>
@@ -675,6 +745,35 @@ namespace AutoSquirrel
             }
 
             SplashFilepath = ofd.FileName;
+        }
+
+        /// <summary>
+        /// Clears the boot strapper.
+        /// </summary>
+        public void ClearBootStrapper()
+        {
+            BootStrapperFilepath = string.Empty;
+        }
+
+        /// <summary>
+        /// Selects the boot strapper.
+        /// </summary>
+        public void SelectBootStrapper()
+        {
+            var ofd = new System.Windows.Forms.OpenFileDialog
+            {
+                AddExtension = true,
+                DefaultExt = ".exe",
+                Filter = "EXE | *.exe"
+            };
+
+            var o = ofd.ShowDialog();
+
+            if (o != System.Windows.Forms.DialogResult.OK || !File.Exists(ofd.FileName)) {
+                return;
+            }
+
+            BootStrapperFilepath = ofd.FileName;
         }
 
         /// <summary>

@@ -544,6 +544,10 @@ namespace AutoSquirrel
                 cmd += @" -g " + Path.GetFullPath(Model.SplashFilepath);
             }
 
+            if (File.Exists(Model.BootStrapperFilepath)) {
+                cmd += @" -bootstrapperExe " + Path.GetFullPath(Model.BootStrapperFilepath);
+            }
+
             var startInfo = new ProcessStartInfo
             {
                 WindowStyle = ProcessWindowStyle.Hidden,
